@@ -1,6 +1,7 @@
 package main
 
 import (
+	payment_status_controller "github.com/sut65/team13/controller/payment_status"
 	user_controller "github.com/sut65/team13/controller/user"
 
 	"github.com/sut65/team13/entity"
@@ -22,6 +23,9 @@ func main() {
 	r.POST("/users", user_controller.CreateUser)
 	r.PATCH("/users", user_controller.UpdateUser)
 	r.DELETE("/users/:id", user_controller.DeleteUser)
+
+	// Basket Routes
+	r.GET("/payment_status", payment_status_controller.ListPayment_Status)
 
 	// Run the server
 
