@@ -5,6 +5,7 @@ import (
 
 	"gorm.io/driver/sqlite"
 
+	payment_status "github.com/sut65/team13/entity/payment_status"
 	user "github.com/sut65/team13/entity/user" // ที่ต้อง import เนื่องจาก setup.go กับ schema มันอยู่คนละ folder
 )
 
@@ -29,6 +30,8 @@ func SetupDatabase() {
 
 	database.AutoMigrate(
 		&user.User{}, // ไม่ต่างจาก SA แค่ต้องเรียกใช้โดยการ import
+
+		&payment_status.Payment_Status{},
 	)
 
 	db = database
