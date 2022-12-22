@@ -1,8 +1,7 @@
 package controller
 
 import (
-	"github.com/sut65/team13/entity"                  // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
-	user_entity "github.com/sut65/team13/entity/user" // เรียกเพื่อเรียกใช้เพื่อสร้างตัวแปรที่เกี่ยวกับตารางนั้นๆของตัว
+	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
 
 	"github.com/gin-gonic/gin"
 
@@ -13,7 +12,7 @@ import (
 
 func CreateUser(c *gin.Context) {
 
-	var user user_entity.User
+	var user entity.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 
@@ -39,7 +38,7 @@ func CreateUser(c *gin.Context) {
 
 func GetUser(c *gin.Context) {
 
-	var user user_entity.User
+	var user entity.User
 
 	id := c.Param("id")
 
@@ -59,7 +58,7 @@ func GetUser(c *gin.Context) {
 
 func ListUsers(c *gin.Context) {
 
-	var users []user_entity.User
+	var users []entity.User
 
 	if err := entity.DB().Raw("SELECT * FROM users").Scan(&users).Error; err != nil {
 
@@ -95,7 +94,7 @@ func DeleteUser(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 
-	var user user_entity.User
+	var user entity.User
 
 	if err := c.ShouldBindJSON(&user); err != nil {
 
