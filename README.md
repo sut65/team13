@@ -22,3 +22,11 @@ B6334352 นายพิศิษฐ์ ศิริเพชรอรุณ
 ```
 B6307431 ธนัญญา หวังผล
 ```
+
+### สำหรับผู้ที่ติดตั้งแล้วพบปัยหา
+#### react-router-dom
+node-module react-router-dom ไม่ติดตั้งมาพร้อมกับคำสั่ง
+`npm install package` หรือ `npm i package`
+ให้ใช้คำสั่ง
+`npm i react@18 react-dom@18 @types/react@18 @types/react-dom@18`
+เพื่อเป็นการแก้ไข
