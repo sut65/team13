@@ -133,7 +133,7 @@ func SetupDatabase() {
 		Gender_ID:           &Gen1.ID,
 		Favorite_Game_ID:    &Storage1.ID,
 		// Gender:               Gen1, // This way is not work for USER, But why?
-		// Favorite_Game:        &Storage1,
+		// Favorite_Game:        &Storage1, // maybe because .Updates in gorm framwork
 		Is_Seller:            true,
 		Store_Description:    "eiei",
 		Out_Standing_Game_ID: &Game1.ID,
