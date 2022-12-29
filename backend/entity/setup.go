@@ -27,7 +27,18 @@ func SetupDatabase() {
 
 	database.AutoMigrate(
 		//ระบบผู้ใช้(User)
+		&Gender{},
 		&User{},
+
+		//ระบบลงขายเกม
+		&Game_Status{},
+		&Type_Game{},
+		&Rating{},
+		&Game{},
+
+		//ระบบคลังเกม
+		&Collection{},
+		&Storage{},
 
 		//ระบบตะกร้าสินค้า
 		&Payment_Status{},
