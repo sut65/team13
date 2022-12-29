@@ -16,7 +16,7 @@ type Gender struct {
 type User struct {
 	// Normal User
 	gorm.Model
-	Email               string
+	Email               string `gorm:"uniqueIndex"`
 	Password            string
 	Profile_Name        string
 	Profile_Description string
@@ -40,7 +40,7 @@ type User struct {
 type Game_Status struct {
 	gorm.Model
 	Status_Type string
-	Game        []Game `gorm:"foreignKey:Status_ID"`
+	Game        []Game `gorm:"foreignKey:Game_Status_ID"`
 }
 
 type Type_Game struct {
@@ -60,8 +60,8 @@ type Game struct {
 	Game_Name              string
 	Publish_Date           time.Time
 	Seller_ID              *uint
-	Seller                 User `gorm:"references:id"` // ตั้งชื่อ Seller User จะบัคไหมนะ?
-	Status_ID              *uint
+	Seller                 User `gorm:"references:id"`
+	Game_Status_ID         *uint
 	Game_Status            Game_Status `gorm:"references:id"`
 	Type_Game_ID           *uint
 	Type_Game              Type_Game `gorm:"references:id"`
