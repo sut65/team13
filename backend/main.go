@@ -24,6 +24,9 @@ func main() {
 	r.PATCH("/users", user_controller.UpdateUser)
 	r.DELETE("/users/:id", user_controller.DeleteUser)
 
+	r.GET("/genders", user_controller.ListGenders)
+	r.GET("/gender/:id", user_controller.GetGender)
+
 	// Basket Routes
 	r.GET("/payment_status", payment_status_controller.ListPayment_Status)
 
