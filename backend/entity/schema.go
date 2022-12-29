@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// ---ระบบผุูใช้(User)---
+// ---ระบบผู้ใช้(User)---
 type User struct {
 	gorm.Model
 	FirstName string
@@ -16,6 +16,13 @@ type User struct {
 	BirthDay  time.Time
 	Basket    []Basket `gorm:"foreignKey:User_ID"`
 }
+
+type Gender struct {
+	gorm.Model
+	Gender string
+}
+
+// ---ระบบคลังเกม(Storage)---
 
 // ---ระบบตะกร้าสินค้า(Basket)---
 type Payment_Status struct {
