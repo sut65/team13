@@ -69,6 +69,7 @@ type Game struct {
 	Rating                 Rating    `gorm:"references:id"`
 	Storage                []Storage `gorm:"foreignKey:Game_ID"`
 	User_Out_Standing_Game []User    `gorm:"foreignKey:Out_Standing_Game_ID"`
+	Basket                 []Basket  `gorm:"foreignKey:Game_ID"`
 }
 
 // ---ระบบคลังเกม(Storage)---
@@ -98,10 +99,10 @@ type Payment_Status struct {
 
 type Basket struct {
 	gorm.Model
-	User_ID *uint
-	User    User `gorm:"references:id"`
-	//Game_ID *uint
-	//Game	Game `gorm:"references:id"`
+	User_ID           *uint
+	User              User `gorm:"references:id"`
+	Game_ID           *uint
+	Game              Game `gorm:"references:id"`
 	Payment_Status_ID *uint
 	Payment_Status    Payment_Status `gorm:"references:id"`
 	Note              string
