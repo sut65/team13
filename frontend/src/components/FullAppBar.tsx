@@ -11,7 +11,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Drawer from '@mui/material/Drawer';
 import { makeStyles } from "@material-ui/core/styles";
-
+import SellIcon from '@mui/icons-material/Sell';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -79,6 +79,11 @@ function FullAppBar() {
             <ListItem button component={RouterLink} to="/user_store_setting">
               <DashboardIcon color="primary" />
               <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
+            </ListItem>
+
+            <ListItem button component={RouterLink} to="/sell_game">
+              <SellIcon color="primary" />         
+              <ListItemText primary="Game Market" sx={{padding: 2}}/>
             </ListItem>
 
           </List>
