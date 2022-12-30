@@ -85,6 +85,7 @@ function FullAppBar() {
             <ListItem button component={RouterLink} to="/sell_game">
               <SellIcon color="primary" />         
               <ListItemText primary="Game Market" sx={{padding: 2}}/>
+              </ListItem>
             <ListItem button component={RouterLink} to="/basket_list">
               <ShoppingBasketIcon color="primary" />
               <ListItemText primary="My Basket" sx={{padding: 2}}/>
