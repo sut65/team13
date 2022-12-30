@@ -2,7 +2,7 @@ import { GendersInterface } from "./IGender"
 import { StoragesInterface } from "../storage/IStorage"
 import { GamesInterface } from "../game/IGame"
 
-export interface UsersInterface { // Matbe BUG warning คือตัวเชื่อม interface วนไปมา
+export interface UsersInterface { // Maybe BUG warning คือตัวเชื่อม interface วนไปมา
     ID: number,
     Email: string,
 	Password: string,
