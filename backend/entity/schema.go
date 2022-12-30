@@ -58,6 +58,7 @@ type Rating struct {
 type Game struct {
 	gorm.Model
 	Game_Name              string
+	Game_Price             uint
 	Publish_Date           time.Time
 	Seller_ID              *uint
 	Seller                 User `gorm:"references:id"`

@@ -85,6 +85,7 @@ func SetupDatabase() {
 
 	Game1 := Game{
 		Game_Name:    "Elden Ring",
+		Game_Price:   1500,
 		Publish_Date: time.Now(),
 		Seller:       User1,
 		Game_Status:  Game_Status1,
@@ -93,6 +94,7 @@ func SetupDatabase() {
 	}
 	Game2 := Game{
 		Game_Name:    "Batman Arkam Knights",
+		Game_Price:   1200,
 		Publish_Date: time.Now(),
 		Seller:       User1,
 		Game_Status:  Game_Status1,
@@ -156,7 +158,7 @@ func SetupDatabase() {
 	Basket1 := Basket{
 		User_ID:           Storage1.User_ID,
 		Game_ID:           &Game1.ID,
-		Payment_Status_ID: &Payment_Status1.ID,
+		Payment_Status_ID: &Payment_Status2.ID,
 		Note:              "Test1",
 		Date:              time.Now(),
 	}
