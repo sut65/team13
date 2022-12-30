@@ -1,5 +1,6 @@
 import * as React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Basket_List from "./components/basket/Basket_UI_List";
 import FullAppBar from "./components/FullAppBar";
 
 import Home from "./components/Home";
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/" element={<Home/>} /> {/** home */}
         {/** <Route path="/" element={<Home/>} /> {/** home */}
         <Route path="/user_store_setting" element={<User_UI/>} /> {/** user & store setting */}
+        <Route path="/basket_list" element={<Basket_List/>} />
       </Routes>
     </div>
   </Router>
