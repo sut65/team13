@@ -142,4 +142,31 @@ func SetupDatabase() {
 	//db.Model(&User{}).Save(&User1)
 	db.Model(&User{}).Where("email = ?", User1.Email).Updates(&User11)
 
+	//Payment_Status
+	Payment_Status1 := Payment_Status{
+		Status: "Unpaid",
+	}
+	Payment_Status2 := Payment_Status{
+		Status: "Paid",
+	}
+	db.Model(&Payment_Status{}).Create(&Payment_Status1)
+	db.Model(&Payment_Status{}).Create(&Payment_Status2)
+
+	//Basket
+	Basket1 := Basket{
+		User_ID:           Storage1.User_ID,
+		Game_ID:           &Game1.ID,
+		Payment_Status_ID: &Payment_Status1.ID,
+		Note:              "Test1",
+		Date:              time.Now(),
+	}
+	Basket2 := Basket{
+		User_ID:           Storage1.User_ID,
+		Game_ID:           &Game2.ID,
+		Payment_Status_ID: &Payment_Status1.ID,
+		Note:              "Test2",
+		Date:              time.Now(),
+	}
+	db.Model(&Basket{}).Create(&Basket1)
+	db.Model(&Basket{}).Create(&Basket2)
 }
