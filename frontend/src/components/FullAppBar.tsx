@@ -17,6 +17,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
 import GamesIcon from '@mui/icons-material/Games';
+import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 
 import { Link as RouterLink } from "react-router-dom";
 
@@ -84,6 +85,9 @@ function FullAppBar() {
             <ListItem button component={RouterLink} to="/sell_game">
               <SellIcon color="primary" />         
               <ListItemText primary="Game Market" sx={{padding: 2}}/>
+            <ListItem button component={RouterLink} to="/basket_list">
+              <ShoppingBasketIcon color="primary" />
+              <ListItemText primary="My Basket" sx={{padding: 2}}/>
             </ListItem>
 
           </List>

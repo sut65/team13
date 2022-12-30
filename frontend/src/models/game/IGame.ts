@@ -6,6 +6,7 @@ import { RatingsInterface } from "./IRating";
 export interface GamesInterface {
     ID: number,
     Game_Name: string,
+	Game_Price: number,
 	Publish_Date: Date | null,
 	Seller_ID: number,
 	Seller: UsersInterface,
