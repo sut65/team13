@@ -1,7 +1,8 @@
 package main
 
 import (
-	payment_status_controller "github.com/sut65/team13/controller/payment_status"
+	basket_controller "github.com/sut65/team13/controller/basket"
+	payment_status_controller "github.com/sut65/team13/controller/basket"
 	user_controller "github.com/sut65/team13/controller/user"
 
 	"github.com/sut65/team13/entity"
@@ -29,6 +30,12 @@ func main() {
 
 	// Basket Routes
 	r.GET("/payment_status", payment_status_controller.ListPayment_Status)
+
+	r.GET("/baskets", basket_controller.ListBasket)
+	r.GET("/basket/:id", basket_controller.GetBasket)
+	r.POST("/baskets", basket_controller.CraeteBasket)
+	r.PATCH("/baskets", basket_controller.UpdateBasket)
+	r.DELETE("/basket/:id", basket_controller.DeleteBasket)
 
 	// Run the server
 
