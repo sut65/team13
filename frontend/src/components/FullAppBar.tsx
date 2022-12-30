@@ -66,14 +66,19 @@ function FullAppBar() {
 
           <List className={classes.drawer} sx={{margin: 1,padding: 2}}>
 
-          < ListItem button component={RouterLink} to="/">
+            <ListItem button component={RouterLink} to="/">
               <HomeIcon color="primary" />
               <ListItemText primary="FirstPage" sx={{padding: 2}}/>
             </ListItem>
 
-          < ListItem button component={RouterLink} to="/dashboard">
+            <ListItem button component={RouterLink} to="/dashboard">
               <DashboardIcon color="primary" />
               <ListItemText primary="Dashboard" sx={{padding: 2}}/>
+            </ListItem>
+
+            <ListItem button component={RouterLink} to="/user_store_setting">
+              <DashboardIcon color="primary" />
+              <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
             </ListItem>
 
           </List>
