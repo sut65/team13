@@ -15,11 +15,17 @@ func CreateGame(c *gin.Context) {
 	var rating entity.Rating
 	var game_status entity.Game_Status
 	var type_game entity.Type_Game
+	var seller entity.User
 
 	if err := c.ShouldBindJSON(&game); err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
+		return
+
+	}
+	if tx := entity.DB().Where("id = ?", game.Seller_ID).First(&seller); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Seller not found"})
 		return
 
 	}
@@ -41,6 +47,7 @@ func CreateGame(c *gin.Context) {
 
 	}
 	wv := entity.Game{
+		Seller:      seller,
 		Rating:      rating,
 		Game_Status: game_status,
 		Type_Game:   type_game,
@@ -69,7 +76,7 @@ func GetGame(c *gin.Context) {
 
 // GET /game
 
-func ListUsers(c *gin.Context) {
+func ListGames(c *gin.Context) {
 	var game []entity.Game
 
 	if err := entity.DB().Raw("SELECT * FROM games").Scan(&game).Error; err != nil {
@@ -99,10 +106,16 @@ func UpdateGame(c *gin.Context) {
 	var rating entity.Rating
 	var game_status entity.Game_Status
 	var type_game entity.Type_Game
-
+	var seller entity.User
 	if err := c.ShouldBindJSON(&game); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	if tx := entity.DB().Where("id = ?", game.Seller_ID).First(&seller); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Seller not found"})
+		return
+
 	}
 
 	if tx := entity.DB().Where("id = ?", game.Rating_ID).First(&rating); tx.RowsAffected == 0 {
