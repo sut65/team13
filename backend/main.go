@@ -20,7 +20,7 @@ func main() {
 	// User Routes
 
 	r.GET("/users", user_controller.ListUsers)
-	r.GET("/user/:id", user_controller.GetUser)
+	r.GET("/user/:email", user_controller.GetUser)
 	r.POST("/users", user_controller.CreateUser)
 	r.PATCH("/users", user_controller.UpdateUser)
 	r.DELETE("/users/:id", user_controller.DeleteUser)

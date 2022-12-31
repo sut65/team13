@@ -27,7 +27,6 @@ export default function App() {
       <FullAppBar />
       <Routes>
         <Route path="/" element={<Home/>} /> {/** home */}
-        {/** <Route path="/" element={<Home/>} /> {/** home */}
         <Route path="/user_store_setting" element={<User_UI/>} /> {/** user & store setting */}
         <Route path="/sell_game" element={<Game_UI/>} /> {/** aadadadad */}
         <Route path="/basket_list" element={<Basket_List/>} />

@@ -125,8 +125,12 @@ func SetupDatabase() {
 	Gen2 := Gender{
 		Gender: "female",
 	}
+	Gen3 := Gender{
+		Gender: "other",
+	}
 	db.Model(&Gender{}).Create(&Gen1)
 	db.Model(&Gender{}).Create(&Gen2)
+	db.Model(&Gender{}).Create(&Gen3)
 
 	User11 := User{
 		Password:            "1234",
