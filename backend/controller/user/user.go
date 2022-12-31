@@ -27,13 +27,13 @@ func CreateUser(c *gin.Context) {
 
 }
 
-// GET /user/:id
+// GET /user/:email
 
 func GetUser(c *gin.Context) {
 	var user entity.User
-	id := c.Param("id")
+	email := c.Param("email")
 
-	if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", id).Scan(&user).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM users WHERE email = ?", email).Scan(&user).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -70,18 +70,26 @@ func DeleteUser(c *gin.Context) {
 
 func UpdateUser(c *gin.Context) {
 	var user entity.User
+	var gender entity.Gender
 
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		//return
 	}
 
-	if tx := entity.DB().Where("id = ?", user.ID).First(&user); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", user.Gender_ID).First(&gender); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 		return
 	}
 
-	if err := entity.DB().Save(&user).Error; err != nil {
+	updateUser := entity.User{
+		Password:            user.Password,
+		Profile_Name:        user.Profile_Name,
+		Profile_Description: user.Profile_Description,
+		Gender:              gender,
+	}
+
+	if err := entity.DB().Where("email = ?", user.Email).Updates(&updateUser).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

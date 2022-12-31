@@ -11,6 +11,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import Drawer from '@mui/material/Drawer';
 import { makeStyles } from "@material-ui/core/styles";
+
+// Icon
 import SellIcon from '@mui/icons-material/Sell';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -18,6 +20,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import HomeIcon from '@mui/icons-material/Home';
 import GamesIcon from '@mui/icons-material/Games';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import { Link as RouterLink } from "react-router-dom";
 
@@ -78,14 +81,15 @@ function FullAppBar() {
             </ListItem>
 
             <ListItem button component={RouterLink} to="/user_store_setting">
-              <DashboardIcon color="primary" />
+              <SettingsIcon color="primary" />
               <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
             </ListItem>
 
             <ListItem button component={RouterLink} to="/sell_game">
               <SellIcon color="primary" />         
               <ListItemText primary="Game Market" sx={{padding: 2}}/>
-              </ListItem>
+            </ListItem>
+
             <ListItem button component={RouterLink} to="/basket_list">
               <ShoppingBasketIcon color="primary" />
               <ListItemText primary="My Basket" sx={{padding: 2}}/>
