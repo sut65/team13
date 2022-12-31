@@ -59,7 +59,7 @@ func GetGame(c *gin.Context) {
 	var game entity.Game
 	id := c.Param("id")
 
-	if err := entity.DB().Raw("SELECT * FROM users WHERE id = ?", id).Scan(&game).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM games WHERE id = ?", id).Scan(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -84,7 +84,7 @@ func ListUsers(c *gin.Context) {
 func DeleteGame(c *gin.Context) {
 
 	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM users WHERE id = ?", id); tx.RowsAffected == 0 {
+	if tx := entity.DB().Exec("DELETE FROM games WHERE id = ?", id); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
 		return
 	}
@@ -95,7 +95,7 @@ func DeleteGame(c *gin.Context) {
 // PATCH /game
 
 func UpdateGame(c *gin.Context) {
-	var game entity.User
+	var game entity.Game
 	var rating entity.Rating
 	var game_status entity.Game_Status
 	var type_game entity.Type_Game
@@ -106,31 +106,36 @@ func UpdateGame(c *gin.Context) {
 	}
 
 	if tx := entity.DB().Where("id = ?", game.Rating_ID).First(&rating); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Rating not found"})
 		return
+
+	}
+	if tx := entity.DB().Where("id = ?", game.Game_Status_ID).First(&game_status); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Game Status not found"})
+		return
+
+	}
+	if tx := entity.DB().Where("id = ?", game.Type_Game_ID).First(&type_game); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Type Game not found"})
+
+		return
+
 	}
 
-	if tx := entity.DB().Where("id = ?", game.G).First(&game_status); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
-		return
-	}
-	if tx := entity.DB().Where("id = ?", game.Rating_ID).First(&type_game); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
-		return
-	}
-
-	updateUser := entity.User{
-		Password:            user.Password,
-		Profile_Name:        user.Profile_Name,
-		Profile_Description: user.Profile_Description,
-		Gender:              gender,
+	updateGame := entity.Game{
+		Game_Name:        game.Game_Name,
+		Game_Price:       game.Game_Price,
+		Game_description: game.Game_description,
+		Rating:           rating,
+		Game_Status:      game_status,
+		Type_Game:        type_game,
 	}
 
-	if err := entity.DB().Where("email = ?", user.Email).Updates(&updateUser).Error; err != nil {
+	if err := entity.DB().Where("id = ?", game.ID).Updates(&updateGame).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	c.JSON(http.StatusOK, gin.H{"data": game})
 
 }
