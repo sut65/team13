@@ -3,8 +3,8 @@ package main
 import (
 	basket_controller "github.com/sut65/team13/controller/basket"
 	payment_status_controller "github.com/sut65/team13/controller/basket"
+	game_controller "github.com/sut65/team13/controller/game"
 	user_controller "github.com/sut65/team13/controller/user"
-
 	"github.com/sut65/team13/entity"
 
 	"github.com/gin-gonic/gin"
@@ -36,6 +36,13 @@ func main() {
 	r.POST("/baskets", basket_controller.CraeteBasket)
 	r.PATCH("/baskets", basket_controller.UpdateBasket)
 	r.DELETE("/basket/:id", basket_controller.DeleteBasket)
+
+	// Game Routes
+	r.GET("/Game", game_controller.ListGames)
+	r.GET("/Game/:id", game_controller.GetGame)
+	r.POST("/Game", game_controller.CreateGame)
+	r.PATCH("/Game", game_controller.UpdateGame)
+	r.DELETE("/Game/:id", game_controller.DeleteGame)
 
 	// Run the server
 
