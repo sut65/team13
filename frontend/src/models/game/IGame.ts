@@ -8,6 +8,7 @@ export interface GamesInterface {
     Game_Name: string,
 	Game_Price: number,
 	Publish_Date: Date | null,
+	Game_description: string ,
 	Seller_ID: number,
 	Seller: UsersInterface,
 	Game_Status_ID: number,
