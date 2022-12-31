@@ -84,22 +84,24 @@ func SetupDatabase() {
 	db.Model(&Rating{}).Create(&Rating2)
 
 	Game1 := Game{
-		Game_Name:    "Elden Ring",
-		Game_Price:   1500,
-		Publish_Date: time.Now(),
-		Seller:       User1,
-		Game_Status:  Game_Status1,
-		Type_Game:    Type_Game1,
-		Rating:       Rating1,
+		Game_Name:        "Elden Ring",
+		Game_Price:       1500,
+		Game_description: "Game of the year",
+		Publish_Date:     time.Now(),
+		Seller:           User1,
+		Game_Status:      Game_Status1,
+		Type_Game:        Type_Game1,
+		Rating:           Rating1,
 	}
 	Game2 := Game{
-		Game_Name:    "Batman Arkam Knights",
-		Game_Price:   1200,
-		Publish_Date: time.Now(),
-		Seller:       User1,
-		Game_Status:  Game_Status1,
-		Type_Game:    Type_Game1,
-		Rating:       Rating1,
+		Game_Name:        "Batman Arkam Knights",
+		Game_Price:       1200,
+		Game_description: "Rich boy",
+		Publish_Date:     time.Now(),
+		Seller:           User1,
+		Game_Status:      Game_Status1,
+		Type_Game:        Type_Game1,
+		Rating:           Rating1,
 	}
 	db.Model(&Game{}).Create(&Game1)
 	db.Model(&Game{}).Create(&Game2)
