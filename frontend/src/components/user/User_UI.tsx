@@ -155,11 +155,12 @@ function User(){
 
                         <Grid container>
                             <Grid item xs={3}> {/* Profile Picture */}
-                            <Grid>
-                                <img src={`${imageString}`} width="250" height="250"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
-                            </Grid>
+                                <h4>Profile Picture</h4>
+                                <Grid>
+                                    <img src={`${imageString}`} width="250" height="250"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
+                                </Grid>
                                 <input type="file" onChange={handleImageChange} />
-                                <FormHelperText> recommend size is 250*250 pixels</FormHelperText>
+                                <FormHelperText>recommend size is 250*250 pixels</FormHelperText>
                             </Grid>
                             <Grid margin={1} item xs={2}>
                                 <TextField
