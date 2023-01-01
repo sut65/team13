@@ -14,7 +14,7 @@ func GetGame_status(c *gin.Context) {
 	var game_status entity.Game_Status
 	id := c.Param("id")
 
-	if err := entity.DB().Raw("SELECT * FROM game_status WHERE id = ?", id).Scan(&game_status).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM game_statuses WHERE id = ?", id).Scan(&game_status).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -27,7 +27,7 @@ func ListGame_status(c *gin.Context) {
 
 	var game_status []entity.Game_Status
 
-	if err := entity.DB().Raw("SELECT * FROM game_status").Scan(&game_status).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM game_statuses").Scan(&game_status).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
