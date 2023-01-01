@@ -86,6 +86,7 @@ func UpdateUser(c *gin.Context) {
 		Password:            user.Password,
 		Profile_Name:        user.Profile_Name,
 		Profile_Description: user.Profile_Description,
+		Profile_Picture:     user.Profile_Picture,
 		Gender:              gender,
 	}
 
