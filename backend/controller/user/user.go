@@ -77,8 +77,6 @@ func UpdateUser(c *gin.Context) {
 		//return
 	}
 
-	print(user.Profile_Picture)
-
 	if tx := entity.DB().Where("id = ?", user.Gender_ID).First(&gender); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 		return
@@ -88,7 +86,6 @@ func UpdateUser(c *gin.Context) {
 		Password:            user.Password,
 		Profile_Name:        user.Profile_Name,
 		Profile_Description: user.Profile_Description,
-		Profile_Picture:     user.Profile_Picture,
 		Gender:              gender,
 	}
 
