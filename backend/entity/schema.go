@@ -20,7 +20,7 @@ type User struct {
 	Password            string
 	Profile_Name        string
 	Profile_Description string
-	Profile_Picture     []byte
+	Profile_Picture     string
 	Gender_ID           *uint
 	Gender              Gender `gorm:"references:id"`
 	Favorite_Game_ID    *uint
