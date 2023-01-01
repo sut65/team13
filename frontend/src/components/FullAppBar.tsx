@@ -23,6 +23,7 @@ import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import { Link as RouterLink } from "react-router-dom";
+import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles({
   drawer: {
@@ -53,7 +54,7 @@ function FullAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
 
-      <AppBar position="static">
+      <AppBar position="static" sx ={{ background : "#212121"}}>    
         <Toolbar>
         <IconButton
           edge="start"
@@ -139,6 +140,7 @@ function FullAppBar() {
       </AppBar>
 
     </Box>
+  
   );
 }
 

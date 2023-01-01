@@ -58,7 +58,7 @@ async function GetGame_Status() {
     },
   };
 
-  let res = await fetch(`${apiUrl}/Game_Status`, requestOptions)  
+  let res = await fetch(`${apiUrl}/Status`, requestOptions)  
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {
@@ -103,7 +103,7 @@ async function GetGame_Rating() {
     },
   };
 
-  let res = await fetch(`${apiUrl}/Game_Rating`, requestOptions)
+  let res = await fetch(`${apiUrl}/Rating`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {
@@ -141,7 +141,7 @@ async function GetEmail() {
 
 
 
-async function CreateGame(data: GamesInterface) {
+async function CreateGame(data: any) {
   console.log(data)
   const requestOptions = {
     method: "POST",
