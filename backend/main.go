@@ -44,6 +44,15 @@ func main() {
 	r.PATCH("/Game", game_controller.UpdateGame)
 	r.DELETE("/Game/:id", game_controller.DeleteGame)
 
+	r.GET("/Rating", game_controller.ListRating)
+	r.GET("/Rating/:id", game_controller.GetRating)
+
+	r.GET("/Status", game_controller.ListGame_status)
+	r.GET("/Status/:id", game_controller.GetGame_status)
+
+	r.GET("/Game_Type", game_controller.ListGame_type)
+	r.GET("/Game_Type/:id", game_controller.GetGame_type)
+
 	// Run the server
 
 	r.Run()

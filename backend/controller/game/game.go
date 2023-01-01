@@ -47,10 +47,15 @@ func CreateGame(c *gin.Context) {
 
 	}
 	wv := entity.Game{
-		Seller:      seller,
-		Rating:      rating,
-		Game_Status: game_status,
-		Type_Game:   type_game,
+
+		Game_Name:        game.Game_Name,
+		Game_Price:       game.Game_Price,
+		Game_description: game.Game_description,
+		Publish_Date:     game.Publish_Date,
+		Seller:           seller,
+		Rating:           rating,
+		Game_Status:      game_status,
+		Type_Game:        type_game,
 	}
 	if err := entity.DB().Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
