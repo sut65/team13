@@ -2,6 +2,7 @@ import * as React from "react";
 import { Container } from "@material-ui/core";
 import { Box,Paper,Grid,TextField,Button } from "@mui/material";
 import { FormControl,FormLabel,RadioGroup,Radio,FormControlLabel,FormHelperText } from "@mui/material";
+
 import SaveIcon from "@mui/icons-material/Save";
 
 import { GendersInterface } from "../../models/user/IGender";
@@ -10,16 +11,27 @@ import { UsersInterface } from "../../models/user/IUser";
 function User(){
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
-    const [noAccess, setNoAccess] = React.useState(false);
 
     const [new_password, setNew_password] = React.useState<string | null>(null);
     const [confirm_password, setConfirm_password] = React.useState<string | null>(null);
     const [profile_name, setProfile_name] = React.useState<string | null>(null);
     const [profile_description, setProfile_description] = React.useState<string | null>(null);
     const [genderID, setGenderID] = React.useState<number | null>(null);
+    const [imageString, setImageString] = React.useState<string |  ArrayBuffer | null>(null);
 
     const [genders, setGenders] = React.useState<GendersInterface[]>([]);
     const [user, setUser] = React.useState<Partial<UsersInterface>>({});
+
+    const handleImageChange = (event: any) => {
+        const image = event.target.files[0];
+
+        const reader = new FileReader();
+        reader.readAsDataURL(image);
+        reader.onload = () => {
+            const base64Data = reader.result;
+            setImageString(base64Data)
+        };
+    }
 
     const getGender = async () => {
         const apiUrl = "http://localhost:8080/genders";
@@ -55,7 +67,7 @@ function User(){
             .then((res) => {
                 if (res.data) {
                     setUser(res.data);
-                    console.log(Number(res.data.Gender_ID));
+                    setImageString(res.data.Profile_Picture);
                 }
             });
     };
@@ -78,7 +90,7 @@ function User(){
             Password: new_password,
             Profile_Name: profile_name,
             Profile_Description: profile_description,
-            Profile_Picture: "Int8Array[]", // ยังไม่ได้ทำ
+            Profile_Picture: imageString, // ยังไม่ได้ทำ
             Gender_ID: genderID ? genderID : user.Gender_ID, // ถ้า genderID เป็น null หมายถึงไม่มีการเลือกจากผู้ใช้ ให้ใช้ค่าเดิมของผู้ใช้คนนั้นๆ
             Favorite_Game_ID: "number", // ยังไม่ได้ทำ
             Is_Seller: "boolean", // ยังไม่ได้ทำ
@@ -142,7 +154,10 @@ function User(){
 
                         <Grid container>
                             <Grid item xs={3}> {/* Profile Picture */}
-
+                                <img src={`${imageString}`} />
+                                <Grid>
+                                    <input type="file" onChange={handleImageChange} />
+                                </Grid>
                             </Grid>
                             <Grid margin={1} item xs={2}>
                                 <TextField
