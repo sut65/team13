@@ -2,7 +2,7 @@ import * as React from "react";
 import { Container } from "@material-ui/core";
 import { Box,Paper,Grid,TextField,Button, Autocomplete } from "@mui/material";
 import { FormControl,FormLabel,RadioGroup,Radio,FormControlLabel,FormHelperText } from "@mui/material";
-//import { useAsync } from 'react-async';
+import { useAsync } from 'react-async';
 
 import SaveIcon from "@mui/icons-material/Save";
 import StorefrontIcon from '@mui/icons-material/Storefront';
@@ -12,11 +12,11 @@ import { UsersInterface } from "../../models/user/IUser";
 import { StoragesInterface } from "../../models/storage/IStorage";
 
 function User(){
-    //const { LoadedData, LoadError, isLoading } = useAsync({ promiseFn: fetchData });
-
-    const [success, setSuccess] = React.useState(false);
-    const [error, setError] = React.useState(false);
+    const [submitSuccess, setSubmitSuccess] = React.useState(false);
+    const [submitError, setSubmitError] = React.useState(false);
     const [noAccess, setNoAccess] = React.useState(false);
+
+    const [isLoaded, setIsloaded] = React.useState<boolean | null>(false);
 
     const [new_password, setNew_password] = React.useState<string | null>(null);
     const [confirm_password, setConfirm_password] = React.useState<string | null>(null);
@@ -121,14 +121,6 @@ function User(){
             });
     };
 
-    React.useEffect(() => {
-        getGender();
-        getUser();
-        getStorage();
-        getGame();
-    }, []);
-    var nowGender = genders.map((item: GendersInterface) => (item.Gender));
-
     const submit = () => {
         if(new_password == confirm_password){
             console.log("OK")
@@ -136,7 +128,7 @@ function User(){
             console.log("Error")
         }
 
-        let data = {
+        let UpdateData = {
             Email: "natt@gmail.com", // รอทำ localStorage.getitem
             Password: new_password,
             Profile_Name: user.Profile_Name,
@@ -150,7 +142,7 @@ function User(){
             Store_Contact: user.Store_Contact,
         };
 
-        console.log(data)
+        console.log(UpdateData)
 
         const apiUrl = "http://localhost:8080/users";
         const requestOptions = {
@@ -159,16 +151,16 @@ function User(){
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(UpdateData),
         };
 
         fetch(apiUrl, requestOptions)
         .then((response) => response.json())
         .then((res) => {
             if (res.data) {
-                setSuccess(true);
+                setSubmitSuccess(true);
             } else {
-                setError(true);
+                setSubmitError(true);
             }
         });
     }
@@ -197,6 +189,7 @@ function User(){
                                 options={games}
                                 fullWidth
                                 size="medium"
+                                defaultValue={games[Number(user.Out_Standing_Game_ID) - 1]}
                                 onChange={(event: any, value) => {
                                     setUser({ ...user, Out_Standing_Game_ID: value?.ID }); // บันทึกค่าลง interface
                                 }}
@@ -225,6 +218,7 @@ function User(){
                                     id="store-description"
                                     label="Store Description"
                                     variant="outlined"
+                                    defaultValue={user.Store_Description}
                                     onChange={(event) => setUser({ ...user, Store_Description: event.target.value })}/>
                             </Grid>
                             <Grid marginTop={1}>
@@ -235,6 +229,7 @@ function User(){
                                     id="store-contact"
                                     label="Store Contact"
                                     variant="outlined"
+                                    defaultValue={user.Store_Contact}
                                     onChange={(event) => setUser({ ...user, Store_Contact: event.target.value })}/>
                             </Grid>
                         </Grid>
@@ -245,7 +240,20 @@ function User(){
         }
     }
 
-    return(
+    React.useEffect(() => {
+        const fetchData = async () => {
+            await getUser();
+            await getGender();
+            await getStorage();
+            await getGame();
+            setIsloaded(true);
+        }
+        fetchData();
+    }, []); // ในช่อง [] ถ้าเกิดใส่อะไรเข้าไปเช่น [isLoaded] ถ้าหาก isLoaded มีการอัพเดท useEffect จะถูกเรียกใช้งานอีกครั้ง
+
+    var nowGender = genders.map((item: GendersInterface) => (item.Gender));
+
+    if (isLoaded) return(
         <Container>
             <Box>
                 <Paper elevation={2} sx={{padding:2}}>
@@ -293,7 +301,7 @@ function User(){
                                     id="profile-name"
                                     label="Profile Name"
                                     variant="outlined"
-                                    defaultValue={`${user.Profile_Name}`} // รอถามพี่เข้ม
+                                    defaultValue={`${user.Profile_Name}`}
                                     onChange={(event) => setUser({ ...user, Profile_Name: event.target.value })}/>
                                 <Grid marginTop={1}> {/* gender radio button */}
                                     <FormControl>
@@ -301,6 +309,7 @@ function User(){
                                             <RadioGroup
                                                 aria-labelledby="radio-buttons-group-gender"
                                                 name="radio-buttons-group-gender"
+                                                defaultValue={user.Gender_ID}
                                                 onChange={(event) => setUser({ ...user, Gender_ID: Number(event.target.value) })}
                                             >
                                                 {genders.map((o) => (
@@ -321,6 +330,7 @@ function User(){
                                         options={storages}
                                         fullWidth
                                         size="medium"
+                                        defaultValue={storages[Number(user.Favorite_Game_ID)-1]}
                                         onChange={(event: any, value) => {
                                             setUser({ ...user, Favorite_Game_ID: value?.ID }); // บันทึกค่าลง interface
                                         }}
@@ -349,6 +359,7 @@ function User(){
                                     id="profile-description"
                                     label="Profile Description"
                                     variant="outlined"
+                                    defaultValue={`${user.Profile_Description}`}
                                     onChange={(event) => setUser({ ...user, Profile_Description: event.target.value })}/>
                             </Grid>
                         </Grid>
@@ -365,7 +376,8 @@ function User(){
                 </Paper>
             </Box>
         </Container>
-    )
+    );
+    return null;
 }
 
 export default User
