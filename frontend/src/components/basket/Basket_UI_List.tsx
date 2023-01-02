@@ -1,119 +1,3 @@
-// import { useEffect, useState } from "react";
-// import React from 'react';
-// import { makeStyles } from '@material-ui/core/styles';
-// import Button from '@material-ui/core/Button';
-// import Dialog from '@material-ui/core/Dialog';
-// import AppBar from '@material-ui/core/AppBar';
-// import Toolbar from '@material-ui/core/Toolbar';
-// import IconButton from '@material-ui/core/IconButton';
-// import Typography from '@material-ui/core/Typography';
-// import CloseIcon from '@mui/icons-material/Close';
-// import Slide from '@material-ui/core/Slide';
-// import { BasketInterface } from '../../models/basket/IBasket';
-// import { DataGrid, GridColDef } from "@mui/x-data-grid";
-// import { Container } from "@mui/material";
-// import DeleteIcon from '@mui/icons-material/Delete';
-
-// const useStyles = makeStyles((theme) => ({
-//   appBar: {
-//     position: 'relative',
-//   },
-//   title: {
-//     marginLeft: theme.spacing(2),
-//     flex: 1,
-//   },
-// }));
-
-// const Transition = React.forwardRef(function Transition(props, ref) {
-//   return <Slide direction="up" ref={ref} {...props} />;
-// });
-
-// function Basket_List() {
-//   const classes = useStyles();
-//   const [open, setOpen] = React.useState(false);
-
-//   const [basket, setBasket] = useState<BasketInterface[]>([]);
-
-//   const getBasket = async () => {                                                              //7.ดึงข้อมูลผู้ป๋วย                                   
-//     const apiUrl = "http://localhost:8080/baskets";
-//     const requestOptions = {
-//         method: "GET",
-//         headers: { "Content-Type": "application/json" },
-//     };
-
-//     fetch(apiUrl, requestOptions)
-//         .then((response) => response.json())
-//         .then((res) => {
-//             if (res.data) {
-//                 setBasket(res.data);
-//             }
-//         });
-//   };
-
-//   const columns: GridColDef[] = [
-//     {
-//       field: "Game",
-//       headerName: "Game",
-//       width: 500,
-//       valueGetter: (params) => params.value.Game_Name,
-//     },
-//     {
-//       field: "Note",
-//       headerName: "โน๊ต",
-//       width: 250,
-//     },
-//   ];
-
-//   const handleClickOpen = () => {
-//     setOpen(true);
-//   };
-
-//   const handleClose = () => {
-//     setOpen(false);
-//   };
-
-//   useEffect(() => {
-//     getBasket();
-//   }, []);
-
-//   return (
-//     <div>
-//       <Button variant="outlined" color="primary" onClick={handleClickOpen}>
-//         My Basket
-//       </Button>
-//       <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Slide}>
-//         <AppBar className={classes.appBar}>
-//           <Toolbar>
-//             <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-//               <CloseIcon />
-//             </IconButton>
-//             <Typography variant="h6" className={classes.title}>
-//               Basket
-//             </Typography>
-//             <Button autoFocus color="inherit" onClick={handleClose}>
-//               Save
-//             </Button>
-//           </Toolbar>
-//         </AppBar>
-//         <div>
-//             <Container maxWidth="xl">
-//                 <div style={{ height: 400, width: "100%", marginTop: "20px" }}>
-//                 <DataGrid
-//                     rows={basket}
-//                     getRowId={(row) => row.ID}
-//                     columns={columns}
-//                     pageSize={5}
-//                     rowsPerPageOptions={[5]}
-//                 />
-//         </div>
-//       </Container>
-//     </div>
-//       </Dialog>
-//     </div>
-//   );
-// }
-// export default Basket_List;
-
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Table from '@material-ui/core/Table';
@@ -125,23 +9,29 @@ import Button from '@material-ui/core/Button';
 import { BasketInterface } from '../../models/basket/IBasket';
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { Box } from '@material-ui/core';
+import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
+import Stack from '@mui/material/Stack';
+import { Dialog } from '@mui/material';
 
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-});
+const useStyles = makeStyles((theme) => ({
+    table: {
+        minWidth: 650,
+    },
+}));
 
 function Basket_List() {
     const classes = useStyles();
 
     const [basket, setBasket] = useState<BasketInterface[]>([]);
 
+    const [note, setNote] = React.useState<string>("");
+
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
+    const [openForEdit, setOpenForEdit] = React.useState(false);
+    const [openForDelete, setOpenForDelete] = React.useState(false);
 
-    const handleClose = (                                                                         //ป้ายบันทึกเปิดปิด
+    const handleClose = (                                                                        
         event?: React.SyntheticEvent | Event,
         reason?: string
     ) => {
@@ -152,13 +42,31 @@ function Basket_List() {
         setError(false);
     };
 
-    const getBasket = async () => {                                  
+    const handleClickOpenForEdit = () => {
+        setOpenForEdit(true);
+    };
+
+    const handleClickOpenForDelete = () => {
+        setOpenForDelete(true);
+    };
+
+    const handleCloseForEdit = () => {
+        setOpenForEdit(false);
+    };
+
+    const handleCloseForDelete = () => {
+        setOpenForDelete(false);
+    };
+
+    const getBasket = async () => {                                 
         const apiUrl = "http://localhost:8080/baskets";
         const requestOptions = {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
+            method: "GET",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },     
         };
-    
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -168,18 +76,53 @@ function Basket_List() {
             });
     };
 
-    const deleteItem = (id: number) => {                                                          //8.บันทึกการนัด
-        let data = {                                   //ประกาศก้อนข้อมูล
-            ID: id,      
+    const updateItem = (id: number,note: string) => {
+        if(note == ""){
+            {basket.map((item) => (setNote(item.Note)))}
+        }
+        let data = {       //ประกาศก้อนข้อมูล
+            ID: id,                                                     
+            Note: note,      
         };
-        const apiUrl = "http://localhost:8080/basket/:id";           //ส่งขอบันทึก  
+        const apiUrl = "http://localhost:8080/baskets";                      //ส่งขอการลบ  
         const requestOptions = {     
-            method: "DELETE",      
-            headers: { "Content-Type": "application/json" },      
+            method: "PATCH",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },     
             body: JSON.stringify(data),
         };
       
-        fetch(apiUrl, requestOptions)                                       //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+        .then((response) => response.json())      
+        .then((res) => {      
+            if (res.data) {
+                setSuccess(true);     
+            } else {
+                setError(true);     
+            }
+        });
+
+        window.location.reload();
+        
+    }
+
+    const deleteItem = (id: number) => {
+        let data = {                                                            //ประกาศก้อนข้อมูล
+            ID: id,      
+        };
+        const apiUrl = "http://localhost:8080/basket/:id";                      //ส่งขอการลบ  
+        const requestOptions = {     
+            method: "DELETE",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },     
+            body: JSON.stringify(data),
+        };
+      
+        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
         .then((response) => response.json())      
         .then((res) => {      
             if (res.data) {
@@ -195,7 +138,8 @@ function Basket_List() {
 
 
     useEffect(() => {
-        getBasket();
+        getBasket(); 
+        console.log(basket)  
     }, []);
 
     return (
@@ -217,7 +161,7 @@ function Basket_List() {
             onClose={handleClose} 
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
                 <Alert onClose={handleClose} severity="error">
-                บันทึกข้อมูลไม่สำเร็จ
+                    บันทึกข้อมูลไม่สำเร็จ
                 </Alert>
             </Snackbar>
             
@@ -225,24 +169,63 @@ function Basket_List() {
                 <TableHead>
                     <TableRow>
                         <TableCell>Game</TableCell>
-                            <TableCell align="right">Price</TableCell>
-                            <TableCell align="right">Note</TableCell>
-                            <TableCell align="right">Action</TableCell>
+                            <TableCell align="center">Price</TableCell>
+                            <TableCell align="center">Note</TableCell>
+                            <TableCell align="center">Action</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {basket.map((item) => (
+                        {basket.filter(item => item.User_ID == 1).map((item) => (
                             <TableRow key={item.ID}>
-                                <TableCell component="th" scope="row">
-                                    {item.Game.Game_Name}
+                                <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
+                                <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
+                                <TableCell align="center">{item.Note}</TableCell>
+                                <TableCell align="center">
+                                    <Stack direction="column" spacing={2}>
+                                        <Button variant="outlined" color="inherit" onClick={handleClickOpenForEdit}>
+                                            Edit
+                                        </Button>
+                                        <Button variant="contained" color="secondary" onClick={handleClickOpenForDelete}>
+                                            Delete
+                                        </Button>                                        
+                                    </Stack>
                                 </TableCell>
-                                <TableCell align="right">{item.Game.Game_Price}</TableCell>                         
-                                <TableCell align="right">{item.Note}</TableCell>
-                                <TableCell align="right">
-                                    <Button variant="contained" color="secondary" onClick={() => deleteItem(item.ID)}>
-                                        Delete
-                                    </Button>
-                                </TableCell>
+                                    <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
+                                        <DialogTitle>{item.Game.Game_Name}</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                {item.Game.Game_description}
+                                            </DialogContentText>
+                                            <TextField
+                                                id="outlined-basic"
+                                                placeholder="Insert details"
+                                                variant="outlined"
+                                                size="medium"
+                                                multiline={true}
+                                                minRows={9}
+                                                maxRows={2}
+                                                fullWidth={true}
+                                                defaultValue={item.Note}
+                                                onChange={(event) => setNote(event.target.value)}
+                                            />
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseForEdit}>Cancel</Button>
+                                            <Button onClick={() => updateItem(item.ID,note)}>Save</Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
+                                        <DialogTitle>DELETE</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                Are you SURE to DELETE "{item.Game.Game_Name}" from BASKET?
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseForDelete}>Cancel</Button>
+                                            <Button color="secondary" onClick={() => deleteItem(item.ID)}>Delete</Button>
+                                        </DialogActions>
+                                    </Dialog>
                             </TableRow>
                         ))}
                     </TableBody>
