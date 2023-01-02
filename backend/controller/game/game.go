@@ -79,8 +79,7 @@ func GetGame(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": game})
 }
 
-// GET /game
-
+// GET /game//
 func ListGames(c *gin.Context) {
 	var game []entity.Game
 
