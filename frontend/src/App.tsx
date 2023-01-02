@@ -6,6 +6,7 @@ import FullAppBar from "./components/FullAppBar";
 import Home from "./components/Home";
 import User_UI from "./components/user/User_UI"
 import Game_UI from "./components/game/Game_UI"
+import Basket_Add from "./components/basket/Basket_UI_Add_demo";
 
 export default function App() {
   // const [token, setToken] = React.useState<String>("");
@@ -30,6 +31,7 @@ export default function App() {
         <Route path="/user_store_setting" element={<User_UI/>} /> {/** user & store setting */}
         <Route path="/sell_game" element={<Game_UI/>} /> {/** aadadadad */}
         <Route path="/basket_list" element={<Basket_List/>} />
+        <Route path="/basket_add" element={<Basket_Add/>} />
       </Routes>
     </div>
   </Router>
