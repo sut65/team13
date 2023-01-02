@@ -23,25 +23,25 @@ import {
   GetGame_Status,
   CreateGame,
   GetGame_Rating,
-  GetEmail
-  } from "../../components/game/GameService";
-import { DatePicker, LocalizationProvider  } from "@mui/x-date-pickers";
+  GetUser
+} from "../../components/game/GameService";
+import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@mui/material/Alert";
 
-  
-  function Game() {
+
+function Game() {
   const [user, setEmail] = useState<UsersInterface[]>([]);//
   const [game_rating, setGame_rating] = useState<RatingsInterface[]>([]);
   const [game_type, setGame_type] = useState<Type_GamesInterface[]>([]);
   const [game_status, setGame_status] = useState<Game_StatusInterface[]>([]);
   const [game, setGame] = React.useState<Partial<GamesInterface>>({ Publish_Date: new Date(),});
-  
+
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-    
+
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -52,7 +52,7 @@ import Alert from "@mui/material/Alert";
     setSuccess(false);
     setError(false);
   };
- // TextField
+  // TextField
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }>
   ) => {
@@ -68,11 +68,11 @@ import Alert from "@mui/material/Alert";
       [name]: event.target.value,
     });
 
-    
+
   };
 
 
-  
+
 
   const getGame_type = async () => {
     let res = await GetGame_Type();
@@ -94,16 +94,16 @@ import Alert from "@mui/material/Alert";
       setGame_rating(res);
     }
   };
-  const getEmail = async () => {
-    let res = await GetEmail();
+  const getUser = async () => {
+    let res = await GetUser();
     if (res) {
       setEmail(res);
-    } 
+    }
   };
-  
 
 
-  
+
+
 
 
 
@@ -111,9 +111,9 @@ import Alert from "@mui/material/Alert";
     getGame_type();
     getGame_status();
     getGame_rating();
-    getEmail();
-    
-   
+    getUser();
+
+
   }, []);
 
   const convertType = (data: string | number | undefined) => {
@@ -130,17 +130,17 @@ import Alert from "@mui/material/Alert";
       Seller_ID: convertType(game.Seller_ID),
       Game_Status_ID: convertType(game.Game_Status_ID),
       Type_Game_ID: convertType(game.Type_Game_ID),
-      Rating_ID: convertType(game.Rating_ID), 
-       
-	    
+      Rating_ID: convertType(game.Rating_ID),
+
+
     };
 
-    
+
     console.log(data);
     let res = await CreateGame(data);
-   
+
     console.log(res)
-    if (res) { 
+    if (res) {
       setSuccess(true);
     } else {
       setError(true);
@@ -148,59 +148,59 @@ import Alert from "@mui/material/Alert";
 
   }
   return (
-    <div   style={{
+    <div style={{
       //backgroundColor: 'black',
       backgroundImage: `url("https://images6.alphacoders.com/655/655993.jpg")`
       //https://images6.alphacoders.com/112/1126233.jpg
     }}>
-    
-    <Container maxWidth="xl" sx={{
-      //backgroundColor: '#E3E3E3',
-      // boxShadow: 15,
-      //mt: 5,
-      dp: 2,
+
+      <Container maxWidth="xl" sx={{
+        //backgroundColor: '#E3E3E3',
+        // boxShadow: 15,
+        //mt: 5,
+        dp: 2,
 
 
 
-     // border: 2,
-      p: 15
-    }} >
-       <Snackbar
-        open={success}
-        autoHideDuration={3000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert onClose={handleClose} severity="success">
-        Upload complete
-        </Alert>
-      </Snackbar>
-      <Snackbar
-        open={error}
-        autoHideDuration={6000}
-        onClose={handleClose}
-        anchorOrigin={{ vertical: "top", horizontal: "center" }}
-      >
-        <Alert onClose={handleClose} severity="error">
-        Failed to Upload
-        </Alert>
-      </Snackbar>
+        // border: 2,
+        p: 15
+      }} >
+        <Snackbar
+          open={success}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="success">
+            Upload complete
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={error}
+          autoHideDuration={6000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="error">
+            Failed to Upload
+          </Alert>
+        </Snackbar>
 
 
-      <Box >
-        <Paper elevation={10} sx={{
-         // bgcolor: "#e3f2fd",
-          //ml: 10,
-          mt: 5,
-          mb: 5,
-          mr: 10,
-          backgroundImage: `url("https://images3.alphacoders.com/112/1126231.png")`
-         , width: "1500px"
-         ,height :"1200px"
-         ,opacity : 1
+        <Box >
+          <Paper elevation={10} sx={{
+            // bgcolor: "#e3f2fd",
+            //ml: 10,
+            mt: 5,
+            mb: 5,
+            mr: 10,
+            backgroundImage: `url("https://images3.alphacoders.com/112/1126231.png")`
+            , width: "1500px"
+            , height: "1200px"
+            , opacity: 1
 
-        }}>       
-           {/* <Box sx={{ ml:0  , width : 150 ,
+          }}>
+            {/* <Box sx={{ ml:0  , width : 150 ,
           height: 150}}>
               <img
           alt="Remy Sharp" 
@@ -211,93 +211,93 @@ import Alert from "@mui/material/Alert";
          
           />
           </Box> */}
-          <Box 
+            <Box
 
-            display="flex"
-            sx={{
-              //backgroundColor: '#e0f7fa',
+              display="flex"
+              sx={{
+                //backgroundColor: '#e0f7fa',
 
-              ml: 15,
-              mt: 10,
+                ml: 15,
+                mt: 10,
 
-              width: 555,
-              height: 110,
-             // border: 1,
-              p: 1
-            }}
-          > 
-            <Box flexGrow={1} >
-              <Typography
-                component="h2"
-                variant="h1"
-                color="white"
-                gutterBottom
+                width: 555,
+                height: 110,
+                // border: 1,
+                p: 1
+              }}
+            >
+              <Box flexGrow={1} >
+                <Typography
+                  component="h2"
+                  variant="h1"
+                  color="white"
+                  gutterBottom
 
-              >
-                UploadGame
-              </Typography>
+                >
+                  UploadGame
+                </Typography>
+              </Box>
+
+
+
             </Box>
 
-     
+            <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
+              <Grid item xs={3}>
+                <h2 style={{
+                  color: "white"
 
-          </Box>
-     
-          <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
-            <Grid item xs={3}>
-              <h2 style={{
-                color : "white"
-      
-    }}>Game Title</h2>
-              
-              <FormControl fullWidth variant="outlined"  >
-                <TextField 
-                  id="Game_Name"
-                  variant="outlined"
-                  type="string"
-                  size="medium"
-                  placeholder="------------------------------------"
-                  
-                value={ game.Game_Name || ""}
-                onChange={handleInputChange}
-                />
-              </FormControl>
-            </Grid>
-           
-            <Grid item xs={3} >
-              <h2>Game Price</h2>
-              <FormControl fullWidth variant="outlined" >
-                <TextField
-                  id="Game_Price"
-                  variant="outlined"
-                  
-                  size="medium"
-                  placeholder="------------------------------------"
-                value={ game.Game_Price || ""}
-               // onWheel={event => { event.preventDefault();  }}
-                onChange={handleInputChange}
-                
-                
-                inputProps={{ type : "number"  }}
-                />
-              </FormControl>
-            </Grid>
-             <Grid item xs={3} >
-              <h2>Email</h2>
-              <FormControl fullWidth variant="outlined" >
-                <TextField //disabled
-                  id="Seller_ID"
-                  variant="outlined"
-                  type="int"
-                  size="medium"
-                  placeholder="------------------------------------"
-                value={ game.Seller?.Email}
-                onChange={handleInputChange}
-                />
-              </FormControl>
-            </Grid> 
-            
-            <Grid item xs={7} >
-              {/* <Box sx={{ ml:17  , width : 150 ,
+                }}>Game Title</h2>
+
+                <FormControl fullWidth variant="outlined"  >
+                  <TextField
+                    id="Game_Name"
+                    variant="outlined"
+                    type="string"
+                    size="medium"
+                    placeholder="------------------------------------"
+
+                    value={game.Game_Name || ""}
+                    onChange={handleInputChange}
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={3} >
+                <h2>Game Price</h2>
+                <FormControl fullWidth variant="outlined" >
+                  <TextField
+                    id="Game_Price"
+                    variant="outlined"
+
+                    size="medium"
+                    placeholder="------------------------------------"
+                    value={game.Game_Price || ""}
+                    // onWheel={event => { event.preventDefault();  }}
+                    onChange={handleInputChange}
+
+
+                    inputProps={{ type: "number" }}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={3} >
+                <h2>Email</h2>
+                <FormControl fullWidth variant="outlined" >
+                  <TextField //disabled
+                    id="Seller"
+                    variant="outlined"
+                    type="string"
+                    size="medium"
+                    placeholder="------------------------------------"
+                    value={game.Seller}
+                    
+                  />
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={7} >
+                {/* <Box sx={{ ml:17  , width : 150 ,
         height: 150}}>
             <img
         alt="Remy Sharp" 
@@ -308,144 +308,144 @@ import Alert from "@mui/material/Alert";
        
         />
         </Box> */}
-            </Grid >
-                
-        
-          </Grid>
-          <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
+              </Grid >
 
-            <Grid item xs={4} >
-              <FormControl fullWidth variant="outlined"  >
-                <h2>Game Type</h2>
-                <Select
-                  native
-                  value={game.Type_Game_ID + ""}
-                  onChange={handleChange}
-                  inputProps={{
-                    name: "Type_Game_ID",
-
-
-                  }}
-                >
-                  <option aria-label="None" value="">
-                  Section Game-Type
-                  </option>
-                  {game_type.map((item: Type_GamesInterface) => (
-                  <option value={item.ID} key={item.ID}>
-                    {item.Type_Game_Name}
-                  </option>
-                  ))}
-                </Select>
-
-              </FormControl>
-              <FormControl fullWidth variant="outlined" sx={{ mt: 5 }}>
-                <h2>Game Status</h2>
-                <Select
-                  native
-                  value={game.Game_Status_ID + ""}
-                  onChange={handleChange}
-                  inputProps={{
-                    name: "Game_Status_ID",
-
-
-                  }}
-                >
-                  <option aria-label="None" value="">
-                    Section Game-Status
-                  </option>
-                  {game_status.map((item: Game_StatusInterface) => (
-                  <option value={item.ID} key={item.ID}>
-                    {item.Status_Type}
-                  </option>
-                  ))}
-                </Select>
-
-              </FormControl>
-              <FormControl fullWidth variant="outlined" sx={{ mt: 5 }} >
-                <h2>Game Rating</h2>
-                <Select
-                  native
-                  value={game.Rating_ID + ""}
-                  onChange={handleChange}
-                  inputProps={{
-                    name: "Rating_ID",
-
-                  }}
-                >
-                  <option aria-label="None" value="">
-                  Section Game-Rating
-                  </option>
-                  {game_rating.map((item: RatingsInterface) => (
-                  <option value={item.ID} key={item.ID}>
-                    {item.Rating_Name}
-                  </option>
-                  ))}
-                </Select>
-
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={4}  >
-                  
-              <h2>Game Description </h2>
-              <FormControl fullWidth variant="outlined">
-
-                <TextField
-                  id="Game_description"
-                  variant="outlined"
-                  type="string"
-                  size="medium"
-                  placeholder="------"
-                  multiline={true}
-                  rows={16}
-
-                value={ game.Game_description || ""}
-                onChange={handleInputChange}
-                />
-              </FormControl>
 
             </Grid>
-            <Grid item xs={4}  >
+            <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
 
-              <h2>Upload file </h2>
-              <FormControl fullWidth variant="outlined">
+              <Grid item xs={4} >
+                <FormControl fullWidth variant="outlined"  >
+                  <h2>Game Type</h2>
+                  <Select
+                    native
+                    value={game.Type_Game_ID + ""}
+                    onChange={handleChange}
+                    inputProps={{
+                      name: "Type_Game_ID",
 
-                <TextField
-                  id="Name"
-                  variant="outlined"
-                  type="string"
-                  size="medium"
-                  placeholder="------"
+
+                    }}
+                  >
+                    <option aria-label="None" value="">
+                      Section Game-Type
+                    </option>
+                    {game_type.map((item: Type_GamesInterface) => (
+                      <option value={item.ID} key={item.ID}>
+                        {item.Type_Game_Name}
+                      </option>
+                    ))}
+                  </Select>
+
+                </FormControl>
+                <FormControl fullWidth variant="outlined" sx={{ mt: 5 }}>
+                  <h2>Game Status</h2>
+                  <Select
+                    native
+                    value={game.Game_Status_ID + ""}
+                    onChange={handleChange}
+                    inputProps={{
+                      name: "Game_Status_ID",
 
 
-                //value={ game. || ""}
-                onChange={handleInputChange}
-                />
+                    }}
+                  >
+                    <option aria-label="None" value="">
+                      Section Game-Status
+                    </option>
+                    {game_status.map((item: Game_StatusInterface) => (
+                      <option value={item.ID} key={item.ID}>
+                        {item.Status_Type}
+                      </option>
+                    ))}
+                  </Select>
 
-              </FormControl>
-              <FormControl fullWidth variant="outlined"  >
-                <h2>Date Time</h2>
-                <LocalizationProvider dateAdapter={AdapterDateFns}  >
-                <DatePicker disabled
-                  value={game.Publish_Date}
-                  onChange={(newValue) => {
-                    setGame({
-                      ...game,
-                      Publish_Date: newValue,
-                    });
-                  }}
-                  renderInput={(params) => <TextField {...params} />}
-                />
-              </LocalizationProvider>
-              </FormControl>
+                </FormControl>
+                <FormControl fullWidth variant="outlined" sx={{ mt: 5 }} >
+                  <h2>Game Rating</h2>
+                  <Select
+                    native
+                    value={game.Rating_ID + ""}
+                    onChange={handleChange}
+                    inputProps={{
+                      name: "Rating_ID",
+
+                    }}
+                  >
+                    <option aria-label="None" value="">
+                      Section Game-Rating
+                    </option>
+                    {game_rating.map((item: RatingsInterface) => (
+                      <option value={item.ID} key={item.ID}>
+                        {item.Rating_Name}
+                      </option>
+                    ))}
+                  </Select>
+
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={4}  >
+
+                <h2>Game Description </h2>
+                <FormControl fullWidth variant="outlined">
+
+                  <TextField
+                    id="Game_description"
+                    variant="outlined"
+                    type="string"
+                    size="medium"
+                    placeholder="------"
+                    multiline={true}
+                    rows={16}
+
+                    value={game.Game_description || ""}
+                    onChange={handleInputChange}
+                  />
+                </FormControl>
+
+              </Grid>
+              <Grid item xs={4}  >
+
+                <h2>Upload file </h2>
+                <FormControl fullWidth variant="outlined">
+
+                  <TextField
+                    id="Name"
+                    variant="outlined"
+                    type="string"
+                    size="medium"
+                    placeholder="------"
+
+
+                    //value={ game. || ""}
+                    onChange={handleInputChange}
+                  />
+
+                </FormControl>
+                <FormControl fullWidth variant="outlined"  >
+                  <h2>Date Time</h2>
+                  <LocalizationProvider dateAdapter={AdapterDateFns}  >
+                    <DatePicker disabled
+                      value={game.Publish_Date}
+                      onChange={(newValue) => {
+                        setGame({
+                          ...game,
+                          Publish_Date: newValue,
+                        });
+                      }}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </LocalizationProvider>
+                </FormControl>
+              </Grid>
+
+
             </Grid>
 
-
-          </Grid>
-
-          <Button
+            <Button
               component={RouterLink}
-              to="/Rooms"
+              to="/game_list"
               variant="contained"
               color="inherit"
               startIcon={< BuildIcon />}
@@ -454,24 +454,24 @@ import Alert from "@mui/material/Alert";
             >
               Update & Delete
             </Button>
-            <Button  
+            <Button
               style={{ float: "right" }}
               onClick={submit}
               variant="contained"
               color="inherit"
               startIcon={< CloudUploadIcon />}
-              
-            >
-                   Upload Game 
-            </Button>
-            
-        </Paper>
-        
-      </Box>
-   
 
-      
-    </Container>
+            >
+              Upload Game
+            </Button>
+
+          </Paper>
+
+        </Box>
+
+
+
+      </Container>
     </div>
   );
 }

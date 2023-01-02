@@ -58,7 +58,7 @@ async function GetGame_Status() {
     },
   };
 
-  let res = await fetch(`${apiUrl}/Status`, requestOptions)  
+  let res = await fetch(`${apiUrl}/Status`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {
@@ -115,27 +115,27 @@ async function GetGame_Rating() {
 
   return res;
 }
-async function GetEmail() {
-    const requestOptions = {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-        "Content-Type": "application/json",
-      },
-    };
-  
-    let res = await fetch(`${apiUrl}/users`, requestOptions)
-      .then((response) => response.json())
-      .then((res) => {
-        if (res.data) {
-          return res.data;
-        } else {
-          return false;
-        }
-      });
-  
-    return res;
-  }
+async function GetUser() {
+  const requestOptions = {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      "Content-Type": "application/json",
+    },
+  };
+
+  let res = await fetch(`${apiUrl}/users`, requestOptions)
+    .then((response) => response.json())
+    .then((res) => {
+      if (res.data) {
+        return res.data;
+      } else {
+        return false;
+      }
+    });
+
+  return res;
+}
 
 
 
@@ -167,15 +167,15 @@ async function CreateGame(data: any) {
 }
 
 export {
- 
-  
+
+
   GetGame,
   GetGame_Rating,
   GetGame_Status,
   GetGame_Type,
-  GetEmail,
+  GetUser,
   CreateGame
-  
- 
- 
+
+
+
 };
