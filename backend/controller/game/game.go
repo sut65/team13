@@ -84,7 +84,7 @@ func GetGame(c *gin.Context) {
 func ListGames(c *gin.Context) {
 	var game []entity.Game
 
-	if err := entity.DB().Raw("SELECT * FROM games").Scan(&game).Error; err != nil {
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games").Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
