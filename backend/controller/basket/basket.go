@@ -29,7 +29,7 @@ func CraeteBasket(c *gin.Context) {
 	}
 
 	// 10.ค้นหา payment_status ด้วย id
-	if tx := entity.DB().Where("id = ?", basket.Payment_Status).First(&payment_status); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", basket.Payment_Status_ID).First(&payment_status); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Payment status not found"})
 		return
 	}

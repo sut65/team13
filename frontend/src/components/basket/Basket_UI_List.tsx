@@ -14,13 +14,6 @@ import Stack from '@mui/material/Stack';
 import { Dialog } from '@mui/material';
 
 const useStyles = makeStyles((theme) => ({
-    appBar: {
-        position: 'relative',
-    },  
-    title: {
-        marginLeft: theme.spacing(2),
-        flex: 1,
-    },
     table: {
         minWidth: 650,
     },
