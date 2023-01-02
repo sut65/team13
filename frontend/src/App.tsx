@@ -6,7 +6,6 @@ import FullAppBar from "./components/FullAppBar";
 import Home from "./components/Home";
 import User_UI from "./components/user/User_UI"
 import Game_UI from "./components/game/Game_UI"
-import Basket_Add from "./components/basket/Basket_UI_Add_demo";
 import Game_List from "./components/game/Game_List"
 import Basket_Add from "./components/basket/Basket_UI_Add_demo";
 
