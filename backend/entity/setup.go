@@ -53,7 +53,11 @@ func SetupDatabase() {
 	User1 := User{
 		Email: "natt@gmail.com",
 	}
+	User2 := User{
+		Email: "best@gmail.com",
+	}
 	db.Model(&User{}).Create(&User1)
+	db.Model(&User{}).Create(&User2)
 
 	// Game
 	Game_Status1 := Game_Status{
@@ -103,8 +107,19 @@ func SetupDatabase() {
 		Type_Game:        Type_Game1,
 		Rating:           Rating1,
 	}
+	Game3 := Game{
+		Game_Name:        "testing game",
+		Game_Price:       9999,
+		Game_description: "for testing",
+		Publish_Date:     time.Now(),
+		Seller:           User1,
+		Game_Status:      Game_Status1,
+		Type_Game:        Type_Game1,
+		Rating:           Rating1,
+	}
 	db.Model(&Game{}).Create(&Game1)
 	db.Model(&Game{}).Create(&Game2)
+	db.Model(&Game{}).Create(&Game3)
 
 	// Storage
 
@@ -118,7 +133,19 @@ func SetupDatabase() {
 		User:       User1,
 		Collection: Collection1,
 	}
+	Storage2 := Storage{
+		Game:       Game2,
+		User:       User1,
+		Collection: Collection1,
+	}
+	Storage3 := Storage{
+		Game:       Game1,
+		User:       User2,
+		Collection: Collection1,
+	}
 	db.Model(&Storage{}).Create(&Storage1)
+	db.Model(&Storage{}).Create(&Storage2)
+	db.Model(&Storage{}).Create(&Storage3)
 
 	// User
 	Gen1 := Gender{
@@ -147,8 +174,16 @@ func SetupDatabase() {
 		Out_Standing_Game_ID: &Game1.ID,
 		Store_Contact:        "natt@gmail.com",
 	}
-	//db.Model(&User{}).Save(&User1)
+	User22 := User{
+		Password:            "123",
+		Profile_Name:        "BEST",
+		Profile_Description: "BIBI",
+		Gender_ID:           &Gen2.ID,
+		Favorite_Game_ID:    &Storage3.ID,
+		Is_Seller:           false,
+	}
 	db.Model(&User{}).Where("email = ?", User1.Email).Updates(&User11)
+	db.Model(&User{}).Where("email = ?", User2.Email).Updates(&User22)
 
 	//Payment_Status
 	Payment_Status1 := Payment_Status{

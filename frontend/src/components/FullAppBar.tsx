@@ -23,11 +23,13 @@ import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import SettingsIcon from '@mui/icons-material/Settings';
 
 import { Link as RouterLink } from "react-router-dom";
-import { Paper } from '@material-ui/core';
 
 const useStyles = makeStyles({
   drawer: {
     width: 150
+  },
+  Icon: { // Set all icon to black
+    backgroundColor: "black"
   }
 });
 
@@ -67,33 +69,33 @@ function FullAppBar() {
 
         <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
 
-          <GamesIcon color="primary" sx={{ fontSize: 150, margin: 1, padding: 2 }} />
+          <GamesIcon sx={{ fontSize: 150, margin: 1, padding: 2 }} />
 
           <List className={classes.drawer} sx={{margin: 1,padding: 2}}>
 
             <ListItem button component={RouterLink} to="/">
-              <HomeIcon color="primary" />
+              <HomeIcon/>
               <ListItemText primary="FirstPage" sx={{padding: 2}}/>
             </ListItem>
 
             <ListItem button component={RouterLink} to="/dashboard">
-              <DashboardIcon color="primary" />
+              <DashboardIcon/>
               <ListItemText primary="Dashboard" sx={{padding: 2}}/>
             </ListItem>
 
-            <ListItem button component={RouterLink} to="/user_store_setting">
-              <SettingsIcon color="primary" />
-              <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
-            </ListItem>
-
             <ListItem button component={RouterLink} to="/sell_game">
-              <SellIcon color="primary" />         
+              <SellIcon/>         
               <ListItemText primary="Game Market" sx={{padding: 2}}/>
             </ListItem>
 
             <ListItem button component={RouterLink} to="/basket_list">
-              <ShoppingBasketIcon color="primary" />
+              <ShoppingBasketIcon/>
               <ListItemText primary="My Basket" sx={{padding: 2}}/>
+            </ListItem>
+
+            <ListItem button component={RouterLink} to="/user_store_setting">
+              <SettingsIcon/>
+              <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
             </ListItem>
 
           </List>
