@@ -28,6 +28,9 @@ func main() {
 	r.GET("/genders", user_controller.ListGenders)
 	r.GET("/gender/:id", user_controller.GetGender)
 
+	r.GET("/user_storage/:email", user_controller.ListUserStorages)
+	r.GET("/user_game/:email", user_controller.ListUserGames)
+
 	// Basket Routes
 	r.GET("/payment_status", payment_status_controller.ListPayment_Status)
 
