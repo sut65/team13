@@ -55,7 +55,7 @@ function Basket_Add() {
               "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-        };
+        }; 
       
         fetch(apiUrl, requestOptions)                                       //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
             .then((response) => response.json())
