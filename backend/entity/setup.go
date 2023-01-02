@@ -56,8 +56,12 @@ func SetupDatabase() {
 	User2 := User{
 		Email: "best@gmail.com",
 	}
+	User3 := User{
+		Email: "patcharapolwor28112544@gmail.com",
+	}
 	db.Model(&User{}).Create(&User1)
 	db.Model(&User{}).Create(&User2)
+	db.Model(&User{}).Create(&User3)
 
 	// Game
 	Game_Status1 := Game_Status{
@@ -108,9 +112,19 @@ func SetupDatabase() {
 		Rating:           Rating1,
 	}
 	Game3 := Game{
-		Game_Name:        "testing game",
-		Game_Price:       9999,
-		Game_description: "for testing",
+		Game_Name:        "God of War",
+		Game_Price:       1250,
+		Game_description: "Game of the year 2018",
+		Publish_Date:     time.Now(),
+		Seller:           User1,
+		Game_Status:      Game_Status1,
+		Type_Game:        Type_Game1,
+		Rating:           Rating1,
+	}
+	Game4 := Game{
+		Game_Name:        "BattleField 2042",
+		Game_Price:       1250,
+		Game_description: "Worst of the year 2021",
 		Publish_Date:     time.Now(),
 		Seller:           User1,
 		Game_Status:      Game_Status1,
@@ -120,6 +134,7 @@ func SetupDatabase() {
 	db.Model(&Game{}).Create(&Game1)
 	db.Model(&Game{}).Create(&Game2)
 	db.Model(&Game{}).Create(&Game3)
+	db.Model(&Game{}).Create(&Game4)
 
 	// Storage
 
@@ -197,19 +212,35 @@ func SetupDatabase() {
 
 	//Basket
 	Basket1 := Basket{
-		User_ID:           Storage1.User_ID,
+		User_ID:           &User1.ID,
 		Game_ID:           &Game1.ID,
 		Payment_Status_ID: &Payment_Status2.ID,
 		Note:              "Test1",
 		Date:              time.Now(),
 	}
 	Basket2 := Basket{
-		User_ID:           Storage1.User_ID,
+		User_ID:           &User1.ID,
 		Game_ID:           &Game2.ID,
 		Payment_Status_ID: &Payment_Status1.ID,
 		Note:              "Test2",
 		Date:              time.Now(),
 	}
+	Basket3 := Basket{
+		User_ID:           &User1.ID,
+		Game_ID:           &Game3.ID,
+		Payment_Status_ID: &Payment_Status1.ID,
+		Note:              "Test3",
+		Date:              time.Now(),
+	}
+	Basket4 := Basket{
+		User_ID:           &User2.ID,
+		Game_ID:           &Game4.ID,
+		Payment_Status_ID: &Payment_Status1.ID,
+		Note:              "Test4",
+		Date:              time.Now(),
+	}
 	db.Model(&Basket{}).Create(&Basket1)
 	db.Model(&Basket{}).Create(&Basket2)
+	db.Model(&Basket{}).Create(&Basket3)
+	db.Model(&Basket{}).Create(&Basket4)
 }
