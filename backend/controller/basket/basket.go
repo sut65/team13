@@ -77,6 +77,7 @@ func GetBasket(c *gin.Context) {
 // GET /baskets
 func ListBasket(c *gin.Context) {
 	var basket []entity.Basket
+
 	if err := entity.DB().Preload("User").Preload("Game").Preload("Payment_Status").Raw("SELECT * FROM baskets WHERE payment_status_id = 1").Find(&basket).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -88,37 +89,39 @@ func ListBasket(c *gin.Context) {
 // PATCH /baskets
 func UpdateBasket(c *gin.Context) {
 	var basket entity.Basket
+
 	if err := c.ShouldBindJSON(&basket); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		//return
 	}
 
-	if tx := entity.DB().Where("id = ?", basket.ID).First(&basket); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "basket not found"})
-		return
+	updateBasket := entity.Basket{
+		Note: basket.Note,
 	}
 
-	if err := entity.DB().Save(&basket).Error; err != nil {
+	if err := entity.DB().Where("id = ?", basket.ID).Updates(&updateBasket).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": basket})
+
 }
 
 // DELETE /basket/:id
 func DeleteBasket(c *gin.Context) {
-	print("Test")
-	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM baskets WHERE id = 2"); tx.RowsAffected == 0 {
+	var basket entity.Basket
+
+	if err := c.ShouldBindJSON(&basket); err != nil {
+		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		//return
+	}
+
+	if tx := entity.DB().Exec("DELETE FROM baskets WHERE id = ?", basket.ID); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "basket not found"})
 		return
 	}
 
-	// if err := entity.DB().Where("id = ?", id).Delete(&entity.Basket{}).Error; err != nil {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-	// 	return
-	// }
+	c.JSON(http.StatusOK, gin.H{"data": basket})
 
-	c.JSON(http.StatusOK, gin.H{"data": id})
 }
