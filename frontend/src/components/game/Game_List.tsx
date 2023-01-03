@@ -26,7 +26,7 @@ import DialogActions from "@mui/material/DialogActions";
 
 function Game() {
   const [game, setGame] = useState<GamesInterface[]>([]);
-  const [gametest, setGametest] = React.useState<number | null>(null);
+  const [gametest, setGametest] = React.useState<Number | null>(null);
   const [game_type, setGame_type] = useState<Type_GamesInterface[]>([]);
   const [openForEdit, setOpenForEdit] = useState(false);
   useEffect(() => {
@@ -34,10 +34,9 @@ function Game() {
   }, []);
   const handleClickOpenForEdit = (ID:Number) => {
     setOpenForEdit(true);
-    console.log(gameArray)
-    console.log(gametest)
-
-    setGametest
+    console.log(gameArray);
+    console.log(gametest);
+    setGametest(ID);
 };
 
 
