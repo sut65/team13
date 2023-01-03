@@ -175,7 +175,7 @@ function Basket_List() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {basket.filter(item => item.User_ID == 1).map((item) => (
+                        {basket.filter(item => item.User_ID == Number(localStorage.getItem("uid"))).map((item) => (
                             <TableRow key={item.ID}>
                                 <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
                                 <TableCell align="center">{item.Game.Game_Price}</TableCell>                         

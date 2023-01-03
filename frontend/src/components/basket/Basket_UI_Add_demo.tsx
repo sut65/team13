@@ -4,7 +4,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid} from '@material-ui/core';
 import { Dialog } from '@mui/material';
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
 import TextField from "@mui/material/TextField";
@@ -13,7 +13,7 @@ import TextField from "@mui/material/TextField";
 function Basket_Add() {
 
     const [note, setNote] = React.useState<string>("");
-    const [date, setDate] = React.useState<Dayjs | null>(new Dayjs());
+    const [date, setDate] = React.useState<Dayjs | null>(dayjs());
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
@@ -40,7 +40,7 @@ function Basket_Add() {
 
     const AddToBasket = () => { 
         let data = {                                   //ประกาศก้อนข้อมูล
-            User_ID: 3,
+            User_ID: Number(localStorage.getItem("uid")),
             Game_ID: 3,
             Payment_Status_ID: 1,
             Note: note,
@@ -66,6 +66,8 @@ function Basket_Add() {
                     setError(true);
                 }
             });
+
+            window.location.reload();
     }
 
     useEffect(() => {
