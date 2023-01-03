@@ -177,7 +177,7 @@ func SetupDatabase() {
 	db.Model(&Gender{}).Create(&Gen3)
 
 	User11 := User{
-		Password:            "1234",
+		Password:            "$2a$12$hRdKLZTUspkskzjZwBAb6eImCpHYIe48KSUGD83JrzHYx6aKfowb6",
 		Profile_Name:        "Udong",
 		Profile_Description: "eiei",
 		Gender_ID:           &Gen1.ID,
@@ -190,7 +190,7 @@ func SetupDatabase() {
 		Store_Contact:        "natt@gmail.com",
 	}
 	User22 := User{
-		Password:            "123",
+		Password:            "$2a$12$hRdKLZTUspkskzjZwBAb6eImCpHYIe48KSUGD83JrzHYx6aKfowb6",
 		Profile_Name:        "BEST",
 		Profile_Description: "BIBI",
 		Gender_ID:           &Gen2.ID,

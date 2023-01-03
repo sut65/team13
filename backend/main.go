@@ -4,6 +4,7 @@ import (
 	basket_controller "github.com/sut65/team13/controller/basket"
 	payment_status_controller "github.com/sut65/team13/controller/basket"
 	game_controller "github.com/sut65/team13/controller/game"
+	login_user_controller "github.com/sut65/team13/controller/login_user"
 	user_controller "github.com/sut65/team13/controller/user"
 	"github.com/sut65/team13/entity"
 
@@ -16,6 +17,9 @@ func main() {
 
 	r := gin.Default()
 	r.Use(CORSMiddleware())
+
+	// login User Route
+	r.POST("/login", login_user_controller.Login)
 
 	// User Routes
 
