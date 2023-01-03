@@ -68,3 +68,5 @@ func (j *JwtWrapper) ValidateToken(signedToken string) (claims *JwtClaim, err er
 	return
 
 }
+
+//commit close #100
