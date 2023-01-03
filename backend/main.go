@@ -23,7 +23,7 @@ func main() {
 	r.GET("/user/:email", user_controller.GetUser)
 	r.POST("/users", user_controller.CreateUser)
 	r.PATCH("/users", user_controller.UpdateUser)
-	r.DELETE("/users/:id", user_controller.DeleteUser)
+	r.DELETE("/users/:email", user_controller.DeleteUser)
 
 	r.GET("/genders", user_controller.ListGenders)
 	r.GET("/gender/:id", user_controller.GetGender)
