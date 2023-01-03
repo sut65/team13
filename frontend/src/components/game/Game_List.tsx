@@ -11,14 +11,40 @@ import {
   GetGame, GetGame_Type
 } from "../../components/game/GameService";
 import Paper from "@mui/material/Paper";
+import CardActionArea from "@mui/material/CardActionArea";
+import CardContent from "@mui/material/CardContent";
+import Card from "@mui/material/Card";
+import CardMedia from "@mui/material/CardMedia";
+import Dialog from "@mui/material/Dialog";
+import DialogTitle from "@mui/material/DialogTitle";
+import DialogContentText from "@mui/material/DialogContentText";
+import TextField from "@mui/material/TextField";
+import DialogContent from "@mui/material/DialogContent";
+import DialogActions from "@mui/material/DialogActions";
+
 
 
 function Game() {
   const [game, setGame] = useState<GamesInterface[]>([]);
+  const [gametest, setGametest] = React.useState<number | null>(null);
   const [game_type, setGame_type] = useState<Type_GamesInterface[]>([]);
+  const [openForEdit, setOpenForEdit] = useState(false);
   useEffect(() => {
     Game();
   }, []);
+  const handleClickOpenForEdit = (ID:Number) => {
+    setOpenForEdit(true);
+    console.log(gameArray)
+    console.log(gametest)
+
+    setGametest
+};
+
+
+const handleCloseForEdit = () => {
+  setOpenForEdit(false);
+};
+
 
   const Game = async () => {
     let res = await GetGame(); 
@@ -119,14 +145,49 @@ function Game() {
       ],
     },
   ];
-   
+  var gameArray = game.map((item: GamesInterface) => (item.Game_Name));
   return (
     <div  style={{ opacity: 1 ,
       //backgroundColor: 'black',
       backgroundImage: `url("https://images6.alphacoders.com/655/655993.jpg")`
       //https://images6.alphacoders.com/112/1126233.jpg
     }}>
+      
       <Container maxWidth="xl" sx={{ p: 80  }}  >
+      
+      {game.filter(item => item  ).map((item) => (
+           <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
+           
+            <CardActionArea onClick={()=>handleClickOpenForEdit(item.ID ) }>
+         
+              <CardMedia
+                component="img"
+                height="140"
+                image="https://static.bandainamcoent.eu/high/elden-ring/elden-ring/00-page-setup/elden-ring-new-header-mobile.jpg"
+                alt="green iguana" />
+   <CardContent>
+            {item.Game_Name}
+        </CardContent>
+            </CardActionArea>
+          </Card>
+          
+    
+     ))}
+
+<Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit }>
+          <DialogTitle>{gameArray[Number(Number(gametest)-1)]}</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+           { gameArray[Number(gametest)-1]}
+            </DialogContentText>
+
+          </DialogContent>
+          <DialogActions>
+
+          </DialogActions>
+        </Dialog>
+ 
+   
         <Box>
 
         <Paper elevation={10} sx ={{ backgroundImage: `url("https://img5.goodfon.com/wallpaper/nbig/b/3c/reze-chainsaw-man-devushka-tsvety-nebo.jpg")` ,
