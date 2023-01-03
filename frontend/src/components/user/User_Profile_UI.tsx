@@ -13,7 +13,7 @@ function User_Profile(){
     const [user, setUser] = React.useState<Partial<UsersInterface>>({});
 
     const getStorage = async () => {
-        const apiUrl = "http://localhost:8080/user_storage/"+email;
+        const apiUrl = "http://localhost:8080/user_storage/"+email; // email คือ email ที่ผ่านเข้ามาทาง parameter
         const requestOptions = {
             method: "GET",
             headers: {
