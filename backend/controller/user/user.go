@@ -33,7 +33,7 @@ func GetUser(c *gin.Context) {
 	var user entity.User
 	email := c.Param("email")
 
-	if err := entity.DB().Raw("SELECT * FROM users WHERE email = ?", email).Scan(&user).Error; err != nil {
+	if err := entity.DB().Preload("Game").Preload("Storage").Preload("Gender").Raw("SELECT * FROM users WHERE email = ?", email).Find(&user).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -53,17 +53,16 @@ func ListUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": users})
 }
 
-// DELETE /users/:id
+// DELETE /users/:email --> ใช้อยู่
 
 func DeleteUser(c *gin.Context) {
-
-	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM users WHERE id = ?", id); tx.RowsAffected == 0 {
+	email := c.Param("email")
+	if tx := entity.DB().Exec("DELETE FROM users WHERE email = ?", email); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": id})
+	c.JSON(http.StatusOK, gin.H{"data": email})
 }
 
 // PATCH /users --> ใช้อยู่
@@ -75,8 +74,8 @@ func UpdateUser(c *gin.Context) {
 	var game entity.Game
 
 	if err := c.ShouldBindJSON(&user); err != nil {
-		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		//return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	if tx := entity.DB().Where("id = ?", user.Gender_ID).First(&gender); tx.RowsAffected == 0 {
@@ -116,7 +115,7 @@ func UpdateUser(c *gin.Context) {
 
 }
 
-// Get /user_storage/:email
+// Get /user_storage/:email --> ใช้อยู่
 func ListUserStorages(c *gin.Context) {
 	var storages []entity.Storage
 	var user entity.User
@@ -138,7 +137,7 @@ func ListUserStorages(c *gin.Context) {
 
 }
 
-// Get /user_game/:email (Seller)
+// Get /user_game/:email (Seller) --> ใช้อยู่
 func ListUserGames(c *gin.Context) {
 	var games []entity.Game
 	var user entity.User

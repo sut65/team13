@@ -4,7 +4,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid} from '@material-ui/core';
 import { Dialog } from '@mui/material';
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
 import TextField from "@mui/material/TextField";
@@ -13,7 +13,7 @@ import TextField from "@mui/material/TextField";
 function Basket_Add() {
 
     const [note, setNote] = React.useState<string>("");
-    const [date, setDate] = React.useState<Dayjs | null>(dayjs());
+    const [date, setDate] = React.useState<Dayjs | null>(new Dayjs());
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);

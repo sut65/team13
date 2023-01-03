@@ -5,23 +5,25 @@ import FullAppBar from "./components/FullAppBar";
 
 import Home from "./components/Home";
 import User_UI from "./components/user/User_UI"
+import User_Profile_UI from "./components/user/User_Profile_UI";
 import Game_UI from "./components/game/Game_UI"
 import Game_List from "./components/game/Game_List"
 import Basket_Add from "./components/basket/Basket_UI_Add_demo";
+import SignIn_User from "./components/SignIn_User_UI";
 
 export default function App() {
-  // const [token, setToken] = React.useState<String>("");
+  const [token, setToken] = React.useState<String>("");
 
-  // React.useEffect(() => {
-  //   const token = localStorage.getItem("token");
-  //   if (token) {
-  //     setToken(token);
-  //   }
-  // }, []);
+  React.useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      setToken(token);
+    }
+  }, []);
 
-  // if (!token) {
-  //   return <SignIn />;
-  // }
+  if (!token) {
+    return <SignIn_User />;
+  }
 
   return (
   <Router>
@@ -30,6 +32,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Home/>} /> {/** home */}
         <Route path="/user_store_setting" element={<User_UI/>} /> {/** user & store setting */}
+        <Route path="/user_profile/:email" element={<User_Profile_UI/>} /> {/** user & store setting */}
         <Route path="/sell_game" element={<Game_UI/>} /> {/**sell game */}
         <Route path="/game_list" element={<Game_List/>} /> {/** list game */}
         <Route path="/basket_list" element={<Basket_List/>} />

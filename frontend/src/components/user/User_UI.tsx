@@ -1,26 +1,27 @@
 import * as React from "react";
 import { Container } from "@material-ui/core";
-import { Box,Paper,Grid,TextField,Button, Autocomplete } from "@mui/material";
+import { Box,Paper,Grid,TextField,Button, Autocomplete, Alert } from "@mui/material";
 import { FormControl,FormLabel,RadioGroup,Radio,FormControlLabel,FormHelperText } from "@mui/material";
-import { useAsync } from 'react-async';
+import { Dialog,Snackbar,DialogTitle,DialogContent,DialogContentText,DialogActions } from "@material-ui/core";
 
 import SaveIcon from "@mui/icons-material/Save";
 import StorefrontIcon from '@mui/icons-material/Storefront';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
 import { GendersInterface } from "../../models/user/IGender";
 import { UsersInterface } from "../../models/user/IUser";
 import { StoragesInterface } from "../../models/storage/IStorage";
 
 function User(){
+    const [dialogOpen, setDialogOpen] = React.useState(false);
     const [submitSuccess, setSubmitSuccess] = React.useState(false);
     const [submitError, setSubmitError] = React.useState(false);
-    const [noAccess, setNoAccess] = React.useState(false);
 
-    const [isLoaded, setIsloaded] = React.useState<boolean | null>(false);
+    const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
 
     const [new_password, setNew_password] = React.useState<string | null>(null);
     const [confirm_password, setConfirm_password] = React.useState<string | null>(null);
-    const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
+    const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null); // สร้างตัวแปรแยกเนื่องจาก render.result มันต้องการ ArrayBuffer ด้วย
 
     const [storages, setStorages] = React.useState<StoragesInterface[]>([]);
     const [games, setGames] = React.useState<StoragesInterface[]>([]);
@@ -41,6 +42,25 @@ function User(){
     const handleApplySeller = () => {
         setUser({ ...user, Is_Seller: true });
     }
+
+    const handleClose = ( // AlertBar
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+    ) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setSubmitSuccess(false);
+        setSubmitError(false);
+    };
+
+    const handleDialogClickOpen = () => {
+        setDialogOpen(true);
+    };
+
+    const handleDialogClose = () => {
+        setDialogOpen(false);
+    };
 
     const getGender = async () => {
         const apiUrl = "http://localhost:8080/genders";
@@ -122,48 +142,85 @@ function User(){
     };
 
     const submit = () => {
-        if(new_password == confirm_password){
-            console.log("OK")
+        if(new_password == confirm_password){ // password ตรงกันก็จะ มีการ submit
+            let UpdateData = {
+                Email: "natt@gmail.com", // รอทำ localStorage.getitem
+                Password: new_password, // ตัวแปรชื่อ new_passwotf ก็จริงแต่อาจเป็น password เดิมก็ได้
+                Profile_Name: user.Profile_Name,
+                Profile_Description: user.Profile_Description,
+                Profile_Picture: imageString,
+                Gender_ID: user.Gender_ID,
+                Favorite_Game_ID: user.Favorite_Game_ID,
+                Is_Seller: user.Is_Seller,
+                Store_Description: user.Store_Description,
+                Out_Standing_Game_ID: user.Out_Standing_Game_ID, // ยังไม่ได้ทำ ดึงข้อมูลจากตารางเกมกรองด้วยคนขาย
+                Store_Contact: user.Store_Contact,
+            };
+    
+            console.log(UpdateData)
+    
+            const apiUrl = "http://localhost:8080/users";
+            const requestOptions = {
+                method: "PATCH",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(UpdateData),
+            };
+    
+            fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setSubmitSuccess(true);
+                } else {
+                    setSubmitError(true);
+                }
+            });
         }else{
-            console.log("Error")
+            setSubmitError(true); // password ไม่ตรงกัน
         }
 
-        let UpdateData = {
-            Email: "natt@gmail.com", // รอทำ localStorage.getitem
-            Password: new_password,
-            Profile_Name: user.Profile_Name,
-            Profile_Description: user.Profile_Description,
-            Profile_Picture: imageString,
-            Gender_ID: user.Gender_ID,
-            Favorite_Game_ID: user.Favorite_Game_ID,
-            Is_Seller: user.Is_Seller,
-            Store_Description: user.Store_Description,
-            Out_Standing_Game_ID: user.Out_Standing_Game_ID, // ยังไม่ได้ทำ ดึงข้อมูลจากตารางเกมกรองด้วยคนขาย
-            Store_Contact: user.Store_Contact,
+    }
+
+    const deleteAccount = () => {
+        const signout = () => {
+            localStorage.clear();
+            window.location.href = "/";
         };
 
-        console.log(UpdateData)
-
-        const apiUrl = "http://localhost:8080/users";
+        const apiUrl = "http://localhost:8080/users/natt@gmail.com"; // รอรับจาก local Storage
         const requestOptions = {
-            method: "PATCH",
+            method: "DELETE",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(UpdateData),
         };
-
+    
         fetch(apiUrl, requestOptions)
         .then((response) => response.json())
         .then((res) => {
             if (res.data) {
                 setSubmitSuccess(true);
+                signout();
             } else {
                 setSubmitError(true);
             }
         });
     }
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            await getUser();
+            await getGender();
+            await getStorage();
+            await getGame();
+            setIsDataloaded(true);
+        }
+        fetchData();
+    }, []); // ในช่อง [] ถ้าเกิดใส่อะไรเข้าไปเช่น [isLoaded] ถ้าหาก isLoaded มีการอัพเดท useEffect จะถูกเรียกใช้งานอีกครั้ง
 
     function SellerApply(isSeller: Boolean | undefined) {
         if (!isSeller) {
@@ -240,23 +297,30 @@ function User(){
         }
     }
 
-    React.useEffect(() => {
-        const fetchData = async () => {
-            await getUser();
-            await getGender();
-            await getStorage();
-            await getGame();
-            setIsloaded(true);
-        }
-        fetchData();
-    }, []); // ในช่อง [] ถ้าเกิดใส่อะไรเข้าไปเช่น [isLoaded] ถ้าหาก isLoaded มีการอัพเดท useEffect จะถูกเรียกใช้งานอีกครั้ง
-
-    var nowGender = genders.map((item: GendersInterface) => (item.Gender));
-
-    if (isLoaded) return(
+    if (isDataLoaded) return(
         <Container>
+            <Snackbar // บันทึกสำเร็จ
+                open={submitSuccess}
+                autoHideDuration={3000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+                <Alert onClose={handleClose} severity="success">              
+                    บันทึกข้อมูลสำเร็จ
+                </Alert>
+            </Snackbar>
+
+            <Snackbar // บันทึกไม่สำเร็จ
+                open={submitError} 
+                autoHideDuration={3000} 
+                onClose={handleClose} 
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+                <Alert onClose={handleClose} severity="error">
+                    บันทึกข้อมูลไม่สำเร็จ
+                </Alert>
+            </Snackbar>
+
             <Box>
-                <Paper elevation={2} sx={{padding:2}}>
+                <Paper elevation={2} sx={{padding:2,margin:2}}>
                     <Grid container>
                         <Grid container justifyContent="center"> {/** Profile */}
                             <h1> Profile </h1>
@@ -320,11 +384,10 @@ function User(){
                                                 />
                                                 ))}
                                         </RadioGroup>
-                                        <FormHelperText>current gender is {nowGender[Number(user.Gender_ID) - 1]}</FormHelperText> {/*เรียกใช้โดยตรงเลยไม่ได้ ต้องให้มัน map ก่อน ไม่งั้น react มัน render component ก่อนถ้าตั้ง defaultvalue มันจะหาค่าไม่เจอเพระามันยังไม่ได้ get*/}
                                     </FormControl>
                                 </Grid>
 
-                                <Grid marginTop={1}> {/** Favorite Game on profile */}
+                                <Grid marginTop={2}> {/** Favorite Game on profile */}
                                     <Autocomplete
                                         id="storages-autocomplete"
                                         options={storages}
@@ -366,11 +429,38 @@ function User(){
 
                         {SellerApply(user.Is_Seller)}
 
-                        {/* Insert Button */}
+                        {/* Button */}
                         <Grid container justifyContent="center" margin={2}>
+                            {/* Submit Button */}
                             <Button variant="contained" color="success" onClick={submit} endIcon={<SaveIcon />}>
                                 submit
                             </Button>
+                            {/* Delete Account Button */}
+                            <Grid container justifyContent="right">
+                                <Button variant="contained" color="error" onClick={handleDialogClickOpen} endIcon={<DeleteForeverOutlinedIcon />}>
+                                    DELETE ACCOUNT
+                                </Button>
+                                <Dialog
+                                    open={dialogOpen}
+                                    onClose={handleDialogClose}
+                                    aria-labelledby="alert-dialog-title"
+                                    aria-describedby="alert-dialog-description"
+                                    >
+                                    <DialogTitle id="alert-dialog-title">
+                                        {"Are you sure to DELETE your account?"}
+                                    </DialogTitle>
+
+                                    <DialogContent>
+                                        <DialogContentText id="alert-dialog-description">
+                                            การกดที่ปุ่ม YES จะทำให้บัญชีของคุณหายไปตลอดกาลและไม่สามารถกู้คืนได้
+                                        </DialogContentText>
+                                    </DialogContent>
+                                    <DialogActions>
+                                        <Button onClick={handleDialogClose}>No</Button>
+                                        <Button onClick={deleteAccount} color="error" autoFocus>Yes</Button>
+                                    </DialogActions>
+                                </Dialog>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Paper>
