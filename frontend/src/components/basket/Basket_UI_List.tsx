@@ -11,7 +11,7 @@ import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
 import Stack from '@mui/material/Stack';
-import { Dialog } from '@mui/material';
+import { Container, Dialog, Paper, TableContainer } from '@mui/material';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -23,6 +23,8 @@ function Basket_List() {
     const classes = useStyles();
 
     const [basket, setBasket] = useState<BasketInterface[]>([]);
+    const [editBasket, setEditBasket] = useState<BasketInterface>();
+    const [deleteBasket, setDeleteBasket] = useState<BasketInterface>();
 
     const [note, setNote] = React.useState<string>("");
 
@@ -42,12 +44,14 @@ function Basket_List() {
         setError(false);
     };
 
-    const handleClickOpenForEdit = () => {
+    const handleClickOpenForEdit = (item: BasketInterface) => {
         setOpenForEdit(true);
+        setEditBasket(item);
     };
 
-    const handleClickOpenForDelete = () => {
+    const handleClickOpenForDelete = (item: BasketInterface) => {
         setOpenForDelete(true);
+        setDeleteBasket(item);
     };
 
     const handleCloseForEdit = () => {
@@ -77,9 +81,6 @@ function Basket_List() {
     };
 
     const updateItem = (id: number,note: string) => {
-        if(note == ""){
-            {basket.map((item) => (setNote(item.Note)))}
-        }
         let data = {       //ประกาศก้อนข้อมูล
             ID: id,                                                     
             Note: note,      
@@ -143,7 +144,7 @@ function Basket_List() {
     }, []);
 
     return (
-        <Box>
+        <Container>
             <Snackbar                                                                                 //ป้ายบันทึกสำเร็จ
             open={success}
             autoHideDuration={6000}
@@ -165,72 +166,74 @@ function Basket_List() {
                 </Alert>
             </Snackbar>
             
-            <Table className={classes.table} aria-label="Basket">
-                <TableHead>
-                    <TableRow>
-                        <TableCell>Game</TableCell>
-                            <TableCell align="center">Price</TableCell>
-                            <TableCell align="center">Note</TableCell>
-                            <TableCell align="center">Action</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {basket.filter(item => item.User_ID == Number(localStorage.getItem("uid"))).map((item) => (
-                            <TableRow key={item.ID}>
-                                <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
-                                <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
-                                <TableCell align="center">{item.Note}</TableCell>
-                                <TableCell align="center">
-                                    <Stack direction="column" spacing={2}>
-                                        <Button variant="outlined" color="inherit" onClick={handleClickOpenForEdit}>
-                                            Edit
-                                        </Button>
-                                        <Button variant="contained" color="secondary" onClick={handleClickOpenForDelete}>
-                                            Delete
-                                        </Button>                                        
-                                    </Stack>
-                                </TableCell>
-                                    <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
-                                        <DialogTitle>{item.Game.Game_Name}</DialogTitle>
-                                        <DialogContent>
-                                            <DialogContentText>
-                                                {item.Game.Game_description}
-                                            </DialogContentText>
-                                            <TextField
-                                                id="outlined-basic"
-                                                placeholder="Insert details"
-                                                variant="outlined"
-                                                size="medium"
-                                                multiline={true}
-                                                minRows={9}
-                                                maxRows={2}
-                                                fullWidth={true}
-                                                defaultValue={item.Note}
-                                                onChange={(event) => setNote(event.target.value)}
-                                            />
-                                        </DialogContent>
-                                        <DialogActions>
-                                            <Button onClick={handleCloseForEdit}>Cancel</Button>
-                                            <Button onClick={() => updateItem(item.ID,note)}>Save</Button>
-                                        </DialogActions>
-                                    </Dialog>
-                                    <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
-                                        <DialogTitle>DELETE</DialogTitle>
-                                        <DialogContent>
-                                            <DialogContentText>
-                                                Are you SURE to DELETE "{item.Game.Game_Name}" from BASKET?
-                                            </DialogContentText>
-                                        </DialogContent>
-                                        <DialogActions>
-                                            <Button onClick={handleCloseForDelete}>Cancel</Button>
-                                            <Button color="secondary" onClick={() => deleteItem(item.ID)}>Delete</Button>
-                                        </DialogActions>
-                                    </Dialog>
+            <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="Basket">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell>Game</TableCell>
+                                <TableCell align="center">Price</TableCell>
+                                <TableCell align="center">Note</TableCell>
+                                <TableCell align="center">Action</TableCell>
                             </TableRow>
-                        ))}
-                    </TableBody>
-            </Table>
-        </Box>
+                        </TableHead>
+                        <TableBody>
+                            {basket.filter(item => item.User_ID == Number(localStorage.getItem("uid"))).map((item) => (
+                                <TableRow key={item.ID}>
+                                    <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
+                                    <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
+                                    <TableCell align="center">{item.Note}</TableCell>
+                                    <TableCell align="center">
+                                        <Stack direction="column" spacing={2}>
+                                            <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
+                                                Edit
+                                            </Button>
+                                            <Button variant="contained" color="secondary" onClick={() => handleClickOpenForDelete(item)}>
+                                                Delete
+                                            </Button>                                        
+                                        </Stack>
+                                    </TableCell>
+                                        <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
+                                            <DialogTitle>{editBasket?.Game.Game_Name}</DialogTitle>
+                                            <DialogContent>
+                                                <DialogContentText>
+                                                    {editBasket?.Game.Game_description}
+                                                </DialogContentText>
+                                                <TextField
+                                                    id="outlined-basic"
+                                                    placeholder="Insert details"
+                                                    variant="outlined"
+                                                    size="medium"
+                                                    multiline={true}
+                                                    minRows={9}
+                                                    maxRows={2}
+                                                    fullWidth={true}
+                                                    defaultValue={editBasket?.Note}
+                                                    onChange={(event) => setNote(event.target.value)}
+                                                />
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button onClick={handleCloseForEdit}>Cancel</Button>
+                                                <Button onClick={() => updateItem(editBasket?.ID||0,note)}>Save</Button>
+                                            </DialogActions>
+                                        </Dialog>
+                                        <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
+                                            <DialogTitle>DELETE</DialogTitle>
+                                            <DialogContent>
+                                                <DialogContentText>
+                                                    Are you SURE to DELETE "{item.Game.Game_Name}" from BASKET?
+                                                </DialogContentText>
+                                            </DialogContent>
+                                            <DialogActions>
+                                                <Button onClick={handleCloseForDelete}>Cancel</Button>
+                                                <Button color="secondary" onClick={() => deleteItem(deleteBasket?.ID||0)}>Delete</Button>
+                                            </DialogActions>
+                                        </Dialog>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                </Table>
+            </TableContainer>
+        </Container>
   );
 }
-export default Basket_List;
+export default Basket_List
