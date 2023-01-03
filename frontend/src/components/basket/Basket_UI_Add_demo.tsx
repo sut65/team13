@@ -41,7 +41,7 @@ function Basket_Add() {
     const AddToBasket = () => { 
         let data = {                                   //ประกาศก้อนข้อมูล
             User_ID: Number(localStorage.getItem("uid")),
-            Game_ID: 3,
+            Game_ID: 4,
             Payment_Status_ID: 1,
             Note: note,
             Date: date,
@@ -62,12 +62,11 @@ function Basket_Add() {
             .then((res) => {
                 if (res.data) {
                     setSuccess(true);
+                    window.location.reload();
                 } else {
                     setError(true);
                 }
             });
-
-            window.location.reload();
     }
 
     useEffect(() => {
@@ -93,7 +92,7 @@ function Basket_Add() {
             onClose={handleClose} 
             anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
                 <Alert onClose={handleClose} severity="error">
-                    บันทึกข้อมูลไม่สำเร็จ
+                    บันทึกข้อมูลไม่สำเร็จ หรือคุณมีเกมอยู่ในตะกร้าอยู่แล้ว
                 </Alert>
             </Snackbar>
             <Button onClick={handleClickOpenForAdd}>Add to Basket</Button>

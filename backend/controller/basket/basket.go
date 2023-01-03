@@ -22,6 +22,13 @@ func CraeteBasket(c *gin.Context) {
 		return
 	}
 
+	if tx := entity.DB().Raw("SELECT * FROM baskets WHERE payment_status_id = 1 AND user_id = ? AND game_id = ?", basket.User_ID, basket.Game_ID).First(&basket); tx.RowsAffected == 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "game in basket"})
+		return
+	}
+
+	println(basket.User_ID)
+
 	// 9.ค้นหา game ด้วย id
 	if tx := entity.DB().Where("id = ?", basket.Game_ID).First(&game); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
