@@ -99,14 +99,12 @@ function Basket_List() {
         .then((response) => response.json())      
         .then((res) => {      
             if (res.data) {
-                setSuccess(true);     
+                setSuccess(true);
+                window.location.reload();     
             } else {
                 setError(true);     
             }
-        });
-
-        window.location.reload();
-        
+        });        
     }
 
     const deleteItem = (id: number) => {
@@ -127,14 +125,12 @@ function Basket_List() {
         .then((response) => response.json())      
         .then((res) => {      
             if (res.data) {
-                setSuccess(true);     
+                setSuccess(true);
+                window.location.reload();     
             } else {
                 setError(true);     
             }
         });
-
-        window.location.reload();
-        
     }
 
 
