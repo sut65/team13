@@ -303,7 +303,7 @@ function Game() {
                     type="string"
                     size="medium"
                     placeholder="------------------------------------"
-                    defaultValue={localStorage.getItem("Email")}
+                    defaultValue={localStorage.getItem("email")}
                     
                   />
                 </FormControl>
