@@ -21,7 +21,7 @@ function User(){
 
     const [new_password, setNew_password] = React.useState<string | null>(null);
     const [confirm_password, setConfirm_password] = React.useState<string | null>(null);
-    const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
+    const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null); // สร้างตัวแปรแยกเนื่องจาก render.result มันต้องการ ArrayBuffer ด้วย
 
     const [storages, setStorages] = React.useState<StoragesInterface[]>([]);
     const [games, setGames] = React.useState<StoragesInterface[]>([]);
@@ -221,8 +221,6 @@ function User(){
         }
         fetchData();
     }, []); // ในช่อง [] ถ้าเกิดใส่อะไรเข้าไปเช่น [isLoaded] ถ้าหาก isLoaded มีการอัพเดท useEffect จะถูกเรียกใช้งานอีกครั้ง
-
-    var nowGender = genders.map((item: GendersInterface) => (item.Gender));
 
     function SellerApply(isSeller: Boolean | undefined) {
         if (!isSeller) {

@@ -33,7 +33,7 @@ func GetUser(c *gin.Context) {
 	var user entity.User
 	email := c.Param("email")
 
-	if err := entity.DB().Raw("SELECT * FROM users WHERE email = ?", email).Scan(&user).Error; err != nil {
+	if err := entity.DB().Preload("Game").Preload("Storage").Preload("Gender").Raw("SELECT * FROM users WHERE email = ?", email).Find(&user).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -53,7 +53,7 @@ func ListUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": users})
 }
 
-// DELETE /users/:email
+// DELETE /users/:email --> ใช้อยู่
 
 func DeleteUser(c *gin.Context) {
 	email := c.Param("email")
