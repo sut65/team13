@@ -26,13 +26,13 @@ import {
   GetUser
 } from "../../components/game/GameService";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@mui/material/Alert";
 
 
 function Game() {
-  const [user, setEmail] = useState<UsersInterface[]>([]);//
+  const [user, setUser] = React.useState<Partial<UsersInterface>>({});
   const [game_rating, setGame_rating] = useState<RatingsInterface[]>([]);
   const [game_type, setGame_type] = useState<Type_GamesInterface[]>([]);
   const [game_status, setGame_status] = useState<Game_StatusInterface[]>([]);
@@ -70,7 +70,25 @@ function Game() {
 
 
   };
-
+  const GetUser = async () => {
+    const apiUrl = "http://localhost:8080/user/natt@gmail.com"; // ตรง email รอเปลี่ยนเป็น localStorage.getItem
+    const requestOptions = {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+        },
+    };
+   
+    await fetch(apiUrl, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+            if (res.data) {
+                setUser(res.data);
+           
+            }
+        });
+};
 
 
 
@@ -94,12 +112,7 @@ function Game() {
       setGame_rating(res);
     }
   };
-  const getUser = async () => {
-    let res = await GetUser();
-    if (res) {
-      setEmail(res);
-    }
-  };
+ 
 
 
 
@@ -111,7 +124,7 @@ function Game() {
     getGame_type();
     getGame_status();
     getGame_rating();
-    getUser();
+    GetUser();
 
 
   }, []);
@@ -127,7 +140,7 @@ function Game() {
       Game_Price: convertType(game.Game_Price),
       Publish_Date: game.Publish_Date,
       Game_description: game.Game_description,
-      Seller_ID: convertType(game.Seller_ID),
+      Seller_ID: user.ID,
       Game_Status_ID: convertType(game.Game_Status_ID),
       Type_Game_ID: convertType(game.Type_Game_ID),
       Rating_ID: convertType(game.Rating_ID),
@@ -284,13 +297,13 @@ function Game() {
               <Grid item xs={3} >
                 <h2>Email</h2>
                 <FormControl fullWidth variant="outlined" >
-                  <TextField //disabled
+                  <TextField disabled
                     id="Seller"
                     variant="outlined"
                     type="string"
                     size="medium"
                     placeholder="------------------------------------"
-                    value={game.Seller}
+                    defaultValue={localStorage.getItem("Email")}
                     
                   />
                 </FormControl>
@@ -425,7 +438,7 @@ function Game() {
                 </FormControl>
                 <FormControl fullWidth variant="outlined"  >
                   <h2>Date Time</h2>
-                  <LocalizationProvider dateAdapter={AdapterDateFns}  >
+                  <LocalizationProvider dateAdapter={AdapterDayjs}  >
                     <DatePicker disabled
                       value={game.Publish_Date}
                       onChange={(newValue) => {
