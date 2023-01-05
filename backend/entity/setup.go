@@ -45,6 +45,10 @@ func SetupDatabase() {
 		// Basket
 		&Payment_Status{},
 		&Basket{},
+
+		// Friend
+		&Intimate{},
+		&Friend{},
 	)
 
 	db = database
@@ -244,31 +248,63 @@ func SetupDatabase() {
 	db.Model(&Basket{}).Create(&Basket3)
 	db.Model(&Basket{}).Create(&Basket4)
 
-	//Is_Hide
-	Is_Hide1 := Is_Hide{
-		Is_Hide: false,
-	}
-	Is_Hide2 := Is_Hide{
-		Is_Hide: true,
-	}
-	db.Model(&Is_Hide{}).Create(&Is_Hide1)
-	db.Model(&Is_Hide{}).Create(&Is_Hide2)
-
 	//Intimate
 	Intimate1 := Intimate{
-		Intimate: "Bast Friend",
+		Intimate_Name: "Bast Friend",
 	}
 	Intimate2 := Intimate{
-		Intimate: "Know",
+		Intimate_Name: "Know",
 	}
 	Intimate3 := Intimate{
-		Intimate: "Family",
+		Intimate_Name: "Family",
 	}
 	Intimate4 := Intimate{
-		Intimate: "Forget",
+		Intimate_Name: "Forget",
 	}
 	db.Model(&Intimate{}).Create(&Intimate1)
 	db.Model(&Intimate{}).Create(&Intimate2)
 	db.Model(&Intimate{}).Create(&Intimate3)
 	db.Model(&Intimate{}).Create(&Intimate4)
+
+	//Friend
+	friend1 := Friend{
+		User_ID:        &User1.ID,
+		User_Friend_ID: &User2.ID,
+		Intimate_ID:    &Intimate1.ID,
+		Nickname:       "เบส",
+		Game_ID:        &Game2.ID,
+		Is_Hide:        false,
+		Date:           time.Now(),
+	}
+	friend2 := Friend{
+		User_ID:        &User2.ID,
+		User_Friend_ID: &User1.ID,
+		Intimate_ID:    &Intimate1.ID,
+		Nickname:       "นนท์",
+		Game_ID:        &Game2.ID,
+		Is_Hide:        false,
+		Date:           time.Now(),
+	}
+	friend3 := Friend{
+		User_ID:        &User1.ID,
+		User_Friend_ID: &User3.ID,
+		Intimate_ID:    &Intimate1.ID,
+		Nickname:       "ไบร์ท",
+		Game_ID:        &Game2.ID,
+		Is_Hide:        true,
+		Date:           time.Now(),
+	}
+	friend4 := Friend{
+		User_ID:        &User3.ID,
+		User_Friend_ID: &User1.ID,
+		Intimate_ID:    &Intimate1.ID,
+		Nickname:       "นนท์",
+		Game_ID:        &Game2.ID,
+		Is_Hide:        false,
+		Date:           time.Now(),
+	}
+	db.Model(&Friend{}).Create(&friend1)
+	db.Model(&Friend{}).Create(&friend2)
+	db.Model(&Friend{}).Create(&friend3)
+	db.Model(&Friend{}).Create(&friend4)
 }
