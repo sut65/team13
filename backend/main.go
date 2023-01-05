@@ -45,8 +45,6 @@ func main() {
 	r.DELETE("/basket/:id", basket_controller.DeleteBasket)
 
 	// Friend Routes
-	r.GET("/Is_Hide", friend_controller.ListIs_Hide)
-
 	r.GET("/Intimate", friend_controller.ListIntimate)
 
 	r.GET("/friends", friend_controller.ListFriend)

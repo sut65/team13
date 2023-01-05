@@ -95,6 +95,28 @@ type Storage struct {
 	User_Favorite_Game []User     `gorm:"foreignKey:Favorite_Game_ID"`
 }
 
+// ---ระบบเพื่อน(Friend)---
+type Intimate struct {
+	gorm.Model
+	Intimate_Name string
+	Friend        []Friend `gorm:"foreignKey:Intimate_ID"`
+}
+
+type Friend struct {
+	gorm.Model
+	User_ID        *uint
+	User           User `gorm:"references:id"`
+	User_Friend_ID *uint
+	User_Friend    User `gorm:"references:id"`
+	Intimate_ID    *uint
+	Intimate       Intimate `gorm:"references:id"`
+	Nickname       string
+	Game_ID        *uint
+	Game           Game `gorm:"references:id"`
+	Is_Hide        bool
+	Date           time.Time
+}
+
 // ---ระบบตะกร้าสินค้า(Basket)---
 type Payment_Status struct {
 	gorm.Model
@@ -112,32 +134,4 @@ type Basket struct {
 	Payment_Status    Payment_Status `gorm:"references:id"`
 	Note              string
 	Date              time.Time
-}
-
-// ---ระบบเพื่อน(Friend)---
-type Intimate struct {
-	gorm.Model
-	Intimate string
-	Friend   []Friend `gorm:"foreignKey:Intimate_ID"`
-}
-
-type Is_Hide struct {
-	gorm.Model
-	Is_Hide bool
-	Friend  []Friend `gorm:"foreignKey:Is_Hide_ID"`
-}
-
-type Friend struct {
-	gorm.Model
-	User_ID        *uint
-	User           User `gorm:"references:id"`
-	User_Friend_ID *uint
-	User_Friend    User `gorm:"references:id"`
-	Intimate_ID    *uint
-	Intimate       Intimate `gorm:"references:id"`
-	Nickname       string
-	Game_ID        *uint
-	Game           Game `gorm:"references:id"`
-	Is_Hide        bool
-	Date           time.Time
 }
