@@ -3,6 +3,7 @@ package main
 import (
 	basket_controller "github.com/sut65/team13/controller/basket"
 	payment_status_controller "github.com/sut65/team13/controller/basket"
+	is_hide_controller "github.com/sut65/team13/controller/friend"
 	game_controller "github.com/sut65/team13/controller/game"
 	login_user_controller "github.com/sut65/team13/controller/login_user"
 	user_controller "github.com/sut65/team13/controller/user"
@@ -43,6 +44,9 @@ func main() {
 	r.POST("/baskets", basket_controller.CraeteBasket)
 	r.PATCH("/baskets", basket_controller.UpdateBasket)
 	r.DELETE("/basket/:id", basket_controller.DeleteBasket)
+
+	// Friend
+	r.GET("/Is_Hide", is_hide_controller.ListIs_Hide)
 
 	// Game Routes
 	r.GET("/Game", game_controller.ListGames)
