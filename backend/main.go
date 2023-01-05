@@ -44,7 +44,7 @@ func main() {
 	r.PATCH("/baskets", basket_controller.UpdateBasket)
 	r.DELETE("/basket/:id", basket_controller.DeleteBasket)
 
-	// Friend
+	// Friend Routes
 	r.GET("/Is_Hide", friend_controller.ListIs_Hide)
 
 	r.GET("/Intimate", friend_controller.ListIntimate)
