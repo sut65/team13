@@ -243,4 +243,15 @@ func SetupDatabase() {
 	db.Model(&Basket{}).Create(&Basket2)
 	db.Model(&Basket{}).Create(&Basket3)
 	db.Model(&Basket{}).Create(&Basket4)
+
+	//Friend
+	Is_Hide1 := Is_Hide{
+		Is_Hide: false,
+	}
+	Is_Hide2 := Is_Hide{
+		Is_Hide: true,
+	}
+	db.Model(&Is_Hide{}).Create(&Is_Hide1)
+	db.Model(&Is_Hide{}).Create(&Is_Hide2)
+
 }

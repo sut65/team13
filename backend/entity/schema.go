@@ -110,3 +110,18 @@ type Basket struct {
 	Note              string
 	Date              time.Time
 }
+
+// ---ระบบเพื่อน(Friend)---
+type Intimate struct {
+	gorm.Model
+}
+
+type Is_Hide struct {
+	gorm.Model
+	Is_Hide bool
+	Friend  []Friend `gorm:"foreignKey:Is_Hide_ID"`
+}
+
+type Friend struct {
+	gorm.Model
+}
