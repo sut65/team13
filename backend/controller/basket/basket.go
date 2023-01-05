@@ -16,7 +16,7 @@ func CraeteBasket(c *gin.Context) {
 	var game entity.Game
 	var payment_status entity.Payment_Status
 
-	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 7 จะถูก bind เข้าตัวแปร appointment
+	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 7 จะถูก bind เข้าตัวแปร basket
 	if err := c.ShouldBindJSON(&basket); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -26,8 +26,6 @@ func CraeteBasket(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "game in basket"})
 		return
 	}
-
-	println(basket.User_ID)
 
 	// 9.ค้นหา game ด้วย id
 	if tx := entity.DB().Where("id = ?", basket.Game_ID).First(&game); tx.RowsAffected == 0 {
@@ -42,7 +40,7 @@ func CraeteBasket(c *gin.Context) {
 	}
 
 	// 11: สร้าง Basket
-	app := entity.Basket{
+	bas := entity.Basket{
 		User_ID:           basket.User_ID,
 		Game_ID:           basket.Game_ID,
 		Payment_Status_ID: basket.Payment_Status_ID,
@@ -51,13 +49,13 @@ func CraeteBasket(c *gin.Context) {
 	}
 
 	// ขั้นตอนการ validate ที่นำมาจาก unit test
-	if _, err := govalidator.ValidateStruct(app); err != nil {
+	if _, err := govalidator.ValidateStruct(bas); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	// 12: บันทึก
-	if err := entity.DB().Create(&app).Error; err != nil {
+	if err := entity.DB().Create(&bas).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 

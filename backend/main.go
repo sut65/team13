@@ -49,6 +49,12 @@ func main() {
 
 	r.GET("/Intimate", friend_controller.ListIntimate)
 
+	r.GET("/friends", friend_controller.ListFriend)
+	r.GET("/friend/:id", friend_controller.GetFriend)
+	r.POST("/friends", friend_controller.CraeteFriend)
+	r.PATCH("/friends", friend_controller.UpdateFriend)
+	r.DELETE("/friend/:id", friend_controller.DeleteFriend)
+
 	// Game Routes
 	r.GET("/Game", game_controller.ListGames)
 	r.GET("/Game/:id", game_controller.GetGame)
