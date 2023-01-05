@@ -25,3 +25,5 @@ func ListIs_Hide(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": is_hide})
 
 }
+
+//delete
