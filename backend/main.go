@@ -2,8 +2,7 @@ package main
 
 import (
 	basket_controller "github.com/sut65/team13/controller/basket"
-	payment_status_controller "github.com/sut65/team13/controller/basket"
-	is_hide_controller "github.com/sut65/team13/controller/friend"
+	friend_controller "github.com/sut65/team13/controller/friend"
 	game_controller "github.com/sut65/team13/controller/game"
 	login_user_controller "github.com/sut65/team13/controller/login_user"
 	user_controller "github.com/sut65/team13/controller/user"
@@ -37,7 +36,7 @@ func main() {
 	r.GET("/user_game/:email", user_controller.ListUserGames)
 
 	// Basket Routes
-	r.GET("/payment_status", payment_status_controller.ListPayment_Status)
+	r.GET("/payment_status", basket_controller.ListPayment_Status)
 
 	r.GET("/baskets", basket_controller.ListBasket)
 	r.GET("/basket/:id", basket_controller.GetBasket)
@@ -46,7 +45,9 @@ func main() {
 	r.DELETE("/basket/:id", basket_controller.DeleteBasket)
 
 	// Friend
-	r.GET("/Is_Hide", is_hide_controller.ListIs_Hide)
+	r.GET("/Is_Hide", friend_controller.ListIs_Hide)
+
+	r.GET("/Intimate", friend_controller.ListIntimate)
 
 	// Game Routes
 	r.GET("/Game", game_controller.ListGames)

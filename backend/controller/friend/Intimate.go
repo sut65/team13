@@ -8,13 +8,13 @@ import (
 	"net/http"
 )
 
-// GET /Is_Hide
+// GET /Intimate
 
-func ListIs_Hide(c *gin.Context) {
+func ListIntimate(c *gin.Context) {
 
-	var is_hide []entity.Is_Hide
+	var intimate []entity.Intimate
 
-	if err := entity.DB().Raw("SELECT * FROM is_hides").Scan(&is_hide).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM intimates").Scan(&intimate).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -22,6 +22,6 @@ func ListIs_Hide(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": is_hide})
+	c.JSON(http.StatusOK, gin.H{"data": intimate})
 
 }
