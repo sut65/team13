@@ -244,7 +244,7 @@ func SetupDatabase() {
 	db.Model(&Basket{}).Create(&Basket3)
 	db.Model(&Basket{}).Create(&Basket4)
 
-	//Friend
+	//Is_Hide
 	Is_Hide1 := Is_Hide{
 		Is_Hide: false,
 	}
@@ -254,4 +254,21 @@ func SetupDatabase() {
 	db.Model(&Is_Hide{}).Create(&Is_Hide1)
 	db.Model(&Is_Hide{}).Create(&Is_Hide2)
 
+	//Intimate
+	Intimate1 := Intimate{
+		Intimate: "Bast Friend",
+	}
+	Intimate2 := Intimate{
+		Intimate: "Know",
+	}
+	Intimate3 := Intimate{
+		Intimate: "Family",
+	}
+	Intimate4 := Intimate{
+		Intimate: "Forget",
+	}
+	db.Model(&Intimate{}).Create(&Intimate1)
+	db.Model(&Intimate{}).Create(&Intimate2)
+	db.Model(&Intimate{}).Create(&Intimate3)
+	db.Model(&Intimate{}).Create(&Intimate4)
 }

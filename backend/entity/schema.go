@@ -114,6 +114,8 @@ type Basket struct {
 // ---ระบบเพื่อน(Friend)---
 type Intimate struct {
 	gorm.Model
+	Intimate string
+	Friend   []Friend `gorm:"foreignKey:Intimate_ID"`
 }
 
 type Is_Hide struct {
