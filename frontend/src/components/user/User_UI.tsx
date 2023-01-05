@@ -135,8 +135,6 @@ function User(){
                 if (res.data) {
                     setUser(res.data);
                     setImageString(res.data.Profile_Picture);
-                    setNew_password(res.data.Password);
-                    setConfirm_password(res.data.Password);
                 }
             });
     };
@@ -145,7 +143,7 @@ function User(){
         if(new_password == confirm_password){ // password ตรงกันก็จะ มีการ submit
             let UpdateData = {
                 Email: "natt@gmail.com", // รอทำ localStorage.getitem
-                Password: new_password, // ตัวแปรชื่อ new_passwotf ก็จริงแต่อาจเป็น password เดิมก็ได้
+                Password: new_password, // ตัวแปรชื่อ new_password ก็จริงแต่อาจเป็น password เดิมก็ได้
                 Profile_Name: user.Profile_Name,
                 Profile_Description: user.Profile_Description,
                 Profile_Picture: imageString,

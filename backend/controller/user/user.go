@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
 
@@ -12,13 +13,33 @@ import (
 
 func CreateUser(c *gin.Context) {
 	var user entity.User
+	var gender entity.Gender
 
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		// c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		// return
+	}
+
+	if tx := entity.DB().Where("id = ?", user.Gender_ID).First(&gender); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "gender not found"})
 		return
 	}
 
-	if err := entity.DB().Create(&user).Error; err != nil {
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
+		return
+	}
+
+	newUser := entity.User{
+		Password:            string(hashPassword),
+		Profile_Name:        user.Profile_Name,
+		Profile_Description: user.Profile_Description,
+		Profile_Picture:     user.Profile_Picture,
+		Gender:              gender,
+	}
+
+	if err := entity.DB().Create(&newUser).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -74,22 +95,31 @@ func UpdateUser(c *gin.Context) {
 	var game entity.Game
 
 	if err := c.ShouldBindJSON(&user); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
+		// c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		// return
+	}
+
+	if !(user.Password[0:8] == "$2a$14$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
+		hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 14)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
+			return
+		}
+		user.Password = string(hashPassword)
 	}
 
 	if tx := entity.DB().Where("id = ?", user.Gender_ID).First(&gender); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "gender not found"})
 		return
 	}
 
 	if tx := entity.DB().Where("id = ?", user.Favorite_Game_ID).First(&storage); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "storage not found"})
 		return
 	}
 
 	if tx := entity.DB().Where("id = ?", user.Out_Standing_Game_ID).First(&game); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
 		return
 	}
 
