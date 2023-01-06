@@ -5,6 +5,7 @@ import (
 	friend_controller "github.com/sut65/team13/controller/friend"
 	game_controller "github.com/sut65/team13/controller/game"
 	login_user_controller "github.com/sut65/team13/controller/login_user"
+	storage_controller "github.com/sut65/team13/controller/storage"
 	user_controller "github.com/sut65/team13/controller/user"
 	"github.com/sut65/team13/entity"
 
@@ -68,6 +69,9 @@ func main() {
 
 	r.GET("/Game_Type", game_controller.ListGame_type)
 	r.GET("/Game_Type/:id", game_controller.GetGame_type)
+
+	// Storage Routes
+	r.GET("/storages", storage_controller.ListStorages)
 
 	// Run the server
 

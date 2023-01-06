@@ -31,6 +31,7 @@ function SignIn_User() {
   const [dialogOpen, setDialogOpen] = React.useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
   const [registerError, setRegisterError] = useState(false);
+  const [errorMsg,setErrorMsg] = useState<String | null>(null);
   
   const [email, setEmail] = React.useState<string | null>(null);
   const [profile_name, setProfile_name] = React.useState<string | null>(null);
@@ -65,6 +66,7 @@ function SignIn_User() {
           localStorage.setItem("email", res.data.email);
           return res.data;
         } else {
+          console.log(res.error);
           return false;
         }
       });
@@ -148,7 +150,6 @@ function SignIn_User() {
   const createAccount = () => {
     const signout = () => {
         localStorage.clear();
-        window.location.href = "/";
     };
 
     if(new_password == confirm_password){ // password ตรงกันก็จะ มีการ submit
@@ -166,10 +167,8 @@ function SignIn_User() {
       const apiUrl = "http://localhost:8080/users"; // create user
       const requestOptions = {
           method: "POST",
-          // headers: {
-          //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-          //     "Content-Type": "application/json",
-          // },
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
       };
 
       fetch(apiUrl, requestOptions)
@@ -180,10 +179,12 @@ function SignIn_User() {
             signout();
           } else {
             setRegisterError(true);
+            setErrorMsg(String(res.error))
           }
       });
     }else{
       setRegisterError(true);
+      setErrorMsg("รหัสผ่านไม่ตรงกัน");
     }
   }
 
@@ -329,7 +330,7 @@ function SignIn_User() {
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <Alert onClose={handleClose} severity="error">
-            สมัครสมาชิกไม่สำเร็จ
+            {errorMsg}
           </Alert>
         </Snackbar>
 
@@ -337,12 +338,8 @@ function SignIn_User() {
           <Box>
             <Paper elevation={2} sx={{padding:2,margin:2}}>
                 <Grid container>
-                    <Grid container justifyContent="center"> {/** Profile */}
-                        <h1> Profile </h1>
-                    </Grid>
-
-                    <Grid container> {/** password */}
-                        <Grid item xs={3}>
+                    <Grid container> {/** email & password */}
+                        <Grid margin={1} item xs={12}>
                           <TextField
                                   fullWidth
                                   id="nemail"
@@ -350,7 +347,7 @@ function SignIn_User() {
                                   variant="outlined"
                                   onChange={(event) => setEmail(String(event.target.value))}/>
                           </Grid>
-                        <Grid margin={1} item xs={2}>
+                        <Grid margin={1} item xs={12}>
                             <TextField
                                 fullWidth
                                 id="new-password"
@@ -358,7 +355,7 @@ function SignIn_User() {
                                 variant="outlined"
                                 onChange={(event) => setNew_password(String(event.target.value))}/>
                         </Grid>
-                        <Grid margin={1} item xs={2}>
+                        <Grid margin={1} item xs={12}>
                             <TextField
                                 fullWidth
                                 id="confirm-password"
@@ -366,58 +363,54 @@ function SignIn_User() {
                                 variant="outlined"
                                 onChange={(event) => setConfirm_password(String(event.target.value))}/>
                         </Grid>
-                        <Grid container marginLeft={39}>
-                            {/** เอาไว้เตือนว่า password match หรือไม่ */}
-                            {/*<FormHelperText>if you don't want to change password, Please do not touch password field</FormHelperText>*/}
-                        </Grid>
                     </Grid>
 
                     <Grid container>
-                        <Grid item xs={3}> {/* Profile Picture */}
+                      <Grid margin={1} item xs={5}> {/** Profile Name */}
+                        <TextField
+                            fullWidth
+                            id="profile-name"
+                            label="Profile Name"
+                            variant="outlined"
+                            onChange={(event) => setProfile_name(String(event.target.value))}/>
+                        <Grid marginTop={1}> {/* gender radio button */}
+                            <FormControl>
+                                <FormLabel id="radio-buttons-group-gender">Gender</FormLabel>
+                                    <RadioGroup
+                                        aria-labelledby="radio-buttons-group-gender"
+                                        name="radio-buttons-group-gender"
+                                        onChange={(event) => setGender_id(Number(event.target.value))}
+                                    >
+                                        {genders.map((o) => (
+                                        <FormControlLabel
+                                            value={o.ID} // <---- pass a primitive id value, don't pass the whole object here
+                                            control={<Radio size="small" />}
+                                            label={o.Gender}
+                                        />
+                                        ))}
+                                </RadioGroup>
+                            </FormControl>
+                        </Grid>
+                      </Grid>
+
+                      <Grid margin={1} item xs={6}> {/** Profile Description */}
+                          <TextField
+                              multiline
+                              rows={8}
+                              fullWidth
+                              id="profile-description"
+                              label="Profile Description"
+                              variant="outlined"
+                              onChange={(event) => setProfile_description(String(event.target.value))}/>
+                      </Grid>
+
+                      <Grid item xs={12}> {/* Profile Picture */}
                             <h4>Profile Picture</h4>
                             <Grid>
                                 <img src={`${imageString}`} width="250" height="250"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
                             </Grid>
                             <input type="file" onChange={handleImageChange} />
                             <FormHelperText>recommend size is 250*250 pixels</FormHelperText>
-                        </Grid>
-
-                        <Grid margin={1} item xs={2}> {/** Profile Name */}
-                            <TextField
-                                fullWidth
-                                id="profile-name"
-                                label="Profile Name"
-                                variant="outlined"
-                                onChange={(event) => setProfile_name(event.target.value)}/>
-                            <Grid marginTop={1}> {/* gender radio button */}
-                                <FormControl>
-                                    <FormLabel id="radio-buttons-group-gender">Gender</FormLabel>
-                                        <RadioGroup
-                                            aria-labelledby="radio-buttons-group-gender"
-                                            name="radio-buttons-group-gender"
-                                            onChange={(event) => setGender_id(Number(event.target.value))}
-                                        >
-                                            {genders.map((o) => (
-                                            <FormControlLabel
-                                                value={o.ID} // <---- pass a primitive id value, don't pass the whole object here
-                                                control={<Radio size="small" />}
-                                                label={o.Gender}
-                                            />
-                                            ))}
-                                    </RadioGroup>
-                                </FormControl>
-                            </Grid>
-                        </Grid>
-
-                        <Grid margin={1} item xs={4}> {/** Profile Description */}
-                            <TextField
-                                multiline
-                                rows={8}
-                                fullWidth
-                                id="profile-description"
-                                label="Profile Description"
-                                variant="outlined"
-                                onChange={(event) => setProfile_description(event.target.value)}/>
                         </Grid>
                     </Grid>
                 </Grid>

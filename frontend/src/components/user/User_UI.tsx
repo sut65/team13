@@ -23,8 +23,10 @@ function User(){
     const [confirm_password, setConfirm_password] = React.useState<string | null>(null);
     const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null); // สร้างตัวแปรแยกเนื่องจาก render.result มันต้องการ ArrayBuffer ด้วย
 
-    const [storages, setStorages] = React.useState<StoragesInterface[]>([]);
-    const [games, setGames] = React.useState<StoragesInterface[]>([]);
+    const [OWNstorages, setOWNstorages] = React.useState<StoragesInterface[]>([]);
+    const [OWNgames, setOWNgames] = React.useState<StoragesInterface[]>([]);
+    const [ALLstorages, setALLstorages] = React.useState<StoragesInterface[]>([]);
+    const [ALLgames, setALLgames] = React.useState<StoragesInterface[]>([]);
     const [genders, setGenders] = React.useState<GendersInterface[]>([]);
     const [user, setUser] = React.useState<Partial<UsersInterface>>({});
 
@@ -81,8 +83,8 @@ function User(){
             });
     };
 
-    const getStorage = async () => {
-        const apiUrl = "http://localhost:8080/user_storage/natt@gmail.com"; // รอ local Storage
+    const getOWNStorage = async () => {
+        const apiUrl = "http://localhost:8080/user_storage/"+localStorage.getItem("email");
         const requestOptions = {
             method: "GET",
             headers: {
@@ -95,13 +97,13 @@ function User(){
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setStorages(res.data);
+                    setOWNstorages(res.data);
                 }
             });
     };
 
-    const getGame = async () => {
-        const apiUrl = "http://localhost:8080/user_game/natt@gmail.com"; // รอ local Storage
+    const getOWNGame = async () => {
+        const apiUrl = "http://localhost:8080/user_game/"+localStorage.getItem("email");
         const requestOptions = {
             method: "GET",
             headers: {
@@ -114,13 +116,51 @@ function User(){
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setGames(res.data);
+                    setOWNgames(res.data);
+                }
+            });
+    };
+
+    const getALLStorage = async () => {
+        const apiUrl = "http://localhost:8080/storages";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+       
+        await fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setALLstorages(res.data);
+                }
+            });
+    };
+
+    const getALLGame = async () => {
+        const apiUrl = "http://localhost:8080/Game";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+       
+        await fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setALLgames(res.data);
                 }
             });
     };
 
     const getUser = async () => {
-        const apiUrl = "http://localhost:8080/user/natt@gmail.com"; // ตรง email รอเปลี่ยนเป็น localStorage.getItem
+        const apiUrl = "http://localhost:8080/user/"+localStorage.getItem("email");
         const requestOptions = {
             method: "GET",
             headers: {
@@ -142,7 +182,7 @@ function User(){
     const submit = () => {
         if(new_password == confirm_password){ // password ตรงกันก็จะ มีการ submit
             let UpdateData = {
-                Email: "natt@gmail.com", // รอทำ localStorage.getitem
+                Email: localStorage.getItem("email"), // รอทำ localStorage.getitem
                 Password: new_password, // ตัวแปรชื่อ new_password ก็จริงแต่อาจเป็น password เดิมก็ได้
                 Profile_Name: user.Profile_Name,
                 Profile_Description: user.Profile_Description,
@@ -188,7 +228,7 @@ function User(){
             window.location.href = "/";
         };
 
-        const apiUrl = "http://localhost:8080/users/natt@gmail.com"; // รอรับจาก local Storage
+        const apiUrl = "http://localhost:8080/users/"+localStorage.getItem("email");
         const requestOptions = {
             method: "DELETE",
             headers: {
@@ -213,8 +253,10 @@ function User(){
         const fetchData = async () => {
             await getUser();
             await getGender();
-            await getStorage();
-            await getGame();
+            await getOWNStorage();
+            await getOWNGame();
+            await getALLStorage();
+            await getALLGame();
             setIsDataloaded(true);
         }
         fetchData();
@@ -241,10 +283,10 @@ function User(){
                         <Grid item xs = {2} margin={2}> {/** Out Standing Game */}
                             <Autocomplete
                                 id="games-autocomplete"
-                                options={games}
+                                options={OWNgames}
                                 fullWidth
                                 size="medium"
-                                defaultValue={games[Number(user.Out_Standing_Game_ID) - 1]}
+                                defaultValue={ALLgames[Number(user.Out_Standing_Game_ID) - 1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมที่ขายแค่เกมเดียวงี้
                                 onChange={(event: any, value) => {
                                     setUser({ ...user, Out_Standing_Game_ID: value?.ID }); // บันทึกค่าลง interface
                                 }}
@@ -388,10 +430,10 @@ function User(){
                                 <Grid marginTop={2}> {/** Favorite Game on profile */}
                                     <Autocomplete
                                         id="storages-autocomplete"
-                                        options={storages}
+                                        options={OWNstorages}
                                         fullWidth
                                         size="medium"
-                                        defaultValue={storages[Number(user.Favorite_Game_ID)-1]}
+                                        defaultValue={ALLstorages[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
                                         onChange={(event: any, value) => {
                                             setUser({ ...user, Favorite_Game_ID: value?.ID }); // บันทึกค่าลง interface
                                         }}
