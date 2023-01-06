@@ -34,7 +34,7 @@ func CreateStroage(c *gin.Context) {
 
 }
 
-// GET /Storage/:id
+// GET /storage/:id
 
 func GetStorage(c *gin.Context) {
 
@@ -54,13 +54,14 @@ func GetStorage(c *gin.Context) {
 
 }
 
-// GET /users
+// GET /storages
 
 func ListStorages(c *gin.Context) {
 
 	var storages []entity.Storage
 
-	if err := entity.DB().Raw("SELECT * FROM storages").Scan(&storages).Error; err != nil {
+	// มี prelaod เพื่อใช้โหลดให้ระบบ user
+	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages").Find(&storages).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 

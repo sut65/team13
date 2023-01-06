@@ -34,14 +34,14 @@ func Login(c *gin.Context) {
 
 	//** 3: ค้นหาด้วยเลขบัตรประชาชน(Personal_ID) */ // ตรวจสอบว่ามี Personal ID ที่กรอกมาหรือไม่
 	if err := entity.DB().Raw("SELECT * FROM users WHERE email = ?", payload.Email).Scan(&user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error() + "email is incorrect"})
 		return
 	}
 
 	// ตรวจสอบรหัสผ่าน
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(payload.Password))
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "password is incerrect"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "password is incorrect"})
 		return
 	}
 

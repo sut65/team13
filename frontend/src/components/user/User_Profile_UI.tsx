@@ -13,7 +13,7 @@ function User_Profile(){
     const [user, setUser] = React.useState<Partial<UsersInterface>>({});
 
     const getStorage = async () => {
-        const apiUrl = "http://localhost:8080/user_storage/"+email; // email คือ email ที่ผ่านเข้ามาทาง parameter
+        const apiUrl = "http://localhost:8080/storages";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -27,6 +27,7 @@ function User_Profile(){
             .then((res) => {
                 if (res.data) {
                     setStorages(res.data);
+                    console.log(res.data);
                 }
             });
     };
@@ -49,6 +50,18 @@ function User_Profile(){
                 }
             });
     };
+
+    function show_fav_game(ID: any) {
+        if(ID == -1){ // ID เป็น -1 หมายถึงตอนอ่านค่ามา เป็น null (ไม่มี fav game) แล้วมันถูกแปลงให้เป็น = 0 auto ผ่าน Number() | แล้วพอถูก -1 จากการผ่าน argument เลยกลายเป็น -1
+            return null;
+        }else{
+            return(
+                <Grid>
+                    {storages[Number(ID)].Game.Game_Name}
+                </Grid>
+            );
+        }
+    }
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -96,8 +109,9 @@ function User_Profile(){
                                     <h3>Favorite Game</h3>
                                 </Box>
                                 <Box>
-                                    {storages[Number(user.Favorite_Game_ID)-1].Game.Game_Name}
+                                    {show_fav_game(Number(user.Favorite_Game_ID)-1)}
                                 </Box>
+
                             </Grid>
                         </Grid>
 
