@@ -29,3 +29,8 @@ node-module react-router-dom ไม่ติดตั้งมาพร้อม
 `npm install package` หรือ `npm i package` <br />
 ให้ใช้คำสั่ง `npm i react@18 react-dom@18 @types/react@18 @types/react-dom@18` <br />
 หรือติดตั้งด้วย `npm i package --force` <br />
+
+#### dayjs
+node-module react-router-dom ไม่ติดตั้งมาพร้อมกับคำสั่ง <br />
+`npm install package` หรือ `npm i package` <br />
+ให้ติดตั้งด้วย `npm i package --force` <br />
