@@ -8,21 +8,7 @@ import (
 	"net/http"
 )
 
-// GET /gender/:id
-
-func GetGender(c *gin.Context) {
-	var gender entity.Gender
-	id := c.Param("id")
-
-	if err := entity.DB().Raw("SELECT * FROM genders WHERE id = ?", id).Scan(&gender).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": gender})
-}
-
-// GET /users
+// GET /genders
 
 func ListGenders(c *gin.Context) {
 	var genders []entity.Gender
