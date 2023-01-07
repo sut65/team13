@@ -22,6 +22,7 @@ func main() {
 	// login User Route
 	r.POST("/login", login_user_controller.Login)
 	r.POST("/users", user_controller.CreateUser)
+	r.GET("/genders", user_controller.ListGenders)
 
 	// User Routes
 
@@ -29,9 +30,6 @@ func main() {
 	r.GET("/user/:email", user_controller.GetUser)
 	r.PATCH("/users", user_controller.UpdateUser)
 	r.DELETE("/users/:email", user_controller.DeleteUser)
-
-	r.GET("/genders", user_controller.ListGenders)
-	r.GET("/gender/:id", user_controller.GetGender)
 
 	r.GET("/user_storage/:email", user_controller.ListUserStorages)
 	r.GET("/user_game/:email", user_controller.ListUserGames)

@@ -16,6 +16,7 @@ function User(){
     const [dialogOpen, setDialogOpen] = React.useState(false);
     const [submitSuccess, setSubmitSuccess] = React.useState(false);
     const [submitError, setSubmitError] = React.useState(false);
+    const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
     const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
 
@@ -54,6 +55,7 @@ function User(){
         }
         setSubmitSuccess(false);
         setSubmitError(false);
+        setErrorMsg("");
     };
 
     const handleDialogClickOpen = () => {
@@ -68,10 +70,7 @@ function User(){
         const apiUrl = "http://localhost:8080/genders";
         const requestOptions = {
             method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
+            headers: { "Content-Type": "application/json" },
         };
        
         await fetch(apiUrl, requestOptions)
@@ -175,6 +174,8 @@ function User(){
                 if (res.data) {
                     setUser(res.data);
                     setImageString(res.data.Profile_Picture);
+                    setNew_password(res.data.Password);
+                    setConfirm_password(res.data.Password);
                 }
             });
     };
@@ -214,10 +215,12 @@ function User(){
                     setSubmitSuccess(true);
                 } else {
                     setSubmitError(true);
+                    setErrorMsg(" - "+res.error);
                 }
             });
         }else{
             setSubmitError(true); // password ไม่ตรงกัน
+            setErrorMsg(" - รหัสผ่านไม่ตรงกัน");
         }
 
     }
@@ -355,7 +358,7 @@ function User(){
                 onClose={handleClose} 
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
                 <Alert onClose={handleClose} severity="error">
-                    บันทึกข้อมูลไม่สำเร็จ
+                    บันทึกข้อมูลไม่สำเร็จ{errorMsg}
                 </Alert>
             </Snackbar>
 

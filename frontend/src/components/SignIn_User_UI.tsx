@@ -78,10 +78,7 @@ function SignIn_User() {
     const apiUrl = "http://localhost:8080/genders";
     const requestOptions = {
         method: "GET",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
     };
    
     await fetch(apiUrl, requestOptions)

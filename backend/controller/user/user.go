@@ -102,17 +102,25 @@ func UpdateUser(c *gin.Context) {
 	var game entity.Game
 
 	if err := c.ShouldBindJSON(&user); err != nil {
-		// c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		// return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
-	if !(user.Password[0:8] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
+	if len(user.Password) <= 7 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัว"})
+		return
+	}
+
+	if !(user.Password[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
 		hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
 			return
 		}
+		print("HASH!!!!")
 		user.Password = string(hashPassword)
+	} else {
+		print("NOT HASH!!!")
 	}
 
 	if tx := entity.DB().Where("id = ?", user.Gender_ID).First(&gender); tx.RowsAffected == 0 {
