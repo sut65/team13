@@ -135,3 +135,23 @@ type Basket struct {
 	Note              string
 	Date              time.Time
 }
+
+// ---ระบบรีวิวเกม(GameReview)---
+
+type Review struct {
+	gorm.Model
+	User_ID *uint
+	User    User `gorm:"references:id"`
+	Game_ID *uint
+	Game    Game `gorm:"references:id"`
+	Star_ID *uint
+	Star    Star `gorm:"references:id"`
+	Comment string
+	Date    time.Time
+}
+
+type Star struct {
+	gorm.Model
+	Detail string
+	Review []Review `gorm:"foreignKey:Star_ID"`
+}
