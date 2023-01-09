@@ -70,7 +70,7 @@ func main() {
 
 	// Storage Routes
 	r.GET("/storages", storage_controller.ListStorages)
-
+	r.GET("/storages/:id", storage_controller.ListStoragesUser)
 	// Run the server
 
 	r.Run()
