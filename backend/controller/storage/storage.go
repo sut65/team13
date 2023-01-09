@@ -81,7 +81,7 @@ func ListStoragesUser(c *gin.Context) {
 	id := c.Param("id")
 
 	// มี prelaod เพื่อใช้โหลดให้ระบบ Storages
-	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages WHERE id = ?", id).Find(&storages).Error; err != nil {
+	if err := entity.DB().Preload("Game").Preload("User").Raw("SELECT * FROM storages WHERE user_id = ?", id).Find(&storages).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
