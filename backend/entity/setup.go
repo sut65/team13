@@ -49,6 +49,9 @@ func SetupDatabase() {
 		// Friend
 		&Intimate{},
 		&Friend{},
+
+		// Admin
+		&Admin{},
 	)
 
 	db = database
@@ -307,4 +310,11 @@ func SetupDatabase() {
 	db.Model(&Friend{}).Create(&friend2)
 	db.Model(&Friend{}).Create(&friend3)
 	db.Model(&Friend{}).Create(&friend4)
+
+	//Admin
+	admin1 := Admin{
+		Email:    "Admin",
+		Password: "$2a$12$hRdKLZTUspkskzjZwBAb6eImCpHYIe48KSUGD83JrzHYx6aKfowb6",
+	}
+	db.Model(&Admin{}).Create(&admin1)
 }

@@ -155,3 +155,11 @@ type Star struct {
 	Detail string
 	Review []Review `gorm:"foreignKey:Star_ID"`
 }
+
+// ---ระบบ Admin---
+type Admin struct {
+	// Normal User
+	gorm.Model
+	Email    string `gorm:"uniqueIndex"`
+	Password string
+}

@@ -4,10 +4,11 @@ import (
 	basket_controller "github.com/sut65/team13/controller/basket"
 	friend_controller "github.com/sut65/team13/controller/friend"
 	game_controller "github.com/sut65/team13/controller/game"
-	login_user_controller "github.com/sut65/team13/controller/login_user"
+	login_controller "github.com/sut65/team13/controller/login"
 	storage_controller "github.com/sut65/team13/controller/storage"
 	user_controller "github.com/sut65/team13/controller/user"
 	"github.com/sut65/team13/entity"
+	middlewares "github.com/sut65/team13/middlewares"
 
 	"github.com/gin-gonic/gin"
 )
@@ -20,58 +21,66 @@ func main() {
 	r.Use(CORSMiddleware())
 
 	// login User Route
-	r.POST("/login", login_user_controller.Login)
+	r.POST("/login/user", login_controller.LoginUser)
 	r.POST("/users", user_controller.CreateUser)
 	r.GET("/genders", user_controller.ListGenders)
 
-	// User Routes
+	// login Admin Route
+	r.POST("/login/admin", login_controller.LoginAdmin)
 
-	r.GET("/users", user_controller.ListUsers)
-	r.GET("/user/:email", user_controller.GetUser)
-	r.PATCH("/users", user_controller.UpdateUser)
-	r.DELETE("/users/:email", user_controller.DeleteUser)
+	router := r.Group("/")
+	{
+		router.Use(middlewares.Authorizes())
+		{
+			// User Routes
+			r.GET("/users", user_controller.ListUsers)
+			r.GET("/user/:email", user_controller.GetUser)
+			r.PATCH("/users", user_controller.UpdateUser)
+			r.DELETE("/users/:email", user_controller.DeleteUser)
 
-	r.GET("/user_storage/:email", user_controller.ListUserStorages)
-	r.GET("/user_game/:email", user_controller.ListUserGames)
+			r.GET("/user_storage/:email", user_controller.ListUserStorages)
+			r.GET("/user_game/:email", user_controller.ListUserGames)
 
-	// Basket Routes
-	r.GET("/payment_status", basket_controller.ListPayment_Status)
+			// Basket Routes
+			r.GET("/payment_status", basket_controller.ListPayment_Status)
 
-	r.GET("/baskets", basket_controller.ListBasket)
-	r.GET("/basket/:id", basket_controller.GetBasket)
-	r.POST("/baskets", basket_controller.CraeteBasket)
-	r.PATCH("/baskets", basket_controller.UpdateBasket)
-	r.DELETE("/basket/:id", basket_controller.DeleteBasket)
-	r.GET("/userbasket/:uid", basket_controller.GetUserBasket)
+			r.GET("/baskets", basket_controller.ListBasket)
+			r.GET("/basket/:id", basket_controller.GetBasket)
+			r.POST("/baskets", basket_controller.CraeteBasket)
+			r.PATCH("/baskets", basket_controller.UpdateBasket)
+			r.DELETE("/basket/:id", basket_controller.DeleteBasket)
+			r.GET("/userbasket/:uid", basket_controller.GetUserBasket)
 
-	// Friend Routes
-	r.GET("/Intimate", friend_controller.ListIntimate)
+			// Friend Routes
+			r.GET("/Intimate", friend_controller.ListIntimate)
 
-	r.GET("/friends", friend_controller.ListFriend)
-	r.GET("/friend/:id", friend_controller.GetFriend)
-	r.POST("/friends", friend_controller.CraeteFriend)
-	r.PATCH("/friends", friend_controller.UpdateFriend)
-	r.DELETE("/friend/:id", friend_controller.DeleteFriend)
+			r.GET("/friends", friend_controller.ListFriend)
+			r.GET("/friend/:id", friend_controller.GetFriend)
+			r.POST("/friends", friend_controller.CraeteFriend)
+			r.PATCH("/friends", friend_controller.UpdateFriend)
+			r.DELETE("/friend/:id", friend_controller.DeleteFriend)
 
-	// Game Routes
-	r.GET("/Game", game_controller.ListGames)
-	r.GET("/Game/:id", game_controller.GetGame)
-	r.POST("/Game", game_controller.CreateGame)
-	r.PATCH("/Game", game_controller.UpdateGame)
-	r.DELETE("/Game/:id", game_controller.DeleteGame)
+			// Game Routes
+			r.GET("/Game", game_controller.ListGames)
+			r.GET("/Game/:id", game_controller.GetGame)
+			r.POST("/Game", game_controller.CreateGame)
+			r.PATCH("/Game", game_controller.UpdateGame)
+			r.DELETE("/Game/:id", game_controller.DeleteGame)
 
-	r.GET("/Rating", game_controller.ListRating)
-	r.GET("/Rating/:id", game_controller.GetRating)
+			r.GET("/Rating", game_controller.ListRating)
+			r.GET("/Rating/:id", game_controller.GetRating)
 
-	r.GET("/Status", game_controller.ListGame_status)
-	r.GET("/Status/:id", game_controller.GetGame_status)
+			r.GET("/Status", game_controller.ListGame_status)
+			r.GET("/Status/:id", game_controller.GetGame_status)
 
-	r.GET("/Game_Type", game_controller.ListGame_type)
-	r.GET("/Game_Type/:id", game_controller.GetGame_type)
+			r.GET("/Game_Type", game_controller.ListGame_type)
+			r.GET("/Game_Type/:id", game_controller.GetGame_type)
 
-	// Storage Routes
-	r.GET("/storages", storage_controller.ListStorages)
-	r.GET("/storages/:id", storage_controller.ListStoragesUser)
+			// Storage Routes
+			r.GET("/storages", storage_controller.ListStorages)
+			r.GET("/storages/:id", storage_controller.ListStoragesUser)
+		}
+	}
 	// Run the server
 
 	r.Run()
