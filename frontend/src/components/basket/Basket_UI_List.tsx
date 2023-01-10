@@ -62,8 +62,9 @@ function Basket_List() {
         setOpenForDelete(false);
     };
 
-    const getBasket = async () => {                                 
-        const apiUrl = "http://localhost:8080/baskets";
+    const getUserBasket = async () => {                                 
+        console.log(localStorage.getItem("uid"))
+        const apiUrl = "http://localhost:8080/userbasket/"+String(localStorage.getItem("uid"));
         const requestOptions = {
             method: "GET",      
             headers: {
@@ -135,7 +136,7 @@ function Basket_List() {
 
 
     useEffect(() => {
-        getBasket(); 
+        getUserBasket(); 
         console.log(basket)  
     }, []);
 
@@ -173,7 +174,7 @@ function Basket_List() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {basket.filter(item => item.User_ID == Number(localStorage.getItem("uid"))).map((item) => (
+                            {basket.map((item) => (
                                 <TableRow key={item.ID}>
                                     <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
                                     <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
