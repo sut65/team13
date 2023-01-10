@@ -137,7 +137,8 @@ function FullAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose} component={RouterLink} to={"/user_profile/"+localStorage.getItem("email")} >My Profile</MenuItem> {/** ตรง email รอ localstorage */}
+                <MenuItem onClick={handleClose} component={RouterLink} to={"/user_profile/"+localStorage.getItem("email")} >My Profile</MenuItem>
+                <MenuItem onClick={handleClose} component={RouterLink} to={"/store_profile/"+localStorage.getItem("email")} >My Store</MenuItem>
                 <MenuItem onClick={signout} component={RouterLink} to="/" >Logout</MenuItem>
               </Menu>
             </div>

@@ -4,16 +4,16 @@ import { Box, Grid, Paper } from '@mui/material';
 
 import { UsersInterface } from '../../models/user/IUser';
 import { useParams } from 'react-router-dom';
-import { StoragesInterface } from '../../models/storage/IStorage';
+import { GamesInterface } from '../../models/game/IGame';
 
-function User_Profile(){
+function Store_Profile(){
     const { email } = useParams(); // ดึง parameter จาก url-parameter
     const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
-    const [storages, setStorages] = React.useState<StoragesInterface[]>([]);
+    const [games, setGames] = React.useState<GamesInterface[]>([]);
     const [user, setUser] = React.useState<Partial<UsersInterface>>({});
 
-    const getStorage = async () => {
-        const apiUrl = "http://localhost:8080/storages";
+    const getGame = async () => {
+        const apiUrl = "http://localhost:8080/Game";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -26,7 +26,7 @@ function User_Profile(){
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setStorages(res.data);
+                    setGames(res.data);
                 }
             });
     };
@@ -50,13 +50,13 @@ function User_Profile(){
             });
     };
 
-    function show_fav_game(ID: any) {
+    function show_outStanding_game(ID: any) {
         if(ID == -1){ // ID เป็น -1 หมายถึงตอนอ่านค่ามา เป็น null (ไม่มี fav game) แล้วมันถูกแปลงให้เป็น = 0 auto ผ่าน Number() | แล้วพอถูก -1 จากการผ่าน argument เลยกลายเป็น -1
             return null;
         }else{
             return(
                 <Grid>
-                    {storages[Number(ID)].Game.Game_Name}
+                    {games[Number(ID)].Game_Name}
                 </Grid>
             );
         }
@@ -65,13 +65,13 @@ function User_Profile(){
     React.useEffect(() => {
         const fetchData = async () => {
             await getUser();
-            await getStorage();
+            await getGame();
             setIsDataloaded(true);
         }
         fetchData();
     }, []);
 
-    if(isDataLoaded) return (
+    if(isDataLoaded && user.Is_Seller) return (
         <Container>
             <Box>
                 <Paper elevation={2} sx={{padding:2,margin:2}}>
@@ -104,13 +104,35 @@ function User_Profile(){
                                     fontWeight: '700',
                                     }}
                                 >{/** กำหนดให้เว้นบรรทัด auto จาก white space */}
-                                    {user.Profile_Description}
+                                    {user.Store_Description}
+                                </Box>
+                                <Box
+                                    component="div"
+                                    sx={{
+                                    width : 400,
+                                    textOverflow: 'ellipsis',overflow: 'hidden',
+                                    whiteSpace: 'break-spaces',
+                                    my: 2,
+                                    p: 1,
+                                    bgcolor: (theme) =>
+                                        theme.palette.mode === 'dark' ? '#101010' : 'grey.100',
+                                    color: (theme) =>
+                                        theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
+                                    border: '1px solid',
+                                    borderColor: (theme) =>
+                                        theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
+                                    borderRadius: 2,
+                                    fontSize: '0.875rem',
+                                    fontWeight: '700',
+                                    }}
+                                >{/** กำหนดให้เว้นบรรทัด auto จาก white space */}
+                                    {user.Store_Contact}
                                 </Box>
                                 <Box>
-                                    <h3>Favorite Game</h3>
+                                    <h3>Oustanding Game</h3>
                                 </Box>
                                 <Box>
-                                    {show_fav_game(Number(user.Favorite_Game_ID)-1)}
+                                    {show_outStanding_game(Number(user.Out_Standing_Game_ID)-1)}
                                 </Box>
 
                             </Grid>
@@ -121,7 +143,15 @@ function User_Profile(){
             </Box>
         </Container>
     );
-    return null;
+    else return (
+        <Container>
+            <Box>
+                <Grid container justifyContent={"center"} marginTop={50}>
+                    <h1>ผู้ใช้รายนี้ไม่ได้ลงทะเบียนร้านค้าขายเกมไว้</h1>
+                </Grid>
+            </Box>
+        </Container>
+    );
 }
 
-export default User_Profile
+export default Store_Profile
