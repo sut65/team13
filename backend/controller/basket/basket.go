@@ -83,7 +83,18 @@ func GetBasket(c *gin.Context) {
 func ListBasket(c *gin.Context) {
 	var basket []entity.Basket
 
-	if err := entity.DB().Preload("User").Preload("Game").Preload("Payment_Status").Raw("SELECT * FROM baskets WHERE payment_status_id = 1").Find(&basket).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM payment_statuses").Scan(&basket).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": basket})
+}
+
+// GET /userbasket/:uid
+func GetUserBasket(c *gin.Context) {
+	var basket []entity.Basket
+	uid := c.Param("uid")
+	if err := entity.DB().Preload("User").Preload("Game").Preload("Payment_Status").Raw("SELECT * FROM baskets WHERE payment_status_id = 1 AND user_id = ?", uid).Find(&basket).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

@@ -42,6 +42,7 @@ func main() {
 	r.POST("/baskets", basket_controller.CraeteBasket)
 	r.PATCH("/baskets", basket_controller.UpdateBasket)
 	r.DELETE("/basket/:id", basket_controller.DeleteBasket)
+	r.GET("/userbasket/:uid", basket_controller.GetUserBasket)
 
 	// Friend Routes
 	r.GET("/Intimate", friend_controller.ListIntimate)
