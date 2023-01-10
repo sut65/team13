@@ -28,7 +28,8 @@ const theme = createTheme();
 
 function SignIn_User() {
   // Register
-  const [dialogOpen, setDialogOpen] = React.useState(false);
+  const [dialogRegisterOpen, setDialogRegisterOpen] = React.useState(false);
+  const [dialogAdminOpen, setDialogAdminOpen] = React.useState(false);
   const [registerSuccess, setRegisterSuccess] = useState(false);
   const [registerError, setRegisterError] = useState(false);
   const [errorMsg,setErrorMsg] = useState<String | null>(null);
@@ -46,9 +47,8 @@ function SignIn_User() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
 
-  async function Login(data: SigninUserInterface) {
+  async function LoginUser(data: SigninUserInterface) {
     const apiUrl = "http://localhost:8080";
-    console.log(data)
 
 //============================================== Start step 2 โหลดข้อมูลสมาชิก(Email) ==============================================
     const requestOptions = {
@@ -57,13 +57,40 @@ function SignIn_User() {
       body: JSON.stringify(data),
     };
   
-    let res = await fetch(`${apiUrl}/login`, requestOptions)
+    let res = await fetch(`${apiUrl}/login/user`, requestOptions)
       .then((response) => response.json())
       .then((res) => {
         if (res.data) {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("uid", res.data.id);
           localStorage.setItem("email", res.data.email);
+          localStorage.setItem("position", res.data.position);
+          return res.data;
+        } else {
+          console.log(res.error);
+          return false;
+        }
+      });
+      
+    return res;
+  }
+
+  async function LoginAdmin(data: SigninUserInterface) {
+    const apiUrl = "http://localhost:8080";
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    };
+  
+    let res = await fetch(`${apiUrl}/login/admin`, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.data) {
+          localStorage.setItem("token", res.data.token);
+          localStorage.setItem("aid", res.data.id);
+          localStorage.setItem("email", res.data.email);
+          localStorage.setItem("position", res.data.position);
           return res.data;
         } else {
           console.log(res.error);
@@ -113,12 +140,20 @@ function SignIn_User() {
     setRegisterError(false);
   };
 
-  const handleDialogClickOpen = () => {
-    setDialogOpen(true);
+  const handleDialogRegisterClickOpen = () => {
+    setDialogRegisterOpen(true);
   };
 
-  const handleDialogClose = () => {
-      setDialogOpen(false);
+  const handleDialogRegisterClose = () => {
+      setDialogRegisterOpen(false);
+  };
+
+  const handleDialogAdminClickOpen = () => {
+    setDialogAdminOpen(true);
+  };
+
+  const handleDialogAdminClose = () => {
+      setDialogAdminOpen(false);
   };
 
   const handleImageChange = (event: any) => {
@@ -132,8 +167,20 @@ function SignIn_User() {
     }
   }
 
-  const submit = async () => {
-    let res = await Login(signin);
+  const submitUser = async () => {
+    let res = await LoginUser(signin);
+    if (res) {
+      setSuccess(true);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+    } else {
+      setError(true);
+    }
+  };
+
+  const submitAdmin = async () => {
+    let res = await LoginAdmin(signin);
     if (res) {
       setSuccess(true);
       setTimeout(() => {
@@ -281,7 +328,7 @@ function SignIn_User() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
-                onClick={submit}
+                onClick={submitUser}
               >
                 Sign In
               </Button>
@@ -290,9 +337,18 @@ function SignIn_User() {
                 fullWidth
                 variant="contained"
                 sx={{ mt: 1, mb: 2 }}
-                onClick={handleDialogClickOpen}
+                onClick={handleDialogRegisterClickOpen}
               >
                 Register
+              </Button>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 1, mb: 2 }}
+                onClick={handleDialogAdminClickOpen}
+              >
+                Admin
               </Button>
             </Box>
           </Box>
@@ -301,8 +357,8 @@ function SignIn_User() {
 
       {/** register dialog */}
       <Dialog
-        open={dialogOpen}
-        onClose={handleDialogClose}
+        open={dialogRegisterOpen}
+        onClose={handleDialogRegisterClose}
         aria-labelledby="alert-dialog-title"
         aria-describedby="alert-dialog-description"
         >
@@ -415,10 +471,62 @@ function SignIn_User() {
           </Box>
         </DialogContent>
         <DialogActions>
-            <Button onClick={handleDialogClose}>Cancel</Button>
+            <Button onClick={handleDialogRegisterClose}>Cancel</Button>
             <Button onClick={createAccount} color="error" autoFocus>Submit</Button>
         </DialogActions>
       </Dialog>
+
+      {/* Login Admin */}
+      <Dialog
+        open={dialogAdminOpen}
+        onClose={handleDialogAdminClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+        >
+        <DialogTitle id="alert-dialog-title">
+            {"ADMIN Sign in"}
+        </DialogTitle>
+
+        <DialogContent>
+          <Box>
+            <Paper elevation={2} sx={{padding:2,margin:2}}>
+              <Grid container>
+                <Box sx={{ mt: 1 }}>
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="Email"
+                    label="Email"
+                    name="Email"
+                    autoComplete="Email"
+                    autoFocus
+                    value={signin.Email || ""}
+                    onChange={handleInputChange}
+                  />
+                  <TextField
+                    margin="normal"
+                    required
+                    fullWidth
+                    name="password"
+                    label="Password"
+                    type="password"
+                    id="Password"
+                    autoComplete="current-password"
+                    value={signin.Password || ""}
+                    onChange={handleInputChange}
+                  />
+                </Box>
+              </Grid>
+            </Paper>
+          </Box>
+        </DialogContent>
+        <DialogActions>
+            <Button onClick={handleDialogAdminClose} color="error">Cancel</Button>
+            <Button onClick={submitAdmin} autoFocus>SIGN IN</Button>
+        </DialogActions>
+      </Dialog>
+
     </ThemeProvider>
   );
 }
