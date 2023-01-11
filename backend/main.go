@@ -30,55 +30,55 @@ func main() {
 
 	router := r.Group("/")
 	{
-		router.Use(middlewares.Authorizes())
+		protected := router.Use(middlewares.Authorizes())
 		{
 			// User Routes
-			r.GET("/users", user_controller.ListUsers)
-			r.GET("/user/:email", user_controller.GetUser)
-			r.PATCH("/users", user_controller.UpdateUser)
-			r.DELETE("/users/:email", user_controller.DeleteUser)
+			protected.GET("/users", user_controller.ListUsers)
+			protected.GET("/user/:email", user_controller.GetUser)
+			protected.PATCH("/users", user_controller.UpdateUser)
+			protected.DELETE("/users/:email", user_controller.DeleteUser)
 
-			r.GET("/user_storage/:email", user_controller.ListUserStorages)
-			r.GET("/user_game/:email", user_controller.ListUserGames)
+			protected.GET("/user_storage/:email", user_controller.ListUserStorages)
+			protected.GET("/user_game/:email", user_controller.ListUserGames)
 
 			// Basket Routes
-			r.GET("/payment_status", basket_controller.ListPayment_Status)
+			protected.GET("/payment_status", basket_controller.ListPayment_Status)
 
-			r.GET("/baskets", basket_controller.ListBasket)
-			r.GET("/basket/:id", basket_controller.GetBasket)
-			r.POST("/baskets", basket_controller.CraeteBasket)
-			r.PATCH("/baskets", basket_controller.UpdateBasket)
-			r.DELETE("/basket/:id", basket_controller.DeleteBasket)
-			r.GET("/userbasket/:uid", basket_controller.GetUserBasket)
+			protected.GET("/baskets", basket_controller.ListBasket)
+			protected.GET("/basket/:id", basket_controller.GetBasket)
+			protected.POST("/baskets", basket_controller.CraeteBasket)
+			protected.PATCH("/baskets", basket_controller.UpdateBasket)
+			protected.DELETE("/basket/:id", basket_controller.DeleteBasket)
+			protected.GET("/userbasket/:uid", basket_controller.GetUserBasket)
 
 			// Friend Routes
-			r.GET("/Intimate", friend_controller.ListIntimate)
+			protected.GET("/Intimate", friend_controller.ListIntimate)
 
-			r.GET("/friends", friend_controller.ListFriend)
-			r.GET("/friend/:id", friend_controller.GetFriend)
-			r.POST("/friends", friend_controller.CraeteFriend)
-			r.PATCH("/friends", friend_controller.UpdateFriend)
-			r.DELETE("/friend/:id", friend_controller.DeleteFriend)
+			protected.GET("/friends", friend_controller.ListFriend)
+			protected.GET("/friend/:id", friend_controller.GetFriend)
+			protected.POST("/friends", friend_controller.CraeteFriend)
+			protected.PATCH("/friends", friend_controller.UpdateFriend)
+			protected.DELETE("/friend/:id", friend_controller.DeleteFriend)
 
 			// Game Routes
-			r.GET("/Game", game_controller.ListGames)
-			r.GET("/Game/:id", game_controller.GetGame)
-			r.POST("/Game", game_controller.CreateGame)
-			r.PATCH("/Game", game_controller.UpdateGame)
-			r.DELETE("/Game/:id", game_controller.DeleteGame)
+			protected.GET("/Game", game_controller.ListGames)
+			protected.GET("/Game/:id", game_controller.GetGame)
+			protected.POST("/Game", game_controller.CreateGame)
+			protected.PATCH("/Game", game_controller.UpdateGame)
+			protected.DELETE("/Game/:id", game_controller.DeleteGame)
 
-			r.GET("/Rating", game_controller.ListRating)
-			r.GET("/Rating/:id", game_controller.GetRating)
+			protected.GET("/Rating", game_controller.ListRating)
+			protected.GET("/Rating/:id", game_controller.GetRating)
 
-			r.GET("/Status", game_controller.ListGame_status)
-			r.GET("/Status/:id", game_controller.GetGame_status)
+			protected.GET("/Status", game_controller.ListGame_status)
+			protected.GET("/Status/:id", game_controller.GetGame_status)
 
-			r.GET("/Game_Type", game_controller.ListGame_type)
-			r.GET("/Game_Type/:id", game_controller.GetGame_type)
+			protected.GET("/Game_Type", game_controller.ListGame_type)
+			protected.GET("/Game_Type/:id", game_controller.GetGame_type)
 
 			// Storage Routes
-			r.GET("/storages", storage_controller.ListStorages)
-			r.GET("/storages/:id", storage_controller.ListStoragesUser)
+			protected.GET("/storages", storage_controller.ListStorages)
+			protected.GET("/storages/:id", storage_controller.ListStoragesUser)
 		}
 	}
 	// Run the server
