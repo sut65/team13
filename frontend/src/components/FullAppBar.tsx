@@ -93,11 +93,6 @@ function FullAppBar() {
               <ListItemText primary="My Basket" sx={{padding: 2}}/>
             </ListItem>
 
-            <ListItem button component={RouterLink} to="/basket_add">
-              <ShoppingBasketIcon/>
-              <ListItemText primary="Add to Basket (demo)" sx={{padding: 2}}/>
-            </ListItem>
-
             <ListItem button component={RouterLink} to="/user_store_setting">
               <SettingsIcon/>
               <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
