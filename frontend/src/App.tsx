@@ -40,7 +40,6 @@ export default function App() {
         <Route path="/game_list" element={<Game_List/>} /> {/** list game */}
         <Route path="/individual_game/:id" element={<Individual_game_UI/>} /> {/** individual game */}
         <Route path="/basket_list" element={<Basket_List/>} />
-        <Route path="/basket_add" element={<Basket_Add/>} />
       </Routes>
     </div>
   </Router>
