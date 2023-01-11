@@ -71,7 +71,7 @@ func GetGame(c *gin.Context) {
 	var game entity.Game
 	id := c.Param("id")
 
-	if err := entity.DB().Raw("SELECT * FROM games WHERE id = ?", id).Scan(&game).Error; err != nil {
+	if err := entity.DB().Preload("Game_Status").Preload("Type_Game").Preload("Rating").Preload("Seller").Raw("SELECT * FROM games WHERE id = ?", id).Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

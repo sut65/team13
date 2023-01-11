@@ -11,6 +11,7 @@ import Game_UI from "./components/game/Game_UI"
 import Game_List from "./components/game/Game_List"
 import Basket_Add from "./components/basket/Basket_UI_Add_demo";
 import SignIn_User from "./components/SignIn_User_UI";
+import Individual_game_UI from "./components/Individual_game_UI";
 
 export default function App() {
   const [token, setToken] = React.useState<String>("");
@@ -37,6 +38,7 @@ export default function App() {
         <Route path="/store_profile/:email" element={<Store_Profile_UI/>} /> {/** store profile */}
         <Route path="/sell_game" element={<Game_UI/>} /> {/**sell game */}
         <Route path="/game_list" element={<Game_List/>} /> {/** list game */}
+        <Route path="/individual_game/:id" element={<Individual_game_UI/>} /> {/** individual game */}
         <Route path="/basket_list" element={<Basket_List/>} />
         <Route path="/basket_add" element={<Basket_Add/>} />
       </Routes>
