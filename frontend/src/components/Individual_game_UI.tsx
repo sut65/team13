@@ -1,7 +1,16 @@
 import * as React from 'react';
-import { Container } from "@material-ui/core";
-import { Box, Grid, Paper } from '@mui/material';
+import Button from "@mui/material/Button";
+import { Container, Grid, Paper } from '@mui/material';
+import Box from "@mui/material/Box";
 import Moment from 'moment';
+import dayjs, { Dayjs } from "dayjs";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
+import { DialogActions, DialogContent, DialogContentText, DialogTitle} from '@material-ui/core';
+import { Dialog } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
+import TextField from "@mui/material/TextField";
 
 import { useParams } from 'react-router-dom';
 import { GamesInterface } from '../models/game/IGame';
@@ -11,6 +20,13 @@ function Individual_game(){
     const { id } = useParams(); // ดึง parameter จาก url-parameter
     const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
     const [games, setgames] = React.useState<Partial<GamesInterface>>({});
+
+    const [note, setNote] = React.useState<string>("");
+    const [date, setDate] = React.useState<Dayjs | null>(dayjs());
+
+    const [success, setSuccess] = React.useState(false);
+    const [error, setError] = React.useState(false);
+    const [openForAdd, setOpenForAdd] = React.useState(false);
 
     const getGame = async () => {
         const apiUrl = "http://localhost:8080/Game/"+id;
@@ -31,6 +47,55 @@ function Individual_game(){
                 }
             });
     };
+
+    const handleClose = (                                                                        
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+    ) => {
+        if (reason === "clickaway") {
+        return;
+        }
+        setSuccess(false);
+        setError(false);
+    };
+
+    const handleClickOpenForAdd = () => {
+        setOpenForAdd(true);
+    };
+
+    const handleCloseForAdd = () => {
+        setOpenForAdd(false);
+    };
+
+    const AddToBasket = () => { 
+        let data = {                                   //ประกาศก้อนข้อมูล
+            User_ID: Number(localStorage.getItem("uid")),
+            Game_ID: Number(id),
+            Payment_Status_ID: 1,
+            Note: note,
+            Date: date,
+        };
+      
+        const apiUrl = "http://localhost:8080/baskets";           //ส่งขอบันทึก
+        const requestOptions = {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        }; 
+      
+        fetch(apiUrl, requestOptions)                                       //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setSuccess(true);
+                } else {
+                    setError(true);
+                }
+            });
+    }
 
     React.useEffect(() => {
         const fetchData = async () => {
@@ -92,7 +157,83 @@ function Individual_game(){
                     <Grid container> {/** Test */}
                         <h1>Test</h1>
                     </Grid>
+                    <Grid container>
+                        <Box sx={{ mt: 1}}
+                            m={1}
+                            display="flex"
+                            justifyContent="flex-end"
+                            alignItems="flex-end"
+                        >
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="success"
+                                sx={{ mt: 1, mb: 2 }}
+                                onClick={handleClickOpenForAdd}
+                            >
+                                Add to Busket
+                            </Button>
+                        </Box>
+                    </Grid>
                 </Paper>
+            </Box>
+            <Box>
+                <Snackbar                                                                                 //ป้ายบันทึกสำเร็จ
+                    open={success}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Alert onClose={handleClose} severity="success">              
+                        บันทึกข้อมูลสำเร็จ
+                    </Alert>
+                </Snackbar>
+
+                <Snackbar                                                                                 //ป้ายบันทึกไม่สำเร็จ
+                    open={error} 
+                    autoHideDuration={6000} 
+                    onClose={handleClose} 
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Alert onClose={handleClose} severity="error">
+                        บันทึกข้อมูลไม่สำเร็จ หรือคุณมีเกมอยู่ในตะกร้าอยู่แล้ว
+                    </Alert>
+                </Snackbar>
+                <Dialog fullWidth maxWidth="xl" open={openForAdd} onClose={handleCloseForAdd} >
+                    <DialogTitle>Add to Basket</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            {games.Game_Name}
+                        </DialogContentText>
+                        <TextField
+                            id="outlined-basic"
+                            placeholder="Insert details"
+                            variant="outlined"
+                            size="medium"
+                            multiline={true}
+                            minRows={9}
+                            maxRows={2}
+                            fullWidth={true}
+                            onChange={(event) => setNote(event.target.value)}
+                        />
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DateTimePicker   
+                                label="disabled"
+                                disabled
+                                value={date}
+                                onChange={(newValue) => {
+                                    setDate(newValue);
+                                }}
+                                renderInput={(params) => <TextField sx={{ marginY: 2 }} {...params} />}
+                        />
+                        </LocalizationProvider>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseForAdd}>Cancel</Button>
+                        <Button color="success" onClick={AddToBasket}>Add</Button>
+                    </DialogActions>
+                </Dialog>
             </Box>
         </Container>
     );

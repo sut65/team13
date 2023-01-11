@@ -143,10 +143,10 @@ function Basket_List() {
     return (
         <Container>
             <Snackbar                                                                                 //ป้ายบันทึกสำเร็จ
-            open={success}
-            autoHideDuration={6000}
-            onClose={handleClose}
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                open={success}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
                 <Alert onClose={handleClose} severity="success">              
                     บันทึกข้อมูลสำเร็จ
@@ -154,10 +154,11 @@ function Basket_List() {
             </Snackbar>
 
             <Snackbar                                                                                 //ป้ายบันทึกไม่สำเร็จ
-            open={error} 
-            autoHideDuration={6000} 
-            onClose={handleClose} 
-            anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+                open={error} 
+                autoHideDuration={6000} 
+                onClose={handleClose} 
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
                 <Alert onClose={handleClose} severity="error">
                     บันทึกข้อมูลไม่สำเร็จ
                 </Alert>
