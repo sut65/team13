@@ -11,6 +11,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 import { GendersInterface } from "../../models/user/IGender";
 import { UsersInterface } from "../../models/user/IUser";
 import { StoragesInterface } from "../../models/storage/IStorage";
+import { GamesInterface } from "../../models/game/IGame";
 
 function User(){
     const [dialogOpen, setDialogOpen] = React.useState(false);
@@ -25,9 +26,9 @@ function User(){
     const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null); // สร้างตัวแปรแยกเนื่องจาก render.result มันต้องการ ArrayBuffer ด้วย
 
     const [OWNstorages, setOWNstorages] = React.useState<StoragesInterface[]>([]);
-    const [OWNgames, setOWNgames] = React.useState<StoragesInterface[]>([]);
+    const [OWNgames, setOWNgames] = React.useState<GamesInterface[]>([]);
     const [ALLstorages, setALLstorages] = React.useState<StoragesInterface[]>([]);
-    const [ALLgames, setALLgames] = React.useState<StoragesInterface[]>([]);
+    const [ALLgames, setALLgames] = React.useState<GamesInterface[]>([]);
     const [genders, setGenders] = React.useState<GendersInterface[]>([]);
     const [user, setUser] = React.useState<Partial<UsersInterface>>({});
 
