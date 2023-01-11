@@ -12,7 +12,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { Dialog,DialogTitle,DialogContent,DialogContentText,DialogActions } from "@material-ui/core";
-import { FormControl,FormLabel,RadioGroup,Radio,FormControlLabel,FormHelperText } from "@mui/material";
+import { FormControl,FormLabel,RadioGroup,Radio,FormControlLabel,FormHelperText, getOffsetLeft } from "@mui/material";
 
 import { SigninUserInterface } from "../models/ISignIn_User";
 import { GendersInterface } from "../models/user/IGender";
@@ -341,15 +341,21 @@ function SignIn_User() {
               >
                 Register
               </Button>
-              <Button
-                type="submit"
-                variant="contained"
-                sx={{ mt: 45, mb: 2,ml:82 }}
-                onClick={handleDialogAdminClickOpen}
-              >
-                Admin
-              </Button>
-            </Box>
+            </Box>  
+          </Box>
+          <Box sx={{ mt: 1}}
+            m={1}
+            display="flex"
+            justifyContent="flex-end"
+            alignItems="flex-end"
+          >
+            <Button
+              size="small"
+              sx={{ mt: 50 }}
+              onClick={handleDialogAdminClickOpen}
+            >
+              Admin
+            </Button>
           </Box>
         </Grid>
       </Grid>
