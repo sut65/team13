@@ -141,7 +141,7 @@ function Basket_List() {
     }, []);
 
     return (
-        <Container>
+        <Box>
             <Snackbar                                                                                 //ป้ายบันทึกสำเร็จ
                 open={success}
                 autoHideDuration={6000}
@@ -168,15 +168,17 @@ function Basket_List() {
                 <Table className={classes.table} aria-label="Basket">
                     <TableHead>
                         <TableRow>
+                            <TableCell></TableCell>
                             <TableCell>Game</TableCell>
-                                <TableCell align="center">Price</TableCell>
-                                <TableCell align="center">Note</TableCell>
-                                <TableCell align="center">Action</TableCell>
-                            </TableRow>
-                        </TableHead>
+                            <TableCell align="center">Price</TableCell>
+                            <TableCell align="center">Note</TableCell>
+                            <TableCell align="center">Action</TableCell>
+                        </TableRow>
+                    </TableHead>
                         <TableBody>
                             {basket.map((item) => (
                                 <TableRow key={item.ID}>
+                                    <TableCell align="center"><img src="https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg?t=1672223247" width="300" height="200"/> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
                                     <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
                                     <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
                                     <TableCell align="center">{item.Note}</TableCell>
@@ -231,7 +233,7 @@ function Basket_List() {
                         </TableBody>
                 </Table>
             </TableContainer>
-        </Container>
+        </Box>
   );
 }
 export default Basket_List
