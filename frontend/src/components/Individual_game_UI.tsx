@@ -178,7 +178,7 @@ function Individual_game(){
                     </Grid>
                 </Paper>
             </Box>
-            <Box>
+            <Box> {/** Popup ต่างๆ */}
                 <Snackbar                                                                                 //ป้ายบันทึกสำเร็จ
                     open={success}
                     autoHideDuration={6000}
