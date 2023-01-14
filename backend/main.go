@@ -1,6 +1,7 @@
 package main
 
 import (
+	banner_controller "github.com/sut65/team13/controller/banner"
 	basket_controller "github.com/sut65/team13/controller/basket"
 	friend_controller "github.com/sut65/team13/controller/friend"
 	game_controller "github.com/sut65/team13/controller/game"
@@ -79,6 +80,13 @@ func main() {
 			// Storage Routes
 			protected.GET("/storages", storage_controller.ListStorages)
 			protected.GET("/storages/:id", storage_controller.ListStoragesUser)
+
+			// Banner Routes
+			protected.GET("/banners", banner_controller.ListBanners)
+			protected.GET("/banner/:id", banner_controller.GetBanner)
+			protected.POST("/banners", banner_controller.CreateBanner)
+			protected.PATCH("/banners", banner_controller.UpdateBanner)
+			protected.DELETE("/banner/:id", banner_controller.DeleteBanner)
 		}
 	}
 	// Run the server
