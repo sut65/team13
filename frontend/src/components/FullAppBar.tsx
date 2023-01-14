@@ -12,7 +12,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Drawer from '@mui/material/Drawer';
 import { makeStyles } from "@material-ui/core/styles";
 
-// Icon
+// User Icon
 import SellIcon from '@mui/icons-material/Sell';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -21,6 +21,9 @@ import HomeIcon from '@mui/icons-material/Home';
 import GamesIcon from '@mui/icons-material/Games';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import SettingsIcon from '@mui/icons-material/Settings';
+
+// Admin Icon
+import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 
 import { Link as RouterLink } from "react-router-dom";
 
@@ -49,7 +52,7 @@ function drawerList() {
         </ListItem>
 
         <ListItem button component={RouterLink} to="/banner">
-          <DashboardIcon/>
+          <ViewCarouselIcon/>
           <ListItemText primary="Banner" sx={{padding: 2}}/>
         </ListItem>
       </List>
