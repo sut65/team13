@@ -39,6 +39,55 @@ function FullAppBar() {
     window.location.href = "/";
   };
 
+function drawerList() {
+  if(localStorage.getItem("position") == "Admin"){
+    return( // Admin Drawer
+      <List className={classes.drawer} sx={{margin: 1,padding: 2}}>
+        <ListItem button component={RouterLink} to="/">
+          <HomeIcon/>
+          <ListItemText primary="FirstPage" sx={{padding: 2}}/>
+        </ListItem>
+
+        <ListItem button component={RouterLink} to="/banner">
+          <DashboardIcon/>
+          <ListItemText primary="Banner" sx={{padding: 2}}/>
+        </ListItem>
+      </List>
+    );
+  }else{ // User Drawer
+    return(
+      <List className={classes.drawer} sx={{margin: 1,padding: 2}}>
+
+        <ListItem button component={RouterLink} to="/">
+          <HomeIcon/>
+          <ListItemText primary="FirstPage" sx={{padding: 2}}/>
+        </ListItem>
+
+        <ListItem button component={RouterLink} to="/dashboard">
+          <DashboardIcon/>
+          <ListItemText primary="Dashboard" sx={{padding: 2}}/>
+        </ListItem>
+
+        <ListItem button component={RouterLink} to="/sell_game">
+          <SellIcon/>         
+          <ListItemText primary="Game Market" sx={{padding: 2}}/>
+        </ListItem>
+
+        <ListItem button component={RouterLink} to="/basket_list">
+          <ShoppingBasketIcon/>
+          <ListItemText primary="My Basket" sx={{padding: 2}}/>
+        </ListItem>
+
+        <ListItem button component={RouterLink} to="/user_store_setting">
+          <SettingsIcon/>
+          <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
+        </ListItem>
+
+      </List>
+    );
+  }
+}
+
   const [auth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -70,35 +119,9 @@ function FullAppBar() {
         <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
 
           <GamesIcon sx={{ fontSize: 150, margin: 1, padding: 2 }} />
+          {/** List of Drawer Divided by position */}
+          {drawerList()}
 
-          <List className={classes.drawer} sx={{margin: 1,padding: 2}}>
-
-            <ListItem button component={RouterLink} to="/">
-              <HomeIcon/>
-              <ListItemText primary="FirstPage" sx={{padding: 2}}/>
-            </ListItem>
-
-            <ListItem button component={RouterLink} to="/dashboard">
-              <DashboardIcon/>
-              <ListItemText primary="Dashboard" sx={{padding: 2}}/>
-            </ListItem>
-
-            <ListItem button component={RouterLink} to="/sell_game">
-              <SellIcon/>         
-              <ListItemText primary="Game Market" sx={{padding: 2}}/>
-            </ListItem>
-
-            <ListItem button component={RouterLink} to="/basket_list">
-              <ShoppingBasketIcon/>
-              <ListItemText primary="My Basket" sx={{padding: 2}}/>
-            </ListItem>
-
-            <ListItem button component={RouterLink} to="/user_store_setting">
-              <SettingsIcon/>
-              <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
-            </ListItem>
-
-          </List>
         </Drawer>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
