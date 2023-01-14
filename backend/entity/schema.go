@@ -36,6 +36,7 @@ type User struct {
 	User_Friend          []Friend  `gorm:"foreignKey:User_Friend_ID"`
 	Game                 []Game    `gorm:"foreignKey:Seller_ID"`
 	Storage              []Storage `gorm:"foreignKey:User_ID"`
+	Banner               []Banner  `gorm:"foreignKey:User_ID"`
 }
 
 // ---ระบบขายเกม(Game)---
@@ -75,6 +76,7 @@ type Game struct {
 	User_Out_Standing_Game []User    `gorm:"foreignKey:Out_Standing_Game_ID"`
 	Basket                 []Basket  `gorm:"foreignKey:Game_ID"`
 	Friend                 []Friend  `gorm:"foreignKey:Game_ID"`
+	Banner                 []Banner  `gorm:"foreignKey:Game_ID"`
 }
 
 // ---ระบบคลังเกม(Storage)---
@@ -162,6 +164,20 @@ type Admin struct {
 	gorm.Model
 	Email    string `gorm:"uniqueIndex"`
 	Password string
+	Banner   []Banner `gorm:"foreignKey:Admin_ID"`
 }
 
 // ---ระบบ Banner---
+type Banner struct {
+	// Normal User
+	gorm.Model
+	Banner_Picture string
+	Description    string
+	Edit_at        time.Time
+	User_ID        *uint
+	User           User `gorm:"references:id"`
+	Admin_ID       *uint
+	Admin          Admin `gorm:"references:id"`
+	Game_ID        *uint
+	Game           Game `gorm:"references:id"`
+}
