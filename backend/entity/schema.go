@@ -163,3 +163,5 @@ type Admin struct {
 	Email    string `gorm:"uniqueIndex"`
 	Password string
 }
+
+// ---ระบบ Banner---
