@@ -157,7 +157,7 @@ function Individual_game(){
                     <Grid container> {/** Test */}
                         <h1>Test</h1>
                     </Grid>
-                    <Grid container>
+                    <Grid container direction="row-reverse">
                         <Box sx={{ mt: 1}}
                             m={1}
                             display="flex"

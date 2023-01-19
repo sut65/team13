@@ -95,6 +95,30 @@ func ListFriend(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": friend})
 }
 
+// GET /userfriend/:uid
+func GetUserfriend(c *gin.Context) {
+	var friend []entity.Friend
+	uid := c.Param("uid")
+	if err := entity.DB().Preload("User").Preload("User_Friend").Preload("Game").Preload("Intimate").Raw("SELECT * FROM friends WHERE user_id = ? AND is_hide = 0", uid).Find(&friend).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": friend})
+}
+
+// GET /hideuserfriend/:uid
+func GetHideUserfriend(c *gin.Context) {
+	var friend []entity.Friend
+	uid := c.Param("uid")
+	if err := entity.DB().Preload("User").Preload("User_Friend").Preload("Game").Preload("Intimate").Raw("SELECT * FROM friends WHERE user_id = ? AND is_hide = 1", uid).Find(&friend).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": friend})
+}
+
 // PATCH /friends
 func UpdateFriend(c *gin.Context) {
 	var friend entity.Friend
