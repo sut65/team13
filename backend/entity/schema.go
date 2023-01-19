@@ -162,6 +162,7 @@ type Star struct {
 type Admin struct {
 	// Normal User
 	gorm.Model
+	Name     string
 	Email    string `gorm:"uniqueIndex"`
 	Password string
 	Banner   []Banner `gorm:"foreignKey:Admin_ID"`
