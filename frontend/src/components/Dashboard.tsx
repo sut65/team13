@@ -46,7 +46,9 @@ function Dashboard(){
         <Container>
             <Box>
                 <Paper elevation={2} sx={{padding:2,margin:2}}>
-                    
+                    <Grid container justifyContent={"center"}>
+                        <img src={``} width="700" height="300"/>
+                    </Grid>
                 </Paper>
             </Box>
         </Container>

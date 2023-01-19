@@ -19,6 +19,7 @@ type LoginPayload struct {
 type LoginResponse struct {
 	Token    string `json:"token"`
 	ID       uint   `json:"id"`
+	Name     string `json:"name"`
 	Email    string `json:"email"`
 	Position string `json:"position"`
 }
@@ -116,6 +117,7 @@ func LoginAdmin(c *gin.Context) {
 	tokenResponse := LoginResponse{
 		Token:    signedToken,
 		ID:       admin.ID,
+		Name:     admin.Name,
 		Email:    admin.Email,
 		Position: "Admin",
 	}

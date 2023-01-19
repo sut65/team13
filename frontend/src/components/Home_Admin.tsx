@@ -1,11 +1,11 @@
 import { Box } from '@mui/material';
 import * as React from 'react';
 
-function Home() {
+function Home_Admin() {
 
     return (
         <Box></Box>
     );
 }
 
-export default Home;
+export default Home_Admin;

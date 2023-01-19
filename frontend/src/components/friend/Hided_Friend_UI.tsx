@@ -11,7 +11,7 @@ import Alert from "@mui/material/Alert";
 import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { Container, Dialog, Paper, TableContainer } from '@mui/material';
-import { FriendInterface } from '../../models/friend/IFriend';
+import { FriendsInterface } from '../../models/friend/IFriend';
 import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 function Hided_Friend_UI() {
     const classes = useStyles();
 
-    const [friend, setFriend] = useState<FriendInterface[]>([]);
+    const [friend, setFriend] = useState<FriendsInterface[]>([]);
     // const [editBasket, setEditBasket] = useState<BasketInterface>();
     // const [deleteBasket, setDeleteBasket] = useState<BasketInterface>();
 

@@ -81,6 +81,17 @@ func ListUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": users})
 }
 
+// GET /sellers
+func ListSellers(c *gin.Context) {
+	var users []entity.User
+
+	if err := entity.DB().Preload("Game").Preload("Storage").Raw("SELECT * FROM users WHERE Is_Seller = ?", true).Scan(&users).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": users})
+}
+
 // DELETE /users/:email --> ใช้อยู่
 
 func DeleteUser(c *gin.Context) {
@@ -202,4 +213,16 @@ func ListUserGames(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": games})
 
+}
+
+// Get /useraddfriend/:uid  --> ใช้อยู่
+func GetUserForAddFriend(c *gin.Context) {
+	var user []entity.User
+	uid := c.Param("uid")
+	if err := entity.DB().Raw("SELECT * FROM users WHERE id != ?", uid).Find(&user).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": user})
 }

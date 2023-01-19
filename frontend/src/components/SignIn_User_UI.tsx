@@ -89,6 +89,7 @@ function SignIn_User() {
         if (res.data) {
           localStorage.setItem("token", res.data.token);
           localStorage.setItem("aid", res.data.id);
+          localStorage.setItem("name", res.data.name);
           localStorage.setItem("email", res.data.email);
           localStorage.setItem("position", res.data.position);
           return res.data;
