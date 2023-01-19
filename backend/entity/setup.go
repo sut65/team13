@@ -32,6 +32,9 @@ func SetupDatabase() {
 		&Gender{},
 		&User{},
 
+		// Banner
+		&Banner{},
+
 		// Game
 		&Game_Status{},
 		&Type_Game{},
@@ -313,8 +316,19 @@ func SetupDatabase() {
 
 	//Admin
 	admin1 := Admin{
+		Name:     "Mark",
 		Email:    "Admin",
 		Password: "$2a$12$hRdKLZTUspkskzjZwBAb6eImCpHYIe48KSUGD83JrzHYx6aKfowb6",
 	}
 	db.Model(&Admin{}).Create(&admin1)
+
+	//Banner
+	banner1 := Banner{
+		Description: "test",
+		Edit_at:     time.Now(),
+		User:        User1,
+		Admin:       admin1,
+		Game:        Game1,
+	}
+	db.Model(&Banner{}).Create(&banner1)
 }

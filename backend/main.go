@@ -39,6 +39,7 @@ func main() {
 			protected.PATCH("/users", user_controller.UpdateUser)
 			protected.DELETE("/users/:email", user_controller.DeleteUser)
 
+			protected.GET("/sellers", user_controller.ListSellers)
 			protected.GET("/user_storage/:email", user_controller.ListUserStorages)
 			protected.GET("/user_game/:email", user_controller.ListUserGames)
 

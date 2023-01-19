@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Basket_List from "./components/basket/Basket_UI_List";
 import FullAppBar from "./components/FullAppBar";
 
-import Home from "./components/Home";
+import Home_Admin from "./components/Home_Admin";
+import Home_User from "./components/Home_User";
 
 // User import
 import User_UI from "./components/user/User_UI"
@@ -14,6 +15,7 @@ import Game_List from "./components/game/Game_List"
 import Basket_Add from "./components/basket/Basket_UI_Add_demo";
 import SignIn_User from "./components/SignIn_User_UI";
 import Individual_game_UI from "./components/Individual_game_UI";
+import Dashboard from "./components/Dashboard";
 
 // Admin import
 import Banner_UI from "./components/banner/Banner_UI";
@@ -36,13 +38,15 @@ export default function App() {
     if(localStorage.getItem("position") == "Admin"){
       return( // Admin Routes
         <Routes>
+          <Route path="/" element={<Home_Admin/>} /> {/** home */}
           <Route path="/banner" element={<Banner_UI/>} /> {/** banner */}
         </Routes>
       );
     }else{ // User Routes
       return(
         <Routes>
-          <Route path="/" element={<Home/>} /> {/** home */}
+          <Route path="/" element={<Home_User/>} /> {/** home */}
+          <Route path="/dashboard" element={<Dashboard/>} /> {/** Dashboard */}
           <Route path="/user_store_setting" element={<User_UI/>} /> {/** user & store setting */}
           <Route path="/user_profile/:email" element={<User_Profile_UI/>} /> {/** user profile */}
           <Route path="/store_profile/:email" element={<Store_Profile_UI/>} /> {/** store profile */}
