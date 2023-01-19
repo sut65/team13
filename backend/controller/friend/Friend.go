@@ -13,36 +13,36 @@ import (
 func CraeteFriend(c *gin.Context) {
 
 	var friend entity.Friend
-	var user entity.User
+	var User_Friend entity.User
 	var intimate entity.Intimate
 	var game entity.Game
 
-	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 7 จะถูก bind เข้าตัวแปร friend
 	if err := c.ShouldBindJSON(&friend); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// 9.ค้นหา user ด้วย id
-	if tx := entity.DB().Where("id = ?", friend.User_Friend_ID).First(&user); tx.RowsAffected == 0 {
+	if tx := entity.DB().Raw("SELECT * FROM friends WHERE user_id = ? AND user_friend_id = ?", friend.User_ID, friend.User_Friend_ID).First(&friend); tx.RowsAffected == 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "already friends"})
+		return
+	}
+
+	if tx := entity.DB().Where("id = ?", friend.User_Friend_ID).First(&User_Friend); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 		return
 	}
 
-	// 10.ค้นหา intimate ด้วย id
 	if tx := entity.DB().Where("id = ?", friend.Intimate_ID).First(&intimate); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "intimate not found"})
 		return
 	}
 
-	// 10.ค้นหา game ด้วย id
 	if tx := entity.DB().Where("id = ?", friend.Game_ID).First(&game); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "intimate not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
 		return
 	}
 
-	// 11: สร้าง Basket
-	fri := entity.Friend{
+	friAdd := entity.Friend{
 		User_ID:        friend.User_ID,
 		User_Friend_ID: friend.User_Friend_ID,
 		Intimate_ID:    friend.Intimate_ID,
@@ -52,14 +52,34 @@ func CraeteFriend(c *gin.Context) {
 		Date:           friend.Date.Local(),
 	}
 
-	// ขั้นตอนการ validate ที่นำมาจาก unit test
-	if _, err := govalidator.ValidateStruct(fri); err != nil {
+	if _, err := govalidator.ValidateStruct(friAdd); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// 12: บันทึก
-	if err := entity.DB().Create(&fri).Error; err != nil {
+	if err := entity.DB().Create(&friAdd).Error; err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+
+	}
+
+	friAdded := entity.Friend{
+		User_ID:        friend.User_Friend_ID,
+		User_Friend_ID: friend.User_ID,
+		Intimate_ID:    friend.Intimate_ID,
+		Game_ID:        friend.Game_ID,
+		Is_Hide:        friend.Is_Hide,
+		Date:           friend.Date.Local(),
+	}
+
+	if _, err := govalidator.ValidateStruct(friAdded); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if err := entity.DB().Create(&friAdded).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 

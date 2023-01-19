@@ -49,12 +49,13 @@ func main() {
 			protected.GET("/baskets", basket_controller.ListBasket)
 			protected.GET("/basket/:id", basket_controller.GetBasket)
 			protected.GET("/userbasket/:uid", basket_controller.GetUserBasket)
+
 			protected.POST("/baskets", basket_controller.CraeteBasket)
 			protected.PATCH("/baskets", basket_controller.UpdateBasket)
 			protected.DELETE("/basket/:id", basket_controller.DeleteBasket)
 
 			// Friend Routes
-			protected.GET("/Intimate", friend_controller.ListIntimate)
+			protected.GET("/intimates", friend_controller.ListIntimate)
 
 			protected.GET("/friends", friend_controller.ListFriend)
 			protected.GET("/friend/:id", friend_controller.GetFriend)
@@ -64,6 +65,7 @@ func main() {
 			protected.PATCH("/friends", friend_controller.UpdateFriend)
 			protected.DELETE("/friend/:id", friend_controller.DeleteFriend)
 
+			protected.GET("/userforaddfriend/:uid", user_controller.GetUserForAddFriend)
 			// Game Routes
 			protected.GET("/Game", game_controller.ListGames)
 			protected.GET("/Game/:id", game_controller.GetGame)

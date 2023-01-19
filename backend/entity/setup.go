@@ -279,11 +279,14 @@ func SetupDatabase() {
 	db.Model(&Basket{}).Create(&Basket4)
 
 	//Intimate
+	//////////////////////////////////////////////// ห้ามสลับ
 	Intimate1 := Intimate{
-		Intimate_Name: "Bast Friend",
-	}
-	Intimate2 := Intimate{
 		Intimate_Name: "Know",
+	}
+	db.Model(&Intimate{}).Create(&Intimate1)
+	////////////////////////////////////////////////
+	Intimate2 := Intimate{
+		Intimate_Name: "Bast Friend",
 	}
 	Intimate3 := Intimate{
 		Intimate_Name: "Family",
@@ -291,7 +294,6 @@ func SetupDatabase() {
 	Intimate4 := Intimate{
 		Intimate_Name: "Forget",
 	}
-	db.Model(&Intimate{}).Create(&Intimate1)
 	db.Model(&Intimate{}).Create(&Intimate2)
 	db.Model(&Intimate{}).Create(&Intimate3)
 	db.Model(&Intimate{}).Create(&Intimate4)
@@ -333,30 +335,10 @@ func SetupDatabase() {
 		Is_Hide:        false,
 		Date:           time.Now(),
 	}
-	friend5 := Friend{
-		User_ID:        &User1.ID,
-		User_Friend_ID: &User4.ID,
-		Intimate_ID:    &Intimate1.ID,
-		Nickname:       "test_name",
-		Game_ID:        &Game3.ID,
-		Is_Hide:        false,
-		Date:           time.Now(),
-	}
-	friend6 := Friend{
-		User_ID:        &User4.ID,
-		User_Friend_ID: &User1.ID,
-		Intimate_ID:    &Intimate1.ID,
-		Nickname:       "นนท์",
-		Game_ID:        &Game3.ID,
-		Is_Hide:        false,
-		Date:           time.Now(),
-	}
 	db.Model(&Friend{}).Create(&friend1)
 	db.Model(&Friend{}).Create(&friend2)
 	db.Model(&Friend{}).Create(&friend3)
 	db.Model(&Friend{}).Create(&friend4)
-	db.Model(&Friend{}).Create(&friend5)
-	db.Model(&Friend{}).Create(&friend6)
 
 	//Admin
 	admin1 := Admin{
