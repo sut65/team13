@@ -1,6 +1,5 @@
 import * as React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Basket_List from "./components/basket/Basket_UI_List";
 import FullAppBar from "./components/FullAppBar";
 
 import Home from "./components/Home";
@@ -11,9 +10,11 @@ import User_Profile_UI from "./components/user/User_Profile_UI";
 import Store_Profile_UI from "./components/user/Store_Profile_UI";
 import Game_UI from "./components/game/Game_UI"
 import Game_List from "./components/game/Game_List"
-import Basket_Add from "./components/basket/Basket_UI_Add_demo";
 import SignIn_User from "./components/SignIn_User_UI";
 import Individual_game_UI from "./components/Individual_game_UI";
+import Basket_List from "./components/basket/Basket_UI_List";
+import Friend_UI from "./components/friend/Friend_UI";
+import Hided_Friend_UI from "./components/friend/Hided_Friend_UI";
 
 // Admin import
 import Banner_UI from "./components/banner/Banner_UI";
@@ -49,7 +50,10 @@ export default function App() {
           <Route path="/sell_game" element={<Game_UI/>} /> {/**sell game */}
           <Route path="/game_list" element={<Game_List/>} /> {/** list game */}
           <Route path="/individual_game/:id" element={<Individual_game_UI/>} /> {/** individual game */}
-          <Route path="/basket_list" element={<Basket_List/>} />
+          <Route path="/my_basket" element={<Basket_List/>} /> {/** basket */}
+          <Route path="/my_friend" element={<Friend_UI/>} /> {/** friend */}
+          <Route path="/my_hided_friend" element={<Hided_Friend_UI/>} /> {/** hide friend */}
+
         </Routes>
       );
     }

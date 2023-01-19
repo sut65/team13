@@ -1,17 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Button from '@material-ui/core/Button';
-import { BasketInterface } from '../../models/basket/IBasket';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Button from '@mui/material/Button';
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
+import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
 import Stack from '@mui/material/Stack';
-import { Container, Dialog, Grid, Paper, TableContainer } from '@mui/material';
+import { Container, Dialog, Paper, TableContainer } from '@mui/material';
+import { FriendInterface } from '../../models/friend/IFriend';
+import { Link as RouterLink } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -19,12 +20,12 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function Basket_List() {
+function Hided_Friend_UI() {
     const classes = useStyles();
 
-    const [basket, setBasket] = useState<BasketInterface[]>([]);
-    const [editBasket, setEditBasket] = useState<BasketInterface>();
-    const [deleteBasket, setDeleteBasket] = useState<BasketInterface>();
+    const [friend, setFriend] = useState<FriendInterface[]>([]);
+    // const [editBasket, setEditBasket] = useState<BasketInterface>();
+    // const [deleteBasket, setDeleteBasket] = useState<BasketInterface>();
 
     const [note, setNote] = React.useState<string>("");
 
@@ -44,26 +45,26 @@ function Basket_List() {
         setError(false);
     };
 
-    const handleClickOpenForEdit = (item: BasketInterface) => {
-        setOpenForEdit(true);
-        setEditBasket(item);
-    };
+    // const handleClickOpenForEdit = (item: BasketInterface) => {
+    //     setOpenForEdit(true);
+    //     setEditBasket(item);
+    // };
 
-    const handleClickOpenForDelete = (item: BasketInterface) => {
-        setOpenForDelete(true);
-        setDeleteBasket(item);
-    };
+    // const handleClickOpenForDelete = (item: BasketInterface) => {
+    //     setOpenForDelete(true);
+    //     setDeleteBasket(item);
+    // };
 
-    const handleCloseForEdit = () => {
-        setOpenForEdit(false);
-    };
+    // const handleCloseForEdit = () => {
+    //     setOpenForEdit(false);
+    // };
 
-    const handleCloseForDelete = () => {
-        setOpenForDelete(false);
-    };
+    // const handleCloseForDelete = () => {
+    //     setOpenForDelete(false);
+    // };
 
-    const getUserBasket = async () => {                                 
-        const apiUrl = "http://localhost:8080/userbasket/"+String(localStorage.getItem("uid"));
+    const getUserFriend = async () => {                                 
+        const apiUrl = "http://localhost:8080/hideuserfriend/"+String(localStorage.getItem("uid"));
         const requestOptions = {
             method: "GET",      
             headers: {
@@ -75,68 +76,68 @@ function Basket_List() {
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setBasket(res.data);
+                    setFriend(res.data);
                 }
             });
     };
 
-    const updateItem = (id: number,note: string) => {
-        let data = {       //ประกาศก้อนข้อมูล
-            ID: id,                                                     
-            Note: note,      
-        };
-        const apiUrl = "http://localhost:8080/baskets";                      //ส่งขอการลบ  
-        const requestOptions = {     
-            method: "PATCH",      
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },     
-            body: JSON.stringify(data),
-        };
+    // const updateItem = (id: number,note: string) => {
+    //     let data = {       //ประกาศก้อนข้อมูล
+    //         ID: id,                                                     
+    //         Note: note,      
+    //     };
+    //     const apiUrl = "http://localhost:8080/baskets";                      //ส่งขอการลบ  
+    //     const requestOptions = {     
+    //         method: "PATCH",      
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },     
+    //         body: JSON.stringify(data),
+    //     };
       
-        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
-        .then((response) => response.json())      
-        .then((res) => {      
-            if (res.data) {
-                setSuccess(true);
-                window.location.reload();     
-            } else {
-                setError(true);     
-            }
-        });        
-    }
+    //     fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+    //     .then((response) => response.json())      
+    //     .then((res) => {      
+    //         if (res.data) {
+    //             setSuccess(true);
+    //             window.location.reload();     
+    //         } else {
+    //             setError(true);     
+    //         }
+    //     });        
+    // }
 
-    const deleteItem = (id: number) => {
-        let data = {                                                            //ประกาศก้อนข้อมูล
-            ID: id,      
-        };
-        const apiUrl = "http://localhost:8080/basket/:id";                      //ส่งขอการลบ  
-        const requestOptions = {     
-            method: "DELETE",      
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },     
-            body: JSON.stringify(data),
-        };
+    // const deleteItem = (id: number) => {
+    //     let data = {                                                            //ประกาศก้อนข้อมูล
+    //         ID: id,      
+    //     };
+    //     const apiUrl = "http://localhost:8080/basket/:id";                      //ส่งขอการลบ  
+    //     const requestOptions = {     
+    //         method: "DELETE",      
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },     
+    //         body: JSON.stringify(data),
+    //     };
       
-        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
-        .then((response) => response.json())      
-        .then((res) => {      
-            if (res.data) {
-                setSuccess(true);
-                window.location.reload();     
-            } else {
-                setError(true);     
-            }
-        });
-    }
+    //     fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+    //     .then((response) => response.json())      
+    //     .then((res) => {      
+    //         if (res.data) {
+    //             setSuccess(true);
+    //             window.location.reload();     
+    //         } else {
+    //             setError(true);     
+    //         }
+    //     });
+    // }
 
 
     useEffect(() => {
-        getUserBasket(); 
-        console.log(basket)  
+        getUserFriend();  
+        console.log(friend)
     }, []);
 
     return (
@@ -164,7 +165,7 @@ function Basket_List() {
             </Snackbar>
 
             <Grid container sx={{ padding:1 }}>
-                <h1>My Basket</h1>
+                <h1>Hided Friend</h1>
             </Grid>
             
             <TableContainer component={Paper}>
@@ -172,20 +173,22 @@ function Basket_List() {
                     <TableHead>
                         <TableRow>
                             <TableCell></TableCell>
-                            <TableCell><h4>Game</h4></TableCell>
-                            <TableCell align="center"><h4>Price</h4></TableCell>
-                            <TableCell align="center"><h4>Note</h4></TableCell>
-                            <TableCell align="center"><h4>Action</h4></TableCell>
+                            <TableCell><h4>Friend</h4></TableCell>
+                            <TableCell align="center"><h4>Nickname</h4></TableCell>
+                            <TableCell align="center"><h4>Intimate</h4></TableCell>
+                            <TableCell align="center"><h4>From</h4></TableCell>
                         </TableRow>
                     </TableHead>
                         <TableBody>
-                            {basket.map((item) => (
+                            {friend.map((item) => (
+                                console.log(item),
                                 <TableRow key={item.ID}>
-                                    <TableCell align="center"><img src="https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg?t=1672223247" width="300" height="200"/> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
-                                    <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
-                                    <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
-                                    <TableCell align="center">{item.Note}</TableCell>
-                                    <TableCell align="center">
+                                    <TableCell align="center"><img src={`${item.User_Friend.Profile_Picture}`} width="250" height="250"/> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
+                                    <TableCell component="th" scope="row">{item.User_Friend.Profile_Name}</TableCell>
+                                    <TableCell align="center">{item.Nickname}</TableCell>       
+                                    <TableCell align="center">{item.Intimate.Intimate_Name}</TableCell>    
+                                    <TableCell align="center">{item.Game.Game_Name}</TableCell>               
+                                    {/* <TableCell align="center">
                                         <Stack direction="column" spacing={2}>
                                             <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
                                                 Edit
@@ -194,8 +197,8 @@ function Basket_List() {
                                                 Delete
                                             </Button>                                        
                                         </Stack>
-                                    </TableCell>
-                                        <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
+                                    </TableCell> */}
+                                        {/* <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
                                             <DialogTitle>{editBasket?.Game.Game_Name}</DialogTitle>
                                             <DialogContent>
                                                 <DialogContentText>
@@ -230,13 +233,16 @@ function Basket_List() {
                                                 <Button onClick={handleCloseForDelete}>Cancel</Button>
                                                 <Button color="secondary" onClick={() => deleteItem(deleteBasket?.ID||0)}>Delete</Button>
                                             </DialogActions>
-                                        </Dialog>
+                                        </Dialog> */}
                                 </TableRow>
                             ))}
                         </TableBody>
                 </Table>
             </TableContainer>
+            <Grid container sx={{ padding: 2, width: 150 }}>
+                <Button variant="contained" color="primary" component={RouterLink} to="/my_friend">My friend</Button>
+            </Grid>
         </Box>
   );
 }
-export default Basket_List
+export default Hided_Friend_UI
