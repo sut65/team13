@@ -9,6 +9,7 @@ import Grid from "@mui/material/Grid";
 import FormControl from "@mui/material/FormControl";
 import TextField from "@mui/material/TextField";
 
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import BuildIcon from '@mui/icons-material/Build';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import Select, { SelectChangeEvent } from "@mui/material/Select";
@@ -37,7 +38,7 @@ function Game() {
   const [game_type, setGame_type] = useState<Type_GamesInterface[]>([]);
   const [game_status, setGame_status] = useState<Game_StatusInterface[]>([]);
   const [game, setGame] = React.useState<Partial<GamesInterface>>({ Publish_Date: new Date(),});
-
+  const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null); // สร้างตัวแปรแยกเนื่องจาก render.result มันต้องการ ArrayBuffer ด้วย
 
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -52,6 +53,17 @@ function Game() {
     setSuccess(false);
     setError(false);
   };
+  //image
+  const handleImageChange = (event: any) => {
+    const image = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(image);
+    reader.onload = () => {
+        const base64Data = reader.result;
+        setImageString(base64Data)
+    }
+}
   // TextField
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }>
@@ -71,7 +83,7 @@ function Game() {
 
   };
   const GetUser = async () => {
-    const apiUrl = "http://localhost:8080/user/natt@gmail.com"; // ตรง email รอเปลี่ยนเป็น localStorage.getItem
+    const apiUrl = "http://localhost:8080/user/"+localStorage.getItem("email"); // ตรง email รอเปลี่ยนเป็น localStorage.getItem
     const requestOptions = {
         method: "GET",
         headers: {
@@ -144,6 +156,8 @@ function Game() {
       Game_Status_ID: convertType(game.Game_Status_ID),
       Type_Game_ID: convertType(game.Type_Game_ID),
       Rating_ID: convertType(game.Rating_ID),
+      Game_file : game.Game_file ,
+      Game_Picture: imageString
 
 
     };
@@ -206,8 +220,8 @@ function Game() {
             //ml: 10,
             mt: 5,
             mb: 5,
-            mr: 10,
-            backgroundImage: `url("https://images3.alphacoders.com/112/1126231.png")`
+            mr: 10
+           // backgroundImage: `url("https://images3.alphacoders.com/112/1126231.png")`
             , width: "1500px"
             , height: "1200px"
             , opacity: 1
@@ -258,7 +272,7 @@ function Game() {
             <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
               <Grid item xs={3}>
                 <h2 style={{
-                  color: "white"
+                  color: "black"
 
                 }}>Game Title</h2>
 
@@ -424,7 +438,7 @@ function Game() {
                 <FormControl fullWidth variant="outlined">
 
                   <TextField
-                    id="Name"
+                    id="Game_file"
                     variant="outlined"
                     type="string"
                     size="medium"
@@ -451,6 +465,14 @@ function Game() {
                     />
                   </LocalizationProvider>
                 </FormControl>
+                <Grid item xs={8}>
+                <h2> Game Picture</h2>
+                                <Grid>
+                                    <img src={`${imageString}`} width="500" height="250"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
+                                </Grid>
+                                <input type="file" onChange={handleImageChange} />
+                                {/* <FormHelperText>recommend size is 250*250 pixels</FormHelperText> */}
+                            </Grid>
               </Grid>
 
 
