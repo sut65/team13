@@ -172,7 +172,7 @@ function Individual_game(){
                                 sx={{ mt: 1, mb: 2 }}
                                 onClick={handleClickOpenForAdd}
                             >
-                                Add to Busket
+                                Add to Basket
                             </Button>
                         </Box>
                     </Grid>

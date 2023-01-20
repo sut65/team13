@@ -306,6 +306,8 @@ func SetupDatabase() {
 	db.Model(&Intimate{}).Create(&Intimate3)
 	db.Model(&Intimate{}).Create(&Intimate4)
 
+	var t = true
+	var f = false
 	//Friend
 	friend1 := Friend{
 		User_ID:        &User1.ID,
@@ -313,7 +315,7 @@ func SetupDatabase() {
 		Intimate_ID:    &Intimate1.ID,
 		Nickname:       "เบส",
 		Game_ID:        &Game2.ID,
-		Is_Hide:        false,
+		Is_Hide:        &f,
 		Date:           time.Now(),
 	}
 	friend2 := Friend{
@@ -322,7 +324,7 @@ func SetupDatabase() {
 		Intimate_ID:    &Intimate1.ID,
 		Nickname:       "นนท์",
 		Game_ID:        &Game2.ID,
-		Is_Hide:        false,
+		Is_Hide:        &f,
 		Date:           time.Now(),
 	}
 	friend3 := Friend{
@@ -331,7 +333,7 @@ func SetupDatabase() {
 		Intimate_ID:    &Intimate1.ID,
 		Nickname:       "ไบร์ท",
 		Game_ID:        &Game2.ID,
-		Is_Hide:        true,
+		Is_Hide:        &t,
 		Date:           time.Now(),
 	}
 	friend4 := Friend{
@@ -340,7 +342,7 @@ func SetupDatabase() {
 		Intimate_ID:    &Intimate1.ID,
 		Nickname:       "นนท์",
 		Game_ID:        &Game2.ID,
-		Is_Hide:        false,
+		Is_Hide:        &f,
 		Date:           time.Now(),
 	}
 	db.Model(&Friend{}).Create(&friend1)

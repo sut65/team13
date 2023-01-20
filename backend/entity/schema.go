@@ -117,7 +117,7 @@ type Friend struct {
 	Nickname       string
 	Game_ID        *uint
 	Game           Game `gorm:"references:id"`
-	Is_Hide        bool
+	Is_Hide        *bool
 	Date           time.Time
 }
 
