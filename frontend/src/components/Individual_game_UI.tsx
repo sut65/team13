@@ -115,13 +115,13 @@ function Individual_game(){
 
                     <Grid container> {/** Game Description */}
                         <Grid>
-                            <img src="https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg?t=1672223247" width="700" height="400"/> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}
+                            <img src={`${games.Game_Picture}`} width="700" height="400"/>
                         </Grid>
                         <Grid marginLeft={4}>
                             <Box
                                 component="div"
                                 sx={{
-                                width : 400,
+                                width : 300,
                                 textOverflow: 'ellipsis',overflow: 'hidden',
                                 whiteSpace: 'break-spaces',
                                 my: 2,
@@ -154,10 +154,7 @@ function Individual_game(){
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid container> {/** Test */}
-                        <h1>Test</h1>
-                    </Grid>
-                    <Grid container direction="row-reverse">
+                    <Grid container>
                         <Box sx={{ mt: 1}}
                             m={1}
                             display="flex"
