@@ -60,7 +60,7 @@ type Rating struct {
 
 type Game struct {
 	gorm.Model
-	Game_Name              string
+	Game_Name              string `gorm:"uniqueIndex"`
 	Game_Price             uint
 	Game_description       string
 	Publish_Date           time.Time
@@ -71,7 +71,9 @@ type Game struct {
 	Type_Game_ID           *uint
 	Type_Game              Type_Game `gorm:"references:id"`
 	Rating_ID              *uint
-	Rating                 Rating    `gorm:"references:id"`
+	Rating                 Rating `gorm:"references:id"`
+	Game_file              string
+	Game_Picture           string
 	Storage                []Storage `gorm:"foreignKey:Game_ID"`
 	User_Out_Standing_Game []User    `gorm:"foreignKey:Out_Standing_Game_ID"`
 	Basket                 []Basket  `gorm:"foreignKey:Game_ID"`
@@ -115,7 +117,7 @@ type Friend struct {
 	Nickname       string
 	Game_ID        *uint
 	Game           Game `gorm:"references:id"`
-	Is_Hide        bool
+	Is_Hide        *bool
 	Date           time.Time
 }
 
@@ -139,7 +141,6 @@ type Basket struct {
 }
 
 // ---ระบบรีวิวเกม(GameReview)---
-
 type Review struct {
 	gorm.Model
 	User_ID *uint
@@ -181,4 +182,23 @@ type Banner struct {
 	Admin          Admin `gorm:"references:id"`
 	Game_ID        *uint
 	Game           Game `gorm:"references:id"`
+}
+
+// ---ระบบจัดอันดับเกม(TopGame)---
+type Topgame struct {
+	gorm.Model
+	Admin_ID   *uint
+	Admin      Admin `gorm:"references:id"`
+	Game_ID    *uint
+	Game       Game `gorm:"references:id"`
+	Ranking_ID *uint
+	Ranking    Ranking `gorm:"references:id"`
+	Comment    string
+	Date       time.Time
+}
+
+type Ranking struct {
+	gorm.Model
+	Detail  string
+	Topgame []Topgame `gorm:"foreignKey:Ranking_ID"`
 }

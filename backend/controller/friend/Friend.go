@@ -144,8 +144,8 @@ func UpdateFriend(c *gin.Context) {
 	var friend entity.Friend
 
 	if err := c.ShouldBindJSON(&friend); err != nil {
-		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		//return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	fri := entity.Friend{
@@ -154,6 +154,10 @@ func UpdateFriend(c *gin.Context) {
 		Game_ID:     friend.Game_ID,
 		Is_Hide:     friend.Is_Hide,
 	}
+
+	println(friend.Is_Hide)
+	println(fri.Is_Hide)
+	println(friend.ID)
 
 	if err := entity.DB().Where("id = ?", friend.ID).Updates(&fri).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

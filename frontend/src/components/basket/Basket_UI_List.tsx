@@ -62,6 +62,10 @@ function Basket_List() {
         setOpenForDelete(false);
     };
 
+    function timeout(delay: number) {
+        return new Promise( res => setTimeout(res, delay) );
+    }
+
     const getUserBasket = async () => {                                 
         const apiUrl = "http://localhost:8080/userbasket/"+String(localStorage.getItem("uid"));
         const requestOptions = {
@@ -97,9 +101,10 @@ function Basket_List() {
       
         fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
         .then((response) => response.json())      
-        .then((res) => {      
+        .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
+                await timeout(1000); //for 1 sec delay
                 window.location.reload();     
             } else {
                 setError(true);     
@@ -123,9 +128,10 @@ function Basket_List() {
       
         fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
         .then((response) => response.json())      
-        .then((res) => {      
+        .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
+                await timeout(1000); //for 1 sec delay
                 window.location.reload();     
             } else {
                 setError(true);     

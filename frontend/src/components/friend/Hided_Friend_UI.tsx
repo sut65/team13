@@ -8,11 +8,14 @@ import TableRow from '@mui/material/TableRow';
 import Button from '@mui/material/Button';
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
+import { Autocomplete, Box, DialogActions, DialogContent, DialogContentText, DialogTitle, Grid, TextField } from '@mui/material';
 import Stack from '@mui/material/Stack';
 import { Container, Dialog, Paper, TableContainer } from '@mui/material';
 import { FriendsInterface } from '../../models/friend/IFriend';
 import { Link as RouterLink } from "react-router-dom";
+import { IntimatesInterface } from '../../models/friend/IIntimate';
+import { GamesInterface } from '../../models/game/IGame';
+import { UsersInterface } from '../../models/user/IUser';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -24,10 +27,15 @@ function Hided_Friend_UI() {
     const classes = useStyles();
 
     const [friend, setFriend] = useState<FriendsInterface[]>([]);
-    // const [editBasket, setEditBasket] = useState<BasketInterface>();
+    const [toEditFriend, setToEditFriend] = useState<FriendsInterface>();
     // const [deleteBasket, setDeleteBasket] = useState<BasketInterface>();
+    const [user, setUser] = useState<UsersInterface[]>([]);
+    const [intimate, setIntimate] = useState<IntimatesInterface[]>([]);
+    const [game, setGame] = useState<GamesInterface[]>([]);
 
-    const [note, setNote] = React.useState<string>("");
+    const [nicknameEdit, setNicknameEdit] = React.useState<string>("");
+    const [intimateEdit, setIntimateEdit] = React.useState<Number>();
+    const [gameEdit, setGameEdit] = React.useState<Number>();
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
@@ -45,23 +53,27 @@ function Hided_Friend_UI() {
         setError(false);
     };
 
-    // const handleClickOpenForEdit = (item: BasketInterface) => {
-    //     setOpenForEdit(true);
-    //     setEditBasket(item);
-    // };
+    const handleClickOpenForEdit = (item: FriendsInterface) => {
+        setOpenForEdit(true);
+        setToEditFriend(item);
+    };
 
     // const handleClickOpenForDelete = (item: BasketInterface) => {
     //     setOpenForDelete(true);
     //     setDeleteBasket(item);
     // };
 
-    // const handleCloseForEdit = () => {
-    //     setOpenForEdit(false);
-    // };
+    const handleCloseForEdit = () => {
+        setOpenForEdit(false);
+    };
 
     // const handleCloseForDelete = () => {
     //     setOpenForDelete(false);
     // };
+
+    function timeout(delay: number) {
+        return new Promise( res => setTimeout(res, delay) );
+    }
 
     const getUserFriend = async () => {                                 
         const apiUrl = "http://localhost:8080/hideuserfriend/"+String(localStorage.getItem("uid"));
@@ -81,32 +93,121 @@ function Hided_Friend_UI() {
             });
     };
 
-    // const updateItem = (id: number,note: string) => {
-    //     let data = {       //ประกาศก้อนข้อมูล
-    //         ID: id,                                                     
-    //         Note: note,      
-    //     };
-    //     const apiUrl = "http://localhost:8080/baskets";                      //ส่งขอการลบ  
-    //     const requestOptions = {     
-    //         method: "PATCH",      
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },     
-    //         body: JSON.stringify(data),
-    //     };
+    const getUser = async () => {                                 
+        const apiUrl = "http://localhost:8080/userforaddfriend/"+String(localStorage.getItem("uid"));
+        const requestOptions = {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+        };
+  
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setUser(res.data);
+                }
+            });
+    };
+
+    const getIntimate = async () => {                                 
+        const apiUrl = "http://localhost:8080/intimates";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+        };
+  
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setIntimate(res.data);
+                }
+            });
+    };
+
+    const getGame = async () => {                                 
+        const apiUrl = "http://localhost:8080/Game";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              "Content-Type": "application/json",
+            },
+        };
+  
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setGame(res.data);
+                }
+            });
+    };
+
+    const updateFriend = (id: number) => {
+        let data = {       //ประกาศก้อนข้อมูล
+            ID: id,                                                     
+            Nickname: nicknameEdit,  
+            Intimate_ID: intimateEdit,
+            Game_ID: gameEdit,    
+        };
+        const apiUrl = "http://localhost:8080/friends";                      //ส่งขอการลบ  
+        const requestOptions = {     
+            method: "PATCH",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },     
+            body: JSON.stringify(data),
+        };
       
-    //     fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
-    //     .then((response) => response.json())      
-    //     .then((res) => {      
-    //         if (res.data) {
-    //             setSuccess(true);
-    //             window.location.reload();     
-    //         } else {
-    //             setError(true);     
-    //         }
-    //     });        
-    // }
+        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+        .then((response) => response.json())      
+        .then(async (res) => {      
+            if (res.data) {
+                setSuccess(true);
+                await timeout(1000); //for 1 sec delay
+                window.location.reload();     
+            } else {
+                setError(true);     
+            }
+        });        
+    }
+
+    const updateHide = (id: number) => {
+        let data = {       //ประกาศก้อนข้อมูล
+            ID:             id,   
+            Is_Hide:        false,                                                  
+        };
+        console.log(data)
+        const apiUrl = "http://localhost:8080/friends";                      //ส่งขอการลบ  
+        const requestOptions = {     
+            method: "PATCH",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },     
+            body: JSON.stringify(data),
+        };
+      
+        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+        .then((response) => response.json())      
+        .then(async (res) => {      
+            if (res.data) {
+                setSuccess(true);
+                await timeout(1000); //for 1 sec delay
+                window.location.reload();     
+            } else {
+                setError(true);     
+            }
+        });        
+    }
 
     // const deleteItem = (id: number) => {
     //     let data = {                                                            //ประกาศก้อนข้อมูล
@@ -136,8 +237,10 @@ function Hided_Friend_UI() {
 
 
     useEffect(() => {
-        getUserFriend();  
-        console.log(friend)
+        getUserFriend(); 
+        getUser();
+        getIntimate();
+        getGame(); 
     }, []);
 
     return (
@@ -168,6 +271,10 @@ function Hided_Friend_UI() {
                 <h1>Hided Friend</h1>
             </Grid>
             
+            <Grid container sx={{ padding: 2, width: 150 }}>
+                <Button variant="contained" color="primary" component={RouterLink} to="/my_friend">My friend</Button>
+            </Grid>
+
             <TableContainer component={Paper}>
                 <Table className={classes.table} aria-label="Basket">
                     <TableHead>
@@ -176,7 +283,8 @@ function Hided_Friend_UI() {
                             <TableCell><h4>Friend</h4></TableCell>
                             <TableCell align="center"><h4>Nickname</h4></TableCell>
                             <TableCell align="center"><h4>Intimate</h4></TableCell>
-                            <TableCell align="center"><h4>From</h4></TableCell>
+                            <TableCell align="center"><h4>Play together</h4></TableCell>
+                            <TableCell align="center"><h4>Action</h4></TableCell>
                         </TableRow>
                     </TableHead>
                         <TableBody>
@@ -188,60 +296,131 @@ function Hided_Friend_UI() {
                                     <TableCell align="center">{item.Nickname}</TableCell>       
                                     <TableCell align="center">{item.Intimate.Intimate_Name}</TableCell>    
                                     <TableCell align="center">{item.Game.Game_Name}</TableCell>               
-                                    {/* <TableCell align="center">
+                                    <TableCell align="center">
                                         <Stack direction="column" spacing={2}>
                                             <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
                                                 Edit
                                             </Button>
-                                            <Button variant="contained" color="secondary" onClick={() => handleClickOpenForDelete(item)}>
+                                            <Button variant="outlined" color="inherit" onClick={() => updateHide(item.ID)}>
+                                                Unhide
+                                            </Button>
+                                            {/* <Button variant="contained" color="secondary" onClick={() => handleClickOpenForDelete(item)}>
                                                 Delete
-                                            </Button>                                        
+                                            </Button>                                         */}
                                         </Stack>
-                                    </TableCell> */}
-                                        {/* <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
-                                            <DialogTitle>{editBasket?.Game.Game_Name}</DialogTitle>
+                                    </TableCell>
+                                    <Dialog maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
+                                            <DialogTitle>{toEditFriend?.User_Friend.Profile_Name}</DialogTitle>
                                             <DialogContent>
                                                 <DialogContentText>
-                                                    {editBasket?.Game.Game_description}
+                                                    {toEditFriend?.User_Friend.Profile_Description}
                                                 </DialogContentText>
-                                                <TextField
-                                                    id="outlined-basic"
-                                                    placeholder="Insert details"
-                                                    variant="outlined"
-                                                    size="medium"
-                                                    multiline={true}
-                                                    minRows={9}
-                                                    maxRows={2}
-                                                    fullWidth={true}
-                                                    defaultValue={editBasket?.Note}
-                                                    onChange={(event) => setNote(event.target.value)}
-                                                />
+                                                <Grid marginTop={2}>
+                                                    <Grid>
+                                                        Nickname
+                                                    </Grid>
+                                                    <Grid>
+                                                        <TextField
+                                                            id="outlined-basic"
+                                                            placeholder="NicknameEdit"
+                                                            variant="outlined"
+                                                            size="medium"
+                                                            multiline={true}
+                                                            minRows={9}
+                                                            maxRows={2}
+                                                            fullWidth={true}
+                                                            defaultValue={toEditFriend?.Nickname}
+                                                            onChange={(event) => setNicknameEdit(event.target.value)}
+                                                        />
+                                                        </Grid>
+                                                </Grid>
+
+                                                <Grid marginTop={2}>
+                                                    <Grid>
+                                                        Intimate
+                                                    </Grid>
+                                                    <Grid>
+                                                        <Autocomplete
+                                                            id="intimate-edit-autocomplete"
+                                                            options={intimate}
+                                                            size="small"
+                                                            defaultValue={toEditFriend?.Intimate}
+                                                            onChange={(event: any, value) => {
+                                                            setIntimateEdit(event.target.value);
+                                                            }}
+                                                            getOptionLabel={(option: any) =>
+                                                            `${option.Intimate_Name}`
+                                                            } //filter value
+                                                            renderInput={(params) => {
+                                                            return (
+                                                                <TextField
+                                                                {...params}
+                                                                variant="outlined"
+                                                                placeholder="Search..."
+                                                                />
+                                                            );
+                                                            }}
+                                                            renderOption={(props: any, option: any) => {
+                                                            return (
+                                                                <li
+                                                                {...props}
+                                                                value={`${option.ID}`}
+                                                                key={`${option.ID}`}
+                                                                >{`${option.Intimate_Name}`}</li>
+                                                            ); //display value
+                                                            }}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                
+                                                <Grid marginTop={2}>
+                                                    <Grid>
+                                                        Play together
+                                                    </Grid>
+                                                    <Grid>
+                                                        <Autocomplete
+                                                            id="game-autocomplete"
+                                                            options={game}
+                                                            size="small"
+                                                            defaultValue={toEditFriend?.Game}
+                                                            onChange={(event: any, value) => {
+                                                            setGameEdit(event.target.value);
+                                                            }}
+                                                            getOptionLabel={(option: any) =>
+                                                            `${option.Game_Name}`
+                                                            } //filter value
+                                                            renderInput={(params) => {
+                                                            return (
+                                                                <TextField
+                                                                {...params}
+                                                                variant="outlined"
+                                                                placeholder="Search..."
+                                                                />
+                                                            );
+                                                            }}
+                                                            renderOption={(props: any, option: any) => {
+                                                            return (
+                                                                <li
+                                                                {...props}
+                                                                value={`${option.ID}`}
+                                                                key={`${option.ID}`}
+                                                                >{`${option.Game_Name}`}</li>
+                                                            ); //display value
+                                                            }}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
                                             </DialogContent>
                                             <DialogActions>
                                                 <Button onClick={handleCloseForEdit}>Cancel</Button>
-                                                <Button onClick={() => updateItem(editBasket?.ID||0,note)}>Save</Button>
+                                                <Button onClick={() => updateFriend(toEditFriend?.ID||0)}>Save</Button>
                                             </DialogActions>
                                         </Dialog>
-                                        <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
-                                            <DialogTitle>DELETE</DialogTitle>
-                                            <DialogContent>
-                                                <DialogContentText>
-                                                    Are you SURE to DELETE "{item.Game.Game_Name}" from BASKET?
-                                                </DialogContentText>
-                                            </DialogContent>
-                                            <DialogActions>
-                                                <Button onClick={handleCloseForDelete}>Cancel</Button>
-                                                <Button color="secondary" onClick={() => deleteItem(deleteBasket?.ID||0)}>Delete</Button>
-                                            </DialogActions>
-                                        </Dialog> */}
                                 </TableRow>
                             ))}
                         </TableBody>
                 </Table>
             </TableContainer>
-            <Grid container sx={{ padding: 2, width: 150 }}>
-                <Button variant="contained" color="primary" component={RouterLink} to="/my_friend">My friend</Button>
-            </Grid>
         </Box>
   );
 }
