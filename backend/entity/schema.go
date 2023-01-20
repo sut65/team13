@@ -60,7 +60,7 @@ type Rating struct {
 
 type Game struct {
 	gorm.Model
-	Game_Name              string
+	Game_Name              string `gorm:"uniqueIndex"`
 	Game_Price             uint
 	Game_description       string
 	Publish_Date           time.Time
@@ -71,7 +71,9 @@ type Game struct {
 	Type_Game_ID           *uint
 	Type_Game              Type_Game `gorm:"references:id"`
 	Rating_ID              *uint
-	Rating                 Rating    `gorm:"references:id"`
+	Rating                 Rating `gorm:"references:id"`
+	Game_file              string
+	Game_Picture           string
 	Storage                []Storage `gorm:"foreignKey:Game_ID"`
 	User_Out_Standing_Game []User    `gorm:"foreignKey:Out_Standing_Game_ID"`
 	Basket                 []Basket  `gorm:"foreignKey:Game_ID"`
