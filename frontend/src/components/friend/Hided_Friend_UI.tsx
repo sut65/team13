@@ -299,6 +299,9 @@ function Hided_Friend_UI() {
                                     <TableCell align="center">{item.Game.Game_Name}</TableCell>               
                                     <TableCell align="center">
                                         <Stack direction="column" spacing={2}>
+                                            <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/"+String(item.User_Friend.Email)}>
+                                                Profile
+                                            </Button>
                                             <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
                                                 Edit
                                             </Button>
