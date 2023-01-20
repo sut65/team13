@@ -139,7 +139,6 @@ type Basket struct {
 }
 
 // ---ระบบรีวิวเกม(GameReview)---
-
 type Review struct {
 	gorm.Model
 	User_ID *uint
@@ -181,4 +180,23 @@ type Banner struct {
 	Admin          Admin `gorm:"references:id"`
 	Game_ID        *uint
 	Game           Game `gorm:"references:id"`
+}
+
+// ---ระบบจัดอันดับเกม(TopGame)---
+type Topgame struct {
+	gorm.Model
+	Admin_ID   *uint
+	Admin      Admin `gorm:"references:id"`
+	Game_ID    *uint
+	Game       Game `gorm:"references:id"`
+	Ranking_ID *uint
+	Ranking    Ranking `gorm:"references:id"`
+	Comment    string
+	Date       time.Time
+}
+
+type Ranking struct {
+	gorm.Model
+	Detail  string
+	Topgame []Topgame `gorm:"foreignKey:Ranking_ID"`
 }
