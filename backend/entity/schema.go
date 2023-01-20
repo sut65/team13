@@ -31,12 +31,13 @@ type User struct {
 	Out_Standing_Game_ID *uint
 	Out_Standing_Game    *Game `gorm:"references:id"` // ใช้ pointer เพื่อป้องกันไม่ให้เกิด error invalid cycle declaration , ตั้งชื่อหน้าหลังไม่เหมือนกันจะบัคไหมนะ?
 	Store_Contact        string
-	Basket               []Basket  `gorm:"foreignKey:User_ID"`
-	Friend               []Friend  `gorm:"foreignKey:User_ID"`
-	User_Friend          []Friend  `gorm:"foreignKey:User_Friend_ID"`
-	Game                 []Game    `gorm:"foreignKey:Seller_ID"`
-	Storage              []Storage `gorm:"foreignKey:User_ID"`
-	Banner               []Banner  `gorm:"foreignKey:User_ID"`
+	Basket               []Basket     `gorm:"foreignKey:User_ID"`
+	Friend               []Friend     `gorm:"foreignKey:User_ID"`
+	User_Friend          []Friend     `gorm:"foreignKey:User_Friend_ID"`
+	Game                 []Game       `gorm:"foreignKey:Seller_ID"`
+	Storage              []Storage    `gorm:"foreignKey:User_ID"`
+	Banner               []Banner     `gorm:"foreignKey:User_ID"`
+	Collection           []Collection `gorm:"foreignKey:User_ID"`
 }
 
 // ---ระบบขายเกม(Game)---
@@ -85,6 +86,8 @@ type Game struct {
 type Collection struct {
 	gorm.Model
 	Name    string
+	Note    string
+	Date    time.Time
 	Storage []Storage `gorm:"foreignKey:Collection_ID"`
 }
 
