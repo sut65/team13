@@ -32,7 +32,7 @@ function Friend_UI() {
     const [friend, setFriend] = useState<FriendsInterface[]>([]);
     const [toEditFriend, setToEditFriend] = useState<FriendsInterface>();
     const [deleteFriend, setDeleteFriend] = useState<FriendsInterface>();
-    const [friendInterface,setFriendInterface] = React.useState<Partial<FriendsInterface>>({});
+    const [friendAdd,setFriendAdd] = React.useState<Partial<FriendsInterface>>({});
     const [user, setUser] = useState<UsersInterface[]>([]);
     const [intimate, setIntimate] = useState<IntimatesInterface[]>([]);
     const [game, setGame] = useState<GamesInterface[]>([]);
@@ -172,10 +172,10 @@ function Friend_UI() {
     const AddFriend = () => {
     let data = {
         User_ID:        Number(localStorage.getItem("uid")), 
-        User_Friend_ID: friendInterface.User_Friend_ID,
-        Intimate_ID:    friendInterface.Intimate_ID||intimateForAdd,
+        User_Friend_ID: friendAdd.User_Friend_ID,
+        Intimate_ID:    friendAdd.Intimate_ID||intimateForAdd,
         Nickname:       nickname,
-        Game_ID:        friendInterface.Game_ID,
+        Game_ID:        friendAdd.Game_ID,
         Is_Hide:        false,
         Date:           date,
     };
@@ -532,7 +532,7 @@ function Friend_UI() {
                                 options={user}
                                 size="small"
                                 onChange={(event: any, value) => {
-                                    setFriendInterface({ ...friendInterface, User_Friend_ID: value?.ID }); //Just Set ID to interface
+                                    setFriendAdd({ ...friendAdd, User_Friend_ID: value?.ID }); //Just Set ID to interface
                                 }}
                                 getOptionLabel={(option: any) =>
                                 `${option.Profile_Name}`
@@ -589,7 +589,7 @@ function Friend_UI() {
                                 size="small"
                                 defaultValue={intimate[0]}
                                 onChange={(event: any, value) => {
-                                    setFriendInterface({ ...friendInterface, Intimate_ID: value?.ID }); //Just Set ID to interface
+                                    setFriendAdd({ ...friendAdd, Intimate_ID: value?.ID }); //Just Set ID to interface
                                 }}
                                 getOptionLabel={(option: any) =>
                                 `${option.Intimate_Name}`
@@ -626,7 +626,7 @@ function Friend_UI() {
                                 options={game}
                                 size="small"
                                 onChange={(event: any, value) => {
-                                    setFriendInterface({ ...friendInterface, Game_ID: value?.ID }); //Just Set ID to interface
+                                    setFriendAdd({ ...friendAdd, Game_ID: value?.ID }); //Just Set ID to interface
                                 }}
                                 getOptionLabel={(option: any) =>
                                 `${option.Game_Name}`

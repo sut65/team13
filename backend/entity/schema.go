@@ -240,7 +240,7 @@ type Order struct {
 	gorm.Model
 	User_ID   *uint
 	User      User `gorm:"references:id"`
-	Basket_id *uint
+	Basket_ID *uint
 	Basket    Basket `gorm:"references:id"`
 	Option_ID *uint
 	Option    Option `gorm:"references:id"`
