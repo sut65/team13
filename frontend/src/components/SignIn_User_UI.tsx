@@ -212,12 +212,8 @@ function SignIn_User() {
       const apiUrl = "http://localhost:8080/users"; // create user
       const requestOptions = {
           method: "POST",
-<<<<<<< HEAD
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(data),
-=======
-          headers: { "Content-Type": "application/json",},
->>>>>>> issue-114
       };
 
       fetch(apiUrl, requestOptions)
