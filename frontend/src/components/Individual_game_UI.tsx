@@ -91,6 +91,7 @@ function Individual_game(){
             .then((res) => {
                 if (res.data) {
                     setSuccess(true);
+                    setOpenForAdd(false);
                 } else {
                     setError(true);
                 }

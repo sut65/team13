@@ -187,7 +187,7 @@ function Basket_List() {
                         <TableBody>
                             {basket.map((item) => (
                                 <TableRow key={item.ID}>
-                                    <TableCell align="center"><img src="https://cdn.akamai.steamstatic.com/steam/apps/1245620/header.jpg?t=1672223247" width="300" height="200"/> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
+                                    <TableCell align="center"><img src={`${item.Game.Game_Picture}`} width="300" height="150"/></TableCell>
                                     <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
                                     <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
                                     <TableCell align="center">{item.Note}</TableCell>

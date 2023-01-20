@@ -31,7 +31,7 @@ function Friend_UI() {
 
     const [friend, setFriend] = useState<FriendsInterface[]>([]);
     const [toEditFriend, setToEditFriend] = useState<FriendsInterface>();
-    // const [deleteBasket, setDeleteBasket] = useState<BasketInterface>();
+    const [deleteFriend, setDeleteFriend] = useState<FriendsInterface>();
     const [friendAdd,setFriendAdd] = React.useState<Partial<FriendsInterface>>({});
     const [user, setUser] = useState<UsersInterface[]>([]);
     const [intimate, setIntimate] = useState<IntimatesInterface[]>([]);
@@ -49,7 +49,7 @@ function Friend_UI() {
     const [errorForAdd, setErrorForAdd] = React.useState(false);
     const [openForAdd, setOpenForAdd] = React.useState(false);
     const [openForEdit, setOpenForEdit] = React.useState(false);
-    // const [openForDelete, setOpenForDelete] = React.useState(false);
+    const [openForDelete, setOpenForDelete] = React.useState(false);
 
     const handleClose = (                                                                        
         event?: React.SyntheticEvent | Event,
@@ -80,14 +80,14 @@ function Friend_UI() {
         setOpenForEdit(false);
     };
 
-    // const handleClickOpenForDelete = (item: FriendsInterface) => {
-    //     // setOpenForDelete(true);
-    //     // setDeleteBasket(item);
-    // };
+    const handleClickOpenForDelete = (item: FriendsInterface) => {
+        setOpenForDelete(true);
+        setDeleteFriend(item);
+    };
 
-    // const handleCloseForDelete = () => {
-    //     setOpenForDelete(false);
-    // };
+    const handleCloseForDelete = () => {
+        setOpenForDelete(false);
+    };
 
     function timeout(delay: number) {
         return new Promise( res => setTimeout(res, delay) );
@@ -259,32 +259,32 @@ function Friend_UI() {
         });        
     }
 
-    // const deleteItem = (id: number) => {
-    //     let data = {                                                            //ประกาศก้อนข้อมูล
-    //         ID: id,      
-    //     };
-    //     const apiUrl = "http://localhost:8080/basket/:id";                      //ส่งขอการลบ  
-    //     const requestOptions = {     
-    //         method: "DELETE",      
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },     
-    //         body: JSON.stringify(data),
-    //     };
+    const deleteUserFriend = (id: number) => {
+        let data = {                                                            //ประกาศก้อนข้อมูล
+            ID: id,      
+        };
+        const apiUrl = "http://localhost:8080/friend/:id";                      //ส่งขอการลบ  
+        const requestOptions = {     
+            method: "DELETE",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },     
+            body: JSON.stringify(data),
+        };
       
-    //     fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
-    //     .then((response) => response.json())      
-    //     .then((res) => {      
-    //         if (res.data) {
-    //             setSuccess(true);
-                // await timeout(1000); //for 1 sec delay
-    //             window.location.reload();     
-    //         } else {
-    //             setError(true);     
-    //         }
-    //     });
-    // }
+        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+        .then((response) => response.json())      
+        .then(async (res) => {      
+            if (res.data) {
+                setSuccess(true);
+                await timeout(1000); //for 1 sec delay
+                window.location.reload();     
+            } else {
+                setError(true);     
+            }
+        });
+    }
 
 
     useEffect(() => {
@@ -364,15 +364,18 @@ function Friend_UI() {
                                     <TableCell align="center">{item.Game.Game_Name}</TableCell>               
                                     <TableCell align="center">
                                         <Stack direction="column" spacing={2}>
+                                            <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/"+String(item.User_Friend.Email)}>
+                                                Profile
+                                            </Button>
                                             <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
                                                 Edit
                                             </Button>
                                             <Button variant="outlined" color="inherit" onClick={() => updateHide(item.ID)}>
                                                 Hide
                                             </Button>
-                                            {/* <Button variant="contained" color="secondary" onClick={() => handleClickOpenForDelete(item)}>
+                                            <Button variant="contained" color="error" onClick={() => handleClickOpenForDelete(item)}>
                                                 Delete
-                                            </Button>                                         */}
+                                            </Button>                                        
                                         </Stack>
                                     </TableCell>
                                     <Dialog maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
@@ -482,18 +485,18 @@ function Friend_UI() {
                                             <Button onClick={() => updateFriend(toEditFriend?.ID||0)}>Save</Button>
                                         </DialogActions>
                                     </Dialog>
-                                    {/* <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
+                                    <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
                                         <DialogTitle>DELETE</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText>
-                                                Are you SURE to DELETE "{item.Game.Game_Name}" from BASKET?
+                                                Are you SURE to DELETE Friend "{item.User_Friend.Profile_Name}" ?
                                             </DialogContentText>
                                         </DialogContent>
                                         <DialogActions>
                                             <Button onClick={handleCloseForDelete}>Cancel</Button>
-                                            <Button color="secondary" onClick={() => deleteItem(deleteBasket?.ID||0)}>Delete</Button>
+                                            <Button color="error" onClick={() => deleteUserFriend(deleteFriend?.ID||0)}>Delete</Button>
                                         </DialogActions>
-                                    </Dialog> */}
+                                    </Dialog>
                                 </TableRow>
                             ))}
                         </TableBody>
