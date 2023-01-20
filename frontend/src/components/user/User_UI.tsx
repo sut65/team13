@@ -377,6 +377,7 @@ function User(){
                                     fullWidth
                                     id="new-password"
                                     label="New Password"
+                                    type="password"
                                     variant="outlined"
                                     onChange={(event) => setNew_password(String(event.target.value))}/>
                             </Grid>
@@ -385,6 +386,7 @@ function User(){
                                     fullWidth
                                     id="confirm-password"
                                     label="Confirm Password"
+                                    type="password"
                                     variant="outlined"
                                     onChange={(event) => setConfirm_password(String(event.target.value))}/>
                             </Grid>
