@@ -28,7 +28,7 @@ function Hided_Friend_UI() {
 
     const [friend, setFriend] = useState<FriendsInterface[]>([]);
     const [toEditFriend, setToEditFriend] = useState<FriendsInterface>();
-    // const [deleteBasket, setDeleteBasket] = useState<BasketInterface>();
+    const [deleteFriend, setDeleteFriend] = useState<FriendsInterface>();
     const [user, setUser] = useState<UsersInterface[]>([]);
     const [intimate, setIntimate] = useState<IntimatesInterface[]>([]);
     const [game, setGame] = useState<GamesInterface[]>([]);
@@ -58,18 +58,18 @@ function Hided_Friend_UI() {
         setToEditFriend(item);
     };
 
-    // const handleClickOpenForDelete = (item: BasketInterface) => {
-    //     setOpenForDelete(true);
-    //     setDeleteBasket(item);
-    // };
-
     const handleCloseForEdit = () => {
         setOpenForEdit(false);
     };
 
-    // const handleCloseForDelete = () => {
-    //     setOpenForDelete(false);
-    // };
+    const handleClickOpenForDelete = (item: FriendsInterface) => {
+        setOpenForDelete(true);
+        setDeleteFriend(item);
+    };
+
+    const handleCloseForDelete = () => {
+        setOpenForDelete(false);
+    };
 
     function timeout(delay: number) {
         return new Promise( res => setTimeout(res, delay) );
@@ -209,31 +209,32 @@ function Hided_Friend_UI() {
         });        
     }
 
-    // const deleteItem = (id: number) => {
-    //     let data = {                                                            //ประกาศก้อนข้อมูล
-    //         ID: id,      
-    //     };
-    //     const apiUrl = "http://localhost:8080/basket/:id";                      //ส่งขอการลบ  
-    //     const requestOptions = {     
-    //         method: "DELETE",      
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },     
-    //         body: JSON.stringify(data),
-    //     };
+    const deleteUserFriend = (id: number) => {
+        let data = {                                                            //ประกาศก้อนข้อมูล
+            ID: id,      
+        };
+        const apiUrl = "http://localhost:8080/friend/:id";                      //ส่งขอการลบ  
+        const requestOptions = {     
+            method: "DELETE",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },     
+            body: JSON.stringify(data),
+        };
       
-    //     fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
-    //     .then((response) => response.json())      
-    //     .then((res) => {      
-    //         if (res.data) {
-    //             setSuccess(true);
-    //             window.location.reload();     
-    //         } else {
-    //             setError(true);     
-    //         }
-    //     });
-    // }
+        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+        .then((response) => response.json())      
+        .then(async (res) => {      
+            if (res.data) {
+                setSuccess(true);
+                await timeout(1000); //for 1 sec delay
+                window.location.reload();     
+            } else {
+                setError(true);     
+            }
+        });
+    }
 
 
     useEffect(() => {
@@ -304,118 +305,130 @@ function Hided_Friend_UI() {
                                             <Button variant="outlined" color="inherit" onClick={() => updateHide(item.ID)}>
                                                 Unhide
                                             </Button>
-                                            {/* <Button variant="contained" color="secondary" onClick={() => handleClickOpenForDelete(item)}>
+                                            <Button variant="contained" color="error" onClick={() => handleClickOpenForDelete(item)}>
                                                 Delete
-                                            </Button>                                         */}
+                                            </Button> 
                                         </Stack>
                                     </TableCell>
                                     <Dialog maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
-                                            <DialogTitle>{toEditFriend?.User_Friend.Profile_Name}</DialogTitle>
-                                            <DialogContent>
-                                                <DialogContentText>
-                                                    {toEditFriend?.User_Friend.Profile_Description}
-                                                </DialogContentText>
-                                                <Grid marginTop={2}>
-                                                    <Grid>
-                                                        Nickname
-                                                    </Grid>
-                                                    <Grid>
-                                                        <TextField
-                                                            id="outlined-basic"
-                                                            placeholder="NicknameEdit"
-                                                            variant="outlined"
-                                                            size="medium"
-                                                            multiline={true}
-                                                            minRows={9}
-                                                            maxRows={2}
-                                                            fullWidth={true}
-                                                            defaultValue={toEditFriend?.Nickname}
-                                                            onChange={(event) => setNicknameEdit(event.target.value)}
-                                                        />
-                                                        </Grid>
+                                        <DialogTitle>{toEditFriend?.User_Friend.Profile_Name}</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                {toEditFriend?.User_Friend.Profile_Description}
+                                            </DialogContentText>
+                                            <Grid marginTop={2}>
+                                                <Grid>
+                                                    Nickname
                                                 </Grid>
+                                                <Grid>
+                                                    <TextField
+                                                        id="outlined-basic"
+                                                        placeholder="NicknameEdit"
+                                                        variant="outlined"
+                                                        size="medium"
+                                                        multiline={true}
+                                                        minRows={9}
+                                                        maxRows={2}
+                                                        fullWidth={true}
+                                                        defaultValue={toEditFriend?.Nickname}
+                                                        onChange={(event) => setNicknameEdit(event.target.value)}
+                                                    />
+                                                    </Grid>
+                                            </Grid>
 
-                                                <Grid marginTop={2}>
-                                                    <Grid>
-                                                        Intimate
-                                                    </Grid>
-                                                    <Grid>
-                                                        <Autocomplete
-                                                            id="intimate-edit-autocomplete"
-                                                            options={intimate}
-                                                            size="small"
-                                                            defaultValue={toEditFriend?.Intimate}
-                                                            onChange={(event: any, value) => {
-                                                            setIntimateEdit(event.target.value);
-                                                            }}
-                                                            getOptionLabel={(option: any) =>
-                                                            `${option.Intimate_Name}`
-                                                            } //filter value
-                                                            renderInput={(params) => {
-                                                            return (
-                                                                <TextField
-                                                                {...params}
-                                                                variant="outlined"
-                                                                placeholder="Search..."
-                                                                />
-                                                            );
-                                                            }}
-                                                            renderOption={(props: any, option: any) => {
-                                                            return (
-                                                                <li
-                                                                {...props}
-                                                                value={`${option.ID}`}
-                                                                key={`${option.ID}`}
-                                                                >{`${option.Intimate_Name}`}</li>
-                                                            ); //display value
-                                                            }}
-                                                        />
-                                                    </Grid>
+                                            <Grid marginTop={2}>
+                                                <Grid>
+                                                    Intimate
                                                 </Grid>
-                                                
-                                                <Grid marginTop={2}>
-                                                    <Grid>
-                                                        Play together
-                                                    </Grid>
-                                                    <Grid>
-                                                        <Autocomplete
-                                                            id="game-autocomplete"
-                                                            options={game}
-                                                            size="small"
-                                                            defaultValue={toEditFriend?.Game}
-                                                            onChange={(event: any, value) => {
-                                                            setGameEdit(event.target.value);
-                                                            }}
-                                                            getOptionLabel={(option: any) =>
-                                                            `${option.Game_Name}`
-                                                            } //filter value
-                                                            renderInput={(params) => {
-                                                            return (
-                                                                <TextField
-                                                                {...params}
-                                                                variant="outlined"
-                                                                placeholder="Search..."
-                                                                />
-                                                            );
-                                                            }}
-                                                            renderOption={(props: any, option: any) => {
-                                                            return (
-                                                                <li
-                                                                {...props}
-                                                                value={`${option.ID}`}
-                                                                key={`${option.ID}`}
-                                                                >{`${option.Game_Name}`}</li>
-                                                            ); //display value
-                                                            }}
-                                                        />
-                                                    </Grid>
+                                                <Grid>
+                                                    <Autocomplete
+                                                        id="intimate-edit-autocomplete"
+                                                        options={intimate}
+                                                        size="small"
+                                                        defaultValue={toEditFriend?.Intimate}
+                                                        onChange={(event: any, value) => {
+                                                        setIntimateEdit(event.target.value);
+                                                        }}
+                                                        getOptionLabel={(option: any) =>
+                                                        `${option.Intimate_Name}`
+                                                        } //filter value
+                                                        renderInput={(params) => {
+                                                        return (
+                                                            <TextField
+                                                            {...params}
+                                                            variant="outlined"
+                                                            placeholder="Search..."
+                                                            />
+                                                        );
+                                                        }}
+                                                        renderOption={(props: any, option: any) => {
+                                                        return (
+                                                            <li
+                                                            {...props}
+                                                            value={`${option.ID}`}
+                                                            key={`${option.ID}`}
+                                                            >{`${option.Intimate_Name}`}</li>
+                                                        ); //display value
+                                                        }}
+                                                    />
                                                 </Grid>
-                                            </DialogContent>
-                                            <DialogActions>
-                                                <Button onClick={handleCloseForEdit}>Cancel</Button>
-                                                <Button onClick={() => updateFriend(toEditFriend?.ID||0)}>Save</Button>
-                                            </DialogActions>
-                                        </Dialog>
+                                            </Grid>
+                                            
+                                            <Grid marginTop={2}>
+                                                <Grid>
+                                                    Play together
+                                                </Grid>
+                                                <Grid>
+                                                    <Autocomplete
+                                                        id="game-autocomplete"
+                                                        options={game}
+                                                        size="small"
+                                                        defaultValue={toEditFriend?.Game}
+                                                        onChange={(event: any, value) => {
+                                                        setGameEdit(event.target.value);
+                                                        }}
+                                                        getOptionLabel={(option: any) =>
+                                                        `${option.Game_Name}`
+                                                        } //filter value
+                                                        renderInput={(params) => {
+                                                        return (
+                                                            <TextField
+                                                            {...params}
+                                                            variant="outlined"
+                                                            placeholder="Search..."
+                                                            />
+                                                        );
+                                                        }}
+                                                        renderOption={(props: any, option: any) => {
+                                                        return (
+                                                            <li
+                                                            {...props}
+                                                            value={`${option.ID}`}
+                                                            key={`${option.ID}`}
+                                                            >{`${option.Game_Name}`}</li>
+                                                        ); //display value
+                                                        }}
+                                                    />
+                                                </Grid>
+                                            </Grid>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseForEdit}>Cancel</Button>
+                                            <Button onClick={() => updateFriend(toEditFriend?.ID||0)}>Save</Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
+                                        <DialogTitle>DELETE</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                Are you SURE to DELETE Friend "{item.User_Friend.Profile_Name}" ?
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseForDelete}>Cancel</Button>
+                                            <Button color="error" onClick={() => deleteUserFriend(deleteFriend?.ID||0)}>Delete</Button>
+                                        </DialogActions>
+                                    </Dialog>
                                 </TableRow>
                             ))}
                         </TableBody>
