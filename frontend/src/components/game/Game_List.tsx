@@ -43,7 +43,7 @@ function Game() {
   const [game, setGame] = useState<GamesInterface[]>([]);
   const [gametest, setGametest] = React.useState<Number | null>(null);
   const [openForEdit, setOpenForEdit] = useState(false);
-  const [user, setUser] = React.useState<Partial<UsersInterface>>({});
+  // const [user, setUser] = React.useState<Partial<UsersInterface>>({});
   const [game_rating, setGame_rating] = useState<RatingsInterface[]>([]);
   const [game_type, setGame_type] = useState<Type_GamesInterface[]>([]);
   const [game_status, setGame_status] = useState<Game_StatusInterface[]>([]);
@@ -80,6 +80,32 @@ function Game() {
     }
 
   }
+  const DeleteGame = (id: number) => {
+    let data = {                                                            //ประกาศก้อนข้อมูล
+        ID: id,      
+    };
+    const apiUrl = "http://localhost:8080/game/:id";                      //ส่งขอการลบ  
+    const requestOptions = {     
+        method: "DELETE",      
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+        },     
+        body: JSON.stringify(data),
+    };
+  
+    fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+    .then((response) => response.json())      
+    .then((res) => {      
+        if (res.data) {
+            setSuccess(true);
+            window.location.reload();     
+        } else {
+            setError(true);     
+        }
+    });
+}
+
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -608,19 +634,19 @@ function Game() {
                       color="secondary"
                       startIcon={< BuildIcon />}
 
-
+                              
                     >
                       Update 
                     </Button>
                     <Button
-                      size="large"
-                      sx = {{ mt : 2}}
-                      style={{ float: "right" }}
-                      onClick={submit}
-                      variant="contained"
-                      color="error"
-                      startIcon={< CloudUploadIcon />}
-
+                     size="large"
+                     sx = {{ mt : 2}}
+                     style={{ float: "right" }}
+                     variant="contained"
+                     color="error"
+                     startIcon={< CloudUploadIcon />}
+                     //onClick={DeleteGame}
+                     
                     >
                       Delete
                     </Button>
@@ -667,7 +693,7 @@ function Game() {
           </Box>
        
        </Box> */}
-            <div style={{ opacity: 1, height: 400, width: "100%", marginTop: "20px" }}>
+            {/* <div style={{ opacity: 1, height: 400, width: "100%", marginTop: "20px" }}>
               <DataGrid
                 rows={game}
                 getRowId={(row) => row.ID}
@@ -676,7 +702,7 @@ function Game() {
                 rowsPerPageOptions={[5]}
 
               />
-            </div>
+            </div> */}
             <Box>
               <Button
                 component={RouterLink}

@@ -117,7 +117,7 @@ type Friend struct {
 	Nickname       string
 	Game_ID        *uint
 	Game           Game `gorm:"references:id"`
-	Is_Hide        bool
+	Is_Hide        *bool
 	Date           time.Time
 }
 
@@ -160,13 +160,31 @@ type Star struct {
 }
 
 // ---ระบบ Admin---
+type Department struct {
+	gorm.Model
+	Department_Title string
+	Admin            []Admin `gorm:"foreignKey:Department_ID"`
+}
+type Province struct {
+	gorm.Model
+	Province_Title string
+	Admin          []Admin `gorm:"foreignKey:Province_ID"`
+}
 type Admin struct {
 	// Normal User
 	gorm.Model
-	Name     string
-	Email    string `gorm:"uniqueIndex"`
-	Password string
-	Banner   []Banner `gorm:"foreignKey:Admin_ID"`
+	Name            string
+	Email           string `gorm:"uniqueIndex"`
+	Password        string
+	Gender_ID       *uint
+	Gender          Gender `gorm:"references:id"`
+	Department_ID   *uint
+	Department      Department `gorm:"references:id"`
+	Province_ID     *uint
+	Province        Province `gorm:"references:id"`
+	Profile_Picture string
+
+	Banner []Banner `gorm:"foreignKey:Admin_ID"`
 }
 
 // ---ระบบ Banner---
