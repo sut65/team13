@@ -59,6 +59,9 @@ func SetupDatabase() {
 		// Order
 		&Option{},
 		&Order{},
+
+		// Verification Status
+		&Verification_Status{},
 	)
 
 	db = database
@@ -439,4 +442,16 @@ func SetupDatabase() {
 	}
 	db.Model(&Order{}).Create(&order1)
 	db.Model(&Order{}).Create(&order2)
+
+	// verification status
+
+	vs1 := Verification_Status{
+		Status_type: "ชำระสำเร็จ",
+	}
+	vs2 := Verification_Status{
+		Status_type: "ชำระไม่สำเร็จ",
+	}
+	db.Model(&Verification_Status{}).Create(&vs1)
+	db.Model(&Verification_Status{}).Create(&vs2)
+
 }

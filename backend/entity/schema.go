@@ -250,3 +250,10 @@ type Order struct {
 	Friend_ID *uint
 	Friend    Friend `gorm:"references:id"`
 }
+
+//----ระบบตรวจสอบการชำระเงิน---
+
+type Verification_Status struct {
+	gorm.Model
+	Status_type string
+}
