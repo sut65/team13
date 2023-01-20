@@ -351,10 +351,38 @@ func SetupDatabase() {
 	db.Model(&Friend{}).Create(&friend4)
 
 	//Admin
+	Province1 := Province{
+		Province_Title: "New york",
+	}
+	Province2 := Province{
+		Province_Title: "London",
+	}
+	db.Model(&Province{}).Create(&Province1)
+	db.Model(&Province{}).Create(&Province2)
+	Department1 := Department{
+		Department_Title: "Master",
+	}
+	Department2 := Department{
+		Department_Title: "Manager",
+	}
+	Department3 := Department{
+		Department_Title: "Programmer",
+	}
+	Department4 := Department{
+		Department_Title: "Supporter",
+	}
+	db.Model(&Department{}).Create(&Department1)
+	db.Model(&Department{}).Create(&Department2)
+	db.Model(&Department{}).Create(&Department3)
+	db.Model(&Department{}).Create(&Department4)
 	admin1 := Admin{
-		Name:     "Mark",
-		Email:    "Admin",
-		Password: "$2a$12$hRdKLZTUspkskzjZwBAb6eImCpHYIe48KSUGD83JrzHYx6aKfowb6",
+		Name:            "Mark",
+		Email:           "Admin",
+		Password:        "$2a$12$hRdKLZTUspkskzjZwBAb6eImCpHYIe48KSUGD83JrzHYx6aKfowb6",
+		Gender:          Gen1,
+		Department:      Department1,
+		Province:        Province1,
+		Profile_Picture: "",
 	}
 	db.Model(&Admin{}).Create(&admin1)
 
