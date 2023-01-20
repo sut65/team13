@@ -50,6 +50,7 @@ function Friend_UI() {
     const [openForAdd, setOpenForAdd] = React.useState(false);
     const [openForEdit, setOpenForEdit] = React.useState(false);
     const [openForDelete, setOpenForDelete] = React.useState(false);
+    const [searchQuery, setSearchQuery] = React.useState("");
 
     const handleClose = (                                                                        
         event?: React.SyntheticEvent | Event,
@@ -334,10 +335,23 @@ function Friend_UI() {
             </Grid>
 
             <Grid container sx={{ padding: 2 }}>
-                <Grid item xs={6}>
+                <Grid item xs={4}>
                         <Button variant="contained" color="primary" onClick={() => handleClickOpenForAdd()}>ADD</Button>
                 </Grid>
-                <Grid container item xs={6} direction='row-reverse'>
+                <Grid item xs={4}>
+                    <TextField
+                        id="search-bar"
+                        fullWidth
+                        onChange={(event) => (
+                            setSearchQuery(event.target.value)
+                        )}
+                        label="Search a friend by profile name"
+                        variant="outlined"
+                        //placeholder="Search..."
+                        size="small"
+                    />
+                </Grid>
+                <Grid container item xs={4} direction='row-reverse'>
                     <Button variant="contained" color="inherit" component={RouterLink} to="/my_hided_friend">Hided</Button>
                 </Grid>
             </Grid>
@@ -355,7 +369,7 @@ function Friend_UI() {
                         </TableRow>
                     </TableHead>
                         <TableBody>
-                            {friend.map((item) => (
+                            {friend.filter(item => item.User_Friend.Profile_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
                                 <TableRow key={item.ID}>
                                     <TableCell align="center"><img src={`${item.User_Friend.Profile_Picture}`} width="250" height="250"/> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
                                     <TableCell component="th" scope="row">{item.User_Friend.Profile_Name}</TableCell>
