@@ -10,28 +10,19 @@ import IconButton from "@mui/material/IconButton";
 import SearchIcon from "@mui/icons-material/Search";
 
 import { GamesInterface } from '../models/game/IGame';
+import { BannersInterface } from '../models/banner/IBanner';
 
 function Dashboard(){
     const [games, setGames] = React.useState<GamesInterface[]>([]);
+    const [banners,setBanners] = React.useState<BannersInterface[]>([]);
     const [searchQuery, setSearchQuery] = React.useState("");
 
     function ImageCarousel()
     {
-        var items = [
-            {
-                name: "Random Name #1",
-                description: "Probably the most random thing you have ever seen!"
-            },
-            {
-                name: "Random Name #2",
-                description: "Hello World!"
-            }
-        ]
-
         return (
             <Carousel>
             {
-                items.map( (item, i) => <Item key={i} item={item} /> )
+                banners.map( (item, i) => <Item key={i} item={item} /> )
             }
             </Carousel>
         )
@@ -40,13 +31,8 @@ function Dashboard(){
     function Item(props: any)
     {
         return (
-            <Paper>
-                <h2>{props.item.name}</h2>
-                <p>{props.item.description}</p>
-
-                <Button className="CheckButton">
-                    Check it out!
-                </Button>
+            <Paper component={RouterLink} to={"/individual_game/"+props.item.Game.ID}>
+                <img src={`${props.item.Banner_Picture}`} width="100%" height="300"/>
             </Paper>
         )
     }
@@ -70,15 +56,35 @@ function Dashboard(){
             });
     };
 
+    const getBanner = async () => {
+        const apiUrl = "http://localhost:8080/banners";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+       
+        await fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setBanners(res.data);
+                }
+            });
+    };
+
     React.useEffect(() => {
         getGame();
+        getBanner();
     }, []);
 
     return (
         <Container>
             <Box>
                 <Paper elevation={2} sx={{padding:2,margin:2}}>
-                    <Grid width={700} height={300} justifyContent={"center"}>
+                    <Grid direction={'column'}>
                         {ImageCarousel()}
                     </Grid>
                     <Grid container marginTop={2}>

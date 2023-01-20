@@ -13,24 +13,30 @@ import (
 func CreateCollection(c *gin.Context) {
 
 	var collection entity.Collection
+	var user entity.User
 
 	if err := c.ShouldBindJSON(&collection); err != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
 		return
-
 	}
 
-	if err := entity.DB().Create(&collection).Error; err != nil {
-
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
+	if tx := entity.DB().Where("id = ?", collection.User_ID).First(&user); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
 		return
-
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": collection})
+	bk := entity.Collection{
+		User: user, // โยงความสัมพันธ์กับ Entity Room
+		Note: collection.Note,
+		Date: collection.Date,
+	}
+
+	// 13: บันทึก
+	if err := entity.DB().Create(&bk).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{"data": bk})
 
 }
 
@@ -58,9 +64,10 @@ func GetCollection(c *gin.Context) {
 
 func ListCollections(c *gin.Context) {
 
-	var storages []entity.Collection
+	var collections []entity.Collection
+	id := c.Param("id")
 
-	if err := entity.DB().Raw("SELECT * FROM collections").Scan(&storages).Error; err != nil {
+	if err := entity.DB().Preload("User").Raw("SELECT * FROM collections WHERE id = ? ", id).Scan(&collections).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -68,7 +75,7 @@ func ListCollections(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": storages})
+	c.JSON(http.StatusOK, gin.H{"data": collections})
 
 }
 

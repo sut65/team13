@@ -260,7 +260,7 @@ function Banner_UI(){
                                     <img src={`${img1}`} width="350" height="150"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
                                 </Grid>
                                 <input type="file" onChange={handleImg1Change} />
-                                <FormHelperText>recommend size is 700*300 pixels</FormHelperText>
+                                <FormHelperText>recommend size is 1200*300 pixels</FormHelperText>
                             </Grid>
 
                             <Grid marginBottom={2}> {/** Game */}
@@ -370,7 +370,7 @@ function Banner_UI(){
                                     <img src={`${img2}`} width="350" height="150"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
                                 </Grid>
                                 <input type="file" onChange={handleImg2Change} />
-                                <FormHelperText>recommend size is 700*300 pixels</FormHelperText>
+                                <FormHelperText>recommend size is 1200*300 pixels</FormHelperText>
                             </Grid>
 
                             <Grid marginBottom={2}>
