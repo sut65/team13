@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Container } from "@material-ui/core";
-import { Box, Grid, Paper, TextField } from '@mui/material';
+import { Box, Button, Grid, Paper, TextField } from '@mui/material';
+import Carousel from 'react-material-ui-carousel';
 
 import {CardActionArea,CardContent,Card,CardMedia} from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
@@ -13,6 +14,42 @@ import { GamesInterface } from '../models/game/IGame';
 function Dashboard(){
     const [games, setGames] = React.useState<GamesInterface[]>([]);
     const [searchQuery, setSearchQuery] = React.useState("");
+
+    function ImageCarousel()
+    {
+        var items = [
+            {
+                name: "Random Name #1",
+                description: "Probably the most random thing you have ever seen!"
+            },
+            {
+                name: "Random Name #2",
+                description: "Hello World!"
+            }
+        ]
+
+        return (
+            <Carousel>
+            {
+                items.map( (item, i) => <Item key={i} item={item} /> )
+            }
+            </Carousel>
+        )
+    }
+
+    function Item(props: any)
+    {
+        return (
+            <Paper>
+                <h2>{props.item.name}</h2>
+                <p>{props.item.description}</p>
+
+                <Button className="CheckButton">
+                    Check it out!
+                </Button>
+            </Paper>
+        )
+    }
 
     const getGame = async () => {
         const apiUrl = "http://localhost:8080/Game";
@@ -41,8 +78,8 @@ function Dashboard(){
         <Container>
             <Box>
                 <Paper elevation={2} sx={{padding:2,margin:2}}>
-                    <Grid container justifyContent={"center"}> {/** Banner */}
-                        <img src={``} width="700" height="300"/>
+                    <Grid width={700} height={300} justifyContent={"center"}>
+                        {ImageCarousel()}
                     </Grid>
                     <Grid container marginTop={2}>
                         <TextField
