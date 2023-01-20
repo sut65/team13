@@ -88,6 +88,8 @@ type Collection struct {
 	Name    string
 	Note    string
 	Date    time.Time
+	User_ID *uint
+	User    User      `gorm:"references:id"`
 	Storage []Storage `gorm:"foreignKey:Collection_ID"`
 }
 
