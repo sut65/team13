@@ -225,3 +225,9 @@ type Ranking struct {
 	Detail  string
 	Topgame []Topgame `gorm:"foreignKey:Ranking_ID"`
 }
+
+// ---ระบบสั่งซื้อเกม---
+type Option struct {
+	gorm.Model
+	Option_name string
+}

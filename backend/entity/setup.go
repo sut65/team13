@@ -55,6 +55,9 @@ func SetupDatabase() {
 
 		// Admin
 		&Admin{},
+
+		// Order
+		&Option{},
 	)
 
 	db = database
@@ -405,4 +408,14 @@ func SetupDatabase() {
 	}
 	db.Model(&Banner{}).Create(&banner1)
 	db.Model(&Banner{}).Create(&banner2)
+
+	//Order
+	option1 := Option{
+		Option_name: "สั่งซื้อให้ตัวเอง",
+	}
+	option2 := Option{
+		Option_name: "สั่งซื้อให้เพื่อน",
+	}
+	db.Model(&Option{}).Create(&option1)
+	db.Model(&Option{}).Create(&option2)
 }
