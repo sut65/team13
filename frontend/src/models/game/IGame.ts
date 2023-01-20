@@ -17,4 +17,6 @@ export interface GamesInterface {
 	Type_Game: Type_GamesInterface,
 	Rating_ID: number,
 	Rating: RatingsInterface,
+	Game_file    :  string,
+	Game_Picture  :  string
 }

@@ -166,10 +166,7 @@ function SignIn_User() {
       const apiUrl = "http://localhost:8080/users"; // create user
       const requestOptions = {
           method: "POST",
-          // headers: {
-          //     Authorization: `Bearer ${localStorage.getItem("token")}`,
-          //     "Content-Type": "application/json",
-          // },
+          headers: { "Content-Type": "application/json",},
       };
 
       fetch(apiUrl, requestOptions)

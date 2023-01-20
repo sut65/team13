@@ -56,6 +56,8 @@ func CreateGame(c *gin.Context) {
 		Rating:           rating,
 		Game_Status:      game_status,
 		Type_Game:        type_game,
+		Game_file:        game.Game_file,
+		Game_Picture:     game.Game_Picture,
 	}
 	if err := entity.DB().Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
