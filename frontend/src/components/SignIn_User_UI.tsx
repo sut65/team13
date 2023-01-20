@@ -409,6 +409,7 @@ function SignIn_User() {
                   <Grid margin={1} item xs={12}>
                       <TextField
                           fullWidth
+                          type="password"
                           id="new-password"
                           label="New Password"
                           variant="outlined"
@@ -417,6 +418,7 @@ function SignIn_User() {
                   <Grid margin={1} item xs={12}>
                       <TextField
                           fullWidth
+                          type="password"
                           id="confirm-password"
                           label="Confirm Password"
                           variant="outlined"
