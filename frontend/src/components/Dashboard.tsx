@@ -44,41 +44,40 @@ function Dashboard(){
                     <Grid container justifyContent={"center"}> {/** Banner */}
                         <img src={``} width="700" height="300"/>
                     </Grid>
-                    <Grid container> {/** Search */}
-                        <Grid container>
-                            <TextField
-                                id="search-bar"
-                                onChange={(event) => (
-                                    setSearchQuery(event.target.value)
-                                )}
-                                label="Search a game by name"
-                                variant="outlined"
-                                //placeholder="Search..."
-                                size="small"
-                            />
-                        </Grid>
-                        <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}> {/** Card */}
-                    
-                            {games.filter(item => item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+                    <Grid container marginTop={2}>
+                        <TextField
+                            id="search-bar"
+                            fullWidth
+                            onChange={(event) => (
+                                setSearchQuery(event.target.value)
+                            )}
+                            label="Search a game by name"
+                            variant="outlined"
+                            //placeholder="Search..."
+                            size="small"
+                        />
+                    </Grid>
+                    <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}> {/** Card */}
+                
+                        {games.filter(item => item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+                        
+                        <Grid item xs={3} key={item.ID} >
+                        <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
+                        
+                            <CardActionArea component={RouterLink} to={"/individual_game/"+item.ID} >
+                                <CardMedia
+                                    component="img"
+                                    height="140"
+                                    image={item.Game_Picture}
+                                    alt="" />
+                                <CardContent>
+                                    {item.Game_Name}
+                                </CardContent>
+                            </CardActionArea>
                             
-                            <Grid item xs={3} key={item.ID} >
-                            <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
-                            
-                                <CardActionArea component={RouterLink} to={"/individual_game/"+item.ID} >
-                                    <CardMedia
-                                        component="img"
-                                        height="140"
-                                        image={item.Game_Picture}
-                                        alt="" />
-                                    <CardContent>
-                                        {item.Game_Name}
-                                    </CardContent>
-                                </CardActionArea>
-                                
-                            </Card>
-                            </Grid>
-                            ))}
+                        </Card>
                         </Grid>
+                        ))}
                     </Grid>
                 </Paper>
             </Box>
