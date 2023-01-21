@@ -174,7 +174,8 @@ function Game() {
     }
 
   }
-  return (
+ if(user.Is_Seller) 
+ return (
     <div style={{
       //backgroundColor: 'black',
       backgroundImage: `url("https://images6.alphacoders.com/655/655993.jpg")`
@@ -509,6 +510,8 @@ function Game() {
       </Container>
     </div>
   );
+  else return(<Box>You is not Seller
+    </Box>)
 }
 
 export default Game;
