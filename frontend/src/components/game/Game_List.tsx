@@ -37,76 +37,109 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
+import Autocomplete from "@mui/material/Autocomplete";
+import Moment from 'moment';
+//import id from "date-fns/esm/locale/id/index.js";
 
 
 function Game() {
+  Moment.locale('th');
   const [game, setGame] = useState<GamesInterface[]>([]);
-  const [gametest, setGametest] = React.useState<Number | null>(null);
+  const [gameEdit, setGameEdit] = useState<GamesInterface>();
+  const [game_id, setGame_ID] = React.useState<Number | null>(null);
   const [openForEdit, setOpenForEdit] = useState(false);
   // const [user, setUser] = React.useState<Partial<UsersInterface>>({});
   const [game_rating, setGame_rating] = useState<RatingsInterface[]>([]);
   const [game_type, setGame_type] = useState<Type_GamesInterface[]>([]);
   const [game_status, setGame_status] = useState<Game_StatusInterface[]>([]);
-  const [game1, setGame1] = React.useState<Partial<GamesInterface>>({ Publish_Date: new Date(), });
+  const [game1, setGame1] = React.useState<Partial<GamesInterface>>({});
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
+  const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
+  function timeout(delay: number) {
+    return new Promise(res => setTimeout(res, delay));
+  }
   const convertType = (data: string | number | undefined) => {
     let val = typeof data === "string" ? parseInt(data) : data;
     return val;
   };
-  async function submit() {
-    let data = {
-      Game_Name: game1.Game_Name,
+  const UpdateGame = () => {
+    
+        let UpdateData = {
+        ID : game1.ID,
       Game_Price: convertType(game1.Game_Price),
-      Publish_Date: game1.Publish_Date,
+     
       Game_description: game1.Game_description,
-      Seller_ID: localStorage.getItem("uid"),
+      
       Game_Status_ID: convertType(game1.Game_Status_ID),
       Type_Game_ID: convertType(game1.Type_Game_ID),
       Rating_ID: convertType(game1.Rating_ID),
+      Game_file : game1.Game_file ,
+      Game_Picture: imageString
+           
+        };
 
+        console.log(UpdateData)
 
-    };
+        const apiUrl = "http://localhost:8080/Game";
+        const requestOptions = {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(UpdateData),
+        };
 
-
-    console.log(data);
-    let res = await CreateGame(data);
-
-    console.log(res)
-    if (res) {
-      setSuccess(true);
-    } else {
-      setError(true);
-    }
-
-  }
-  const DeleteGame = (id: number) => {
-    let data = {                                                            //ประกาศก้อนข้อมูล
-        ID: id,      
-    };
-    const apiUrl = "http://localhost:8080/game/:id";                      //ส่งขอการลบ  
-    const requestOptions = {     
-        method: "DELETE",      
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-        },     
-        body: JSON.stringify(data),
-    };
+        fetch(apiUrl, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+            if (res.data) {
+                setSuccess(true);
+            } else {
+                setError(true);
+                
+            }
+        });
   
-    fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
-    .then((response) => response.json())      
-    .then((res) => {      
-        if (res.data) {
-            setSuccess(true);
-            window.location.reload();     
-        } else {
-            setError(true);     
-        }
-    });
 }
 
+  const DeleteGame = () => {
+    const apiUrl = "http://localhost:8080/Game/" + gameEdit?.ID;
+    const requestOptions = {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
 
+    };
+
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then(async (res) => {
+        if (res.data) {
+          setSuccess(true);
+          await timeout(1500); //for 1 sec delay
+          window.location.reload();
+
+        } else {
+          setError(true);
+        }
+      });
+  }
+    //image
+    const handleImageChange = (event: any) => {
+      const image = event.target.files[0];
+  
+      const reader = new FileReader();
+      reader.readAsDataURL(image);
+      reader.onload = () => {
+          const base64Data = reader.result;
+          setImageString(base64Data)
+      }
+  }
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -136,19 +169,25 @@ function Game() {
 
   };
   useEffect(() => {
-    Game();
-    getGame_type();
-    getGame_status();
-    getGame_rating();
+    const fetchData = async () => {
+    await  Game();
+    await getGame_type();
+    await  getGame_status();
+    await getGame_rating();
+      setIsDataloaded(true);
+  }
+  fetchData();
 
   }, []);
-  const handleClickOpenForEdit = (ID: Number) => {
+  const handleClickOpenForEdit = (item: GamesInterface) => {
     setOpenForEdit(true);
-    console.log(gameArray);
-    console.log(gametest);
-    setGametest(ID);
-  };
+    setGameEdit(item);
+    setGame1(item) //เสร็จ Default อีกที
+    setImageString(item.Game_Picture) // ชนิดข้อมูลไม่สอดคร้องกัน
 
+    console.log(game_id);
+  };
+  const [searchQuery, setSearchQuery] = React.useState("");
 
   const handleCloseForEdit = () => {
     setOpenForEdit(false);
@@ -158,7 +197,10 @@ function Game() {
   const Game = async () => {
     let res = await GetGame();
     if (res) {
+     // setImageString(rese)// เพื่อให้ มันมีภาพ ตอนแรกไม่มีภาพ defaultvaule
       setGame(res);
+      
+      console.log(res)
     }
   };
   const getGame_type = async () => {
@@ -268,8 +310,7 @@ function Game() {
       ],
     },
   ];
-  var gameArray = game.map((item: GamesInterface) => (item.Game_Name));
-  return (
+  if(isDataLoaded) return (
     <div style={{
       opacity: 1,
       //backgroundColor: 'black',
@@ -278,34 +319,50 @@ function Game() {
     }}>
 
       <Container maxWidth="xl" sx={{ p: 80 }}  >
-      <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}>
-      
-        {game.filter(item => item.Seller_ID == Number(localStorage.getItem("uid"))).map((item) => (
-          
-          <Grid item xs={3} key={item.ID} >
-          <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
-          
-            <CardActionArea onClick={() => handleClickOpenForEdit(item.ID)}>
-
-              <CardMedia
-                component="img"
-                height="140"
-                image={item.Game_Picture}
-                alt="" />
-              <CardContent>
-                {item.Game_Name}
-              </CardContent>
-            </CardActionArea>
-            
-          </Card>
+        <Grid container> {/** Search */}
+          <Grid container>
+            <TextField
+              id="search-bar"
+              onChange={(event) => (
+                setSearchQuery(event.target.value)
+              )}
+              label="Search a game by name"
+              variant="outlined"
+              //placeholder="Search..."
+              size="small"  
+            />
           </Grid>
-          
-
-        ))}
-        
+    
         </Grid>
-        
-        
+        <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}>
+
+          {game.filter(item => item.Seller_ID == Number(localStorage.getItem("uid")) &&  item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+
+            <Grid item xs={3} key={item.ID} >
+
+              <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
+
+                <CardActionArea onClick={() => handleClickOpenForEdit(item)}>
+
+                  <CardMedia
+                    component="img"
+                    height="140"
+                    image={item.Game_Picture}
+                    alt="" />
+                  <CardContent>
+                    {item.Game_Name}
+                  </CardContent>
+                </CardActionArea>
+
+              </Card>
+            </Grid>
+
+
+          ))}
+
+        </Grid>
+
+
 
         <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} sx={{
           // bgcolor: "#e3f2fd",
@@ -313,7 +370,7 @@ function Game() {
           // mt: 5,
           // mb: 5,
           // mr: 10,
-         // backgroundImage: `url("https://images3.alphacoders.com/112/1126231.png")`
+          // backgroundImage: `url("https://images3.alphacoders.com/112/1126231.png")`
           // , width: "1500px"
           // , height: "1200px"
           // , opacity: 1
@@ -322,7 +379,7 @@ function Game() {
           <DialogTitle sx={{
             bgcolor: "#E3E3E3"
 
-          }}>{gameArray[Number(Number(gametest) - 1)]}</DialogTitle >
+          }}>{gameEdit?.Game_Name}</DialogTitle >
           <DialogContent sx={{
             // bgcolor: "#e3f2fd",
             //ml: 10,
@@ -381,7 +438,7 @@ function Game() {
                     mt: 5,
                     // mb: 5,
                     // mr: 10,
-                   // backgroundImage: `url("https://images3.alphacoders.com/112/1126231.png")`
+                    // backgroundImage: `url("https://images3.alphacoders.com/112/1126231.png")`
                     // , width: "1500px"
                     // , height: "1200px"
                     // , opacity: 1
@@ -432,11 +489,12 @@ function Game() {
                             variant="outlined"
                             type="string"
                             size="medium"
+
+
+
+                           defaultValue={gameEdit?.Game_Name}
                            
-                            
-                           
-                            defaultValue={game1.Game_Name}
-                                    
+
                           />
                         </FormControl>
                       </Grid>
@@ -450,10 +508,10 @@ function Game() {
 
                             size="medium"
                             placeholder="------------------------------------"
-                            value={game1.Game_Price || ""}
+                            
                             // onWheel={event => { event.preventDefault();  }}
                             onChange={handleInputChange}
-                            defaultValue={game1.Seller_ID}
+                            defaultValue={gameEdit?.Game_Price}
 
 
                             inputProps={{ type: "number" }}
@@ -494,7 +552,7 @@ function Game() {
                     <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
 
                       <Grid item xs={4} >
-                        <FormControl fullWidth variant="outlined"  >
+                        {/* <FormControl fullWidth variant="outlined"  >
                           <h2>Game Type</h2>
                           <Select
                             native
@@ -505,6 +563,8 @@ function Game() {
 
 
                             }}
+                            defaultValue={gameEdit?.Type_Game}
+
                           >
                             <option aria-label="None" value="">
                               Section Game-Type
@@ -516,8 +576,31 @@ function Game() {
                             ))}
                           </Select>
 
-                        </FormControl>
-                        <FormControl fullWidth variant="outlined" sx={{ mt: 5 }}>
+                        </FormControl> */}
+                                 <Autocomplete sx={{ mt: 5 }}
+                                        id="storages-autocomplete"
+                                        options={game_type}
+                                        fullWidth
+                                        size="medium"
+                                        defaultValue={gameEdit?.Type_Game} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
+                                        onChange={(event: any, value) => {
+                                            setGame1({ ...game1, Type_Game_ID: value?.ID }); // บันทึกค่าลง interface
+                                        }}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.Type_Game_Name} ${option.ID}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Game type" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}
+                                            key={`${option.ID}`}
+                                            >{`${option.Type_Game_Name}`}</li>//แสดงผลใน box
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                        }}
+                                    />
+                        {/* <FormControl fullWidth variant="outlined" sx={{ mt: 5 }}>
                           <h2>Game Status</h2>
                           <Select
                             native
@@ -539,8 +622,31 @@ function Game() {
                             ))}
                           </Select>
 
-                        </FormControl>
-                        <FormControl fullWidth variant="outlined" sx={{ mt: 5 }} >
+                        </FormControl> */}
+                                <Autocomplete sx={{ mt: 5 }}
+                                        id="storages-autocomplete"
+                                        options={game_status} //ตัวที่เราจะเลือกมีอะไรบ้าง
+                                        fullWidth
+                                        size="medium"
+                                        defaultValue={gameEdit?.Game_Status} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
+                                        onChange={(event: any, value) => {
+                                            setGame1({ ...game1, Game_Status_ID: value?.ID }); // บันทึกค่าลง interface
+                                        }}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.Status_Type}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Game Status" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}  
+                                            key={`${option.ID}`}
+                                            >{`${option.Status_Type}`}</li>
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                        }}
+                                    />
+                        {/* <FormControl fullWidth variant="outlined" sx={{ mt: 5 }} >
                           <h2>Game Rating</h2>
                           <Select
                             native
@@ -561,7 +667,30 @@ function Game() {
                             ))}
                           </Select>
 
-                        </FormControl>
+                        </FormControl> */}
+                             <Autocomplete sx={{ mt: 5 }}
+                                        id="storages-autocomplete"
+                                        options={game_rating} //ตัวที่เราจะเลือกมีอะไรบ้าง
+                                        fullWidth
+                                        size="medium"
+                                        defaultValue={gameEdit?.Rating} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
+                                        onChange={(event: any, value) => {
+                                            setGame1({ ...game1, Rating_ID: value?.ID }); // บันทึกค่าลง interface
+                                        }}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.Rating_Name}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Game Rating" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}  
+                                            key={`${option.ID}`}
+                                            >{`${option.Rating_Name}`}</li>
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                        }}
+                                    />
                       </Grid>
 
                       <Grid item xs={4}  >
@@ -578,8 +707,9 @@ function Game() {
                             multiline={true}
                             rows={16}
 
-                            value={game1.Game_description || ""}
+                            
                             onChange={handleInputChange}
+                            defaultValue={gameEdit?.Game_description}
                           />
                         </FormControl>
 
@@ -596,60 +726,68 @@ function Game() {
                             size="medium"
                             placeholder="------"
 
-
-                            //value={ game. || ""}
+                           
+                            defaultValue={gameEdit?.Game_file}
                             onChange={handleInputChange}
                           />
 
                         </FormControl>
                         <FormControl fullWidth variant="outlined"  >
-                          <h2>Date Time</h2>
-                          <LocalizationProvider dateAdapter={AdapterDayjs}  >
-                            <DatePicker disabled
-                              value={game1.Publish_Date}
-                              onChange={(newValue) => {
-                                setGame1({
-                                  ...game,
-                                  Publish_Date: newValue,
-                                });
-                              }}
-                              renderInput={(params) => <TextField {...params} />}
-                            />
-                          </LocalizationProvider>
+                          <h2>Publish Date</h2>
+                                     <TextField disabled
+                            id="Name"
+                            variant="outlined"
+                            type="string"
+                            size="medium"
+                            placeholder="------"
+
+                           
+                            defaultValue={ `${Moment(gameEdit?.Publish_Date).format('DD MMMM YYYY')}`}
+                            
+                          />
                         </FormControl>
+                        <Grid item xs={8}>
+                <h2> Game Picture</h2>
+                                <Grid>
+                                    <img src={`${imageString}`} width="500" height="250"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
+                                </Grid>
+                                <input type="file" onChange={handleImageChange} />
+                                {/* <FormHelperText>recommend size is 250*250 pixels</FormHelperText> */}
+                            </Grid>
                       </Grid>
 
 
                     </Grid>
 
-                   
+
 
                   </Paper>
                   <Button
-                      size="large"
-                      sx = {{ mt : 2}}
-                      component={RouterLink}
-                      to="/game_list"
-                      variant="contained"
-                      color="secondary"
-                      startIcon={< BuildIcon />}
+                    size="large"
+                    sx={{ mt: 2 }}
+                    component={RouterLink}
+                    to="/game_list"
+                    variant="contained"
+                    color="secondary"
+                    startIcon={< BuildIcon />}
+                    onClick={UpdateGame}
 
-                              
-                    >
-                      Update 
-                    </Button>
-                    <Button
-                     size="large"
-                     sx = {{ mt : 2}}
-                     style={{ float: "right" }}
-                     variant="contained"
-                     color="error"
-                     startIcon={< CloudUploadIcon />}
-                     //onClick={DeleteGame}
-                     
-                    >
-                      Delete
-                    </Button>
+
+                  >
+                    Update
+                  </Button>
+                  <Button
+                    size="large"
+                    sx={{ mt: 2 }}
+                    style={{ float: "right" }}
+                    variant="contained"
+                    color="error"
+                    startIcon={< CloudUploadIcon />}
+                    onClick={DeleteGame}
+
+                  >
+                    Delete
+                  </Button>
                 </Box>
 
 
@@ -713,13 +851,31 @@ function Game() {
               >
                 Back to Upload game
               </Button>
+
             </Box>
           </Paper>
-          
+
+
         </Box>
+        <Box sx={{ mt: 1}}
+            m={1}
+            display="flex"
+            justifyContent="flex-end"
+            alignItems="flex-end"
+          >
+            <Button
+              size="small"
+              sx={{ mt: 50 }}
+             // onClick={handleDialogAdminClickOpen}
+            >
+              Admin
+            </Button>
+          </Box>
+
       </Container>
     </div>
   );
+  else return (null);
 }
 
 export default Game;

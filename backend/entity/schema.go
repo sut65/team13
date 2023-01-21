@@ -31,12 +31,14 @@ type User struct {
 	Out_Standing_Game_ID *uint
 	Out_Standing_Game    *Game `gorm:"references:id"` // ใช้ pointer เพื่อป้องกันไม่ให้เกิด error invalid cycle declaration , ตั้งชื่อหน้าหลังไม่เหมือนกันจะบัคไหมนะ?
 	Store_Contact        string
-	Basket               []Basket  `gorm:"foreignKey:User_ID"`
-	Friend               []Friend  `gorm:"foreignKey:User_ID"`
-	User_Friend          []Friend  `gorm:"foreignKey:User_Friend_ID"`
-	Game                 []Game    `gorm:"foreignKey:Seller_ID"`
-	Storage              []Storage `gorm:"foreignKey:User_ID"`
-	Banner               []Banner  `gorm:"foreignKey:User_ID"`
+	Basket               []Basket     `gorm:"foreignKey:User_ID"`
+	Friend               []Friend     `gorm:"foreignKey:User_ID"`
+	User_Friend          []Friend     `gorm:"foreignKey:User_Friend_ID"`
+	Game                 []Game       `gorm:"foreignKey:Seller_ID"`
+	Storage              []Storage    `gorm:"foreignKey:User_ID"`
+	Banner               []Banner     `gorm:"foreignKey:User_ID"`
+	Collection           []Collection `gorm:"foreignKey:User_ID"`
+	Order                []Order      `gorm:"foreignKey:User_ID"`
 }
 
 // ---ระบบขายเกม(Game)---
@@ -85,6 +87,10 @@ type Game struct {
 type Collection struct {
 	gorm.Model
 	Name    string
+	Note    string
+	Date    time.Time
+	User_ID *uint
+	User    User      `gorm:"references:id"`
 	Storage []Storage `gorm:"foreignKey:Collection_ID"`
 }
 
@@ -119,6 +125,7 @@ type Friend struct {
 	Game           Game `gorm:"references:id"`
 	Is_Hide        *bool
 	Date           time.Time
+	Order          []Order `gorm:"foreignKey:Friend_ID"`
 }
 
 // ---ระบบตะกร้าสินค้า(Basket)---
@@ -138,6 +145,7 @@ type Basket struct {
 	Payment_Status    Payment_Status `gorm:"references:id"`
 	Note              string
 	Date              time.Time
+	Order             []Order `gorm:"foreignKey:Basket_ID"`
 }
 
 // ---ระบบรีวิวเกม(GameReview)---
@@ -219,4 +227,33 @@ type Ranking struct {
 	gorm.Model
 	Detail  string
 	Topgame []Topgame `gorm:"foreignKey:Ranking_ID"`
+}
+
+// ---ระบบสั่งซื้อเกม---
+type Option struct {
+	gorm.Model
+	Option_name string
+	Order       []Order `gorm:"foreignKey:Option_ID"`
+}
+
+type Order struct {
+	gorm.Model
+	User_ID   *uint
+	User      User `gorm:"references:id"`
+	Basket_ID *uint
+	Basket    Basket `gorm:"references:id"`
+	Option_ID *uint
+	Option    Option `gorm:"references:id"`
+	Slip      string
+	Date      time.Time
+	Send_gift bool
+	Friend_ID *uint
+	Friend    Friend `gorm:"references:id"`
+}
+
+//----ระบบตรวจสอบการชำระเงิน---
+
+type Verification_Status struct {
+	gorm.Model
+	Status_type string
 }
