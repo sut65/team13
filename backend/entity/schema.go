@@ -192,7 +192,8 @@ type Admin struct {
 	Province        Province `gorm:"references:id"`
 	Profile_Picture string
 
-	Banner []Banner `gorm:"foreignKey:Admin_ID"`
+	Banner               []Banner               `gorm:"foreignKey:Admin_ID"`
+	Payment_Verification []Payment_Verification `gorm:"foreignKey:Admin_ID"`
 }
 
 // ---ระบบ Banner---
@@ -249,6 +250,8 @@ type Order struct {
 	Send_gift bool
 	Friend_ID *uint
 	Friend    Friend `gorm:"references:id"`
+
+	Payment_Verification []Payment_Verification `gorm:"foreignKey:Order_ID"`
 }
 
 //----ระบบตรวจสอบการชำระเงิน---
@@ -256,4 +259,18 @@ type Order struct {
 type Verification_Status struct {
 	gorm.Model
 	Status_type string
+
+	Payment_Verification []Payment_Verification `gorm:"foreignKey:VS_ID"`
+}
+
+type Payment_Verification struct {
+	gorm.Model
+	Admin_ID            *uint
+	Admin               Admin `gorm:"references:id"`
+	Order_ID            *uint
+	Order               Order `gorm:"references:id"`
+	VS_ID               *uint
+	Verification_Status Verification_Status `gorm:"references:id"`
+	Date                time.Time
+	Note                string
 }
