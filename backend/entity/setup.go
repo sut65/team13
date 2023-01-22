@@ -170,8 +170,21 @@ func SetupDatabase() {
 
 	Collection1 := Collection{
 		Name: "fav",
+		User: User1,
 	}
 	db.Model(&Collection{}).Create(&Collection1)
+
+	Collection2 := Collection{
+		Name: "God of war series",
+		User: User1,
+	}
+	db.Model(&Collection{}).Create(&Collection2)
+
+	Collection3 := Collection{
+		Name: "Resident evil",
+		User: User1,
+	}
+	db.Model(&Collection{}).Create(&Collection3)
 
 	Storage1 := Storage{
 		Game:       Game1,

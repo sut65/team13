@@ -27,6 +27,7 @@ func CreateCollection(c *gin.Context) {
 
 	bk := entity.Collection{
 		User: user, // โยงความสัมพันธ์กับ Entity Room
+		Name: collection.Name,
 		Note: collection.Note,
 		Date: collection.Date,
 	}
@@ -67,7 +68,7 @@ func ListCollections(c *gin.Context) {
 	var collections []entity.Collection
 	id := c.Param("id")
 
-	if err := entity.DB().Preload("User").Raw("SELECT * FROM collections WHERE id = ? ", id).Scan(&collections).Error; err != nil {
+	if err := entity.DB().Preload("User").Raw("SELECT * FROM collections WHERE User_ID = ? ", id).Scan(&collections).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -82,10 +83,13 @@ func ListCollections(c *gin.Context) {
 // DELETE /users/:id
 
 func DeleteCollection(c *gin.Context) {
+	var collection entity.Collection
+	if err := c.ShouldBindJSON(&collection); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	id := c.Param("id")
-
-	if tx := entity.DB().Exec("DELETE FROM collections WHERE id = ?", id); tx.RowsAffected == 0 {
+	if tx := entity.DB().Exec("DELETE FROM collections WHERE id = ?", collection.ID); tx.RowsAffected == 0 {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 
@@ -93,7 +97,7 @@ func DeleteCollection(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": id})
+	c.JSON(http.StatusOK, gin.H{"data": collection})
 
 }
 
@@ -110,8 +114,11 @@ func UpdateCollection(c *gin.Context) {
 		return
 
 	}
-
-	if tx := entity.DB().Where("id = ?", collection.ID).First(&collection); tx.RowsAffected == 0 {
+	collect := entity.Collection{
+		Name: collection.Name,
+		Note: collection.Note,
+	}
+	if tx := entity.DB().Where("id = ?", collection.ID).Updates(&collect); tx.RowsAffected == 0 {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": "collection not found"})
 
@@ -119,14 +126,6 @@ func UpdateCollection(c *gin.Context) {
 
 	}
 
-	if err := entity.DB().Save(&collection).Error; err != nil {
-
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
-		return
-
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": collection})
+	c.JSON(http.StatusOK, gin.H{"data": collect})
 
 }
