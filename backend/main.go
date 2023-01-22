@@ -85,7 +85,10 @@ func main() {
 			// Storage Routes
 			protected.GET("/storages", storage_controller.ListStorages)
 			protected.GET("/storages/:id", storage_controller.ListStoragesUser)
-
+			protected.GET("/collections/:id", storage_controller.ListCollections)
+			protected.POST("/collections", storage_controller.CreateCollection)
+			protected.PATCH("/collections", storage_controller.UpdateCollection)
+			protected.DELETE("/collections/:id", storage_controller.DeleteCollection)
 			// Banner Routes
 			protected.GET("/banners", banner_controller.ListBanners)
 			protected.GET("/banner/:id", banner_controller.GetBanner)
