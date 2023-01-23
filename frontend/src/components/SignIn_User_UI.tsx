@@ -44,6 +44,7 @@ function SignIn_User() {
   const [genders, setGenders] = React.useState<GendersInterface[]>([]);
   // Sign in
   const [signin, setSignin] = useState<Partial<SigninUserInterface>>({});
+  const [signinAdmin, setSigninAdmin] = useState<Partial<SigninUserInterface>>({});
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
 
@@ -128,6 +129,14 @@ function SignIn_User() {
     setSignin({ ...signin, [id]: value });
   };
 
+  const handleInputChangeAdmin = (
+    event: React.ChangeEvent<{ id?: string; value: any }>
+  ) => {
+    const id = event.target.id as keyof typeof signin;
+    const { value } = event.target;
+    setSigninAdmin({ ...signinAdmin, [id]: value });
+  };
+
   const handleClose = (
     event?: React.SyntheticEvent | Event,
     reason?: string
@@ -181,7 +190,7 @@ function SignIn_User() {
   };
 
   const submitAdmin = async () => {
-    let res = await LoginAdmin(signin);
+    let res = await LoginAdmin(signinAdmin);
     if (res) {
       setSuccess(true);
       setTimeout(() => {
@@ -272,7 +281,7 @@ function SignIn_User() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage: "url(http://www.sut.ac.th/2012/images/upload/news/1410/1410/news.jpg)",
+            backgroundImage: "url(https://cdn.cloudflare.steamstatic.com/store/home/store_home_share.jpg)",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"
@@ -509,8 +518,8 @@ function SignIn_User() {
                     name="Email"
                     autoComplete="Email"
                     autoFocus
-                    value={signin.Email || ""}
-                    onChange={handleInputChange}
+                    value={signinAdmin.Email || ""}
+                    onChange={handleInputChangeAdmin}
                   />
                   <TextField
                     margin="normal"
@@ -521,8 +530,8 @@ function SignIn_User() {
                     type="password"
                     id="Password"
                     autoComplete="current-password"
-                    value={signin.Password || ""}
-                    onChange={handleInputChange}
+                    value={signinAdmin.Password || ""}
+                    onChange={handleInputChangeAdmin}
                   />
                 </Box>
               </Grid>
