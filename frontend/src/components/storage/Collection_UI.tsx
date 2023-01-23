@@ -38,7 +38,7 @@ function Collection_UI() {
   const [nameEdit, setNameEdit] = useState<string>("");
   const [noteEdit, setNoteEdit] = useState<string>("");
 
-
+  const [click, setClick] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [errorForAdd, setErrorForAdd] = useState(false);
@@ -50,6 +50,7 @@ function Collection_UI() {
     setNameEdit(params.row.Name);
     setNoteEdit(params.row.Note);
     setIdEdit(params.row.ID);
+    setClick(false);
   };
 
   const handleClose = (
@@ -295,12 +296,12 @@ function Collection_UI() {
           </Button>
         </Box>
         <Box sx={{ marginLeft: 2 }}>
-          <Button variant="contained" color="primary" onClick={() => handleClickOpenForEdit()}>
+          <Button variant="contained" color="primary" disabled = {click} onClick={() => handleClickOpenForEdit()}>
             Edit
           </Button>
         </Box>
         <Box sx={{ marginLeft: 2 }}>
-          <Button variant="contained" color="error" onClick={() => handleClickOpenForDelete()}>
+          <Button variant="contained" color="error" disabled = {click} onClick={() => handleClickOpenForDelete()}>
             Delete
           </Button>
         </Box>
