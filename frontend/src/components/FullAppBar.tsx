@@ -22,6 +22,7 @@ import GamesIcon from '@mui/icons-material/Games';
 import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PeopleIcon from '@mui/icons-material/People';
+import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 
 // Admin Icon
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
@@ -90,6 +91,10 @@ function drawerList() {
         <ListItem button component={RouterLink} to="/my_friend">
           <PeopleIcon/>
           <ListItemText primary="My Friend" sx={{padding: 2}}/>
+        </ListItem>
+        <ListItem button component={RouterLink} to="/collection">
+          <FeaturedPlayListIcon/>
+          <ListItemText primary="Collection" sx={{padding: 2}}/>
         </ListItem>
 
       </List>

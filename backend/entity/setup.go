@@ -60,8 +60,9 @@ func SetupDatabase() {
 		&Option{},
 		&Order{},
 
-		// Verification Status
+		// Payment_Verification
 		&Verification_Status{},
+		&Payment_Verification{},
 	)
 
 	db = database
@@ -169,8 +170,21 @@ func SetupDatabase() {
 
 	Collection1 := Collection{
 		Name: "fav",
+		User: User1,
 	}
 	db.Model(&Collection{}).Create(&Collection1)
+
+	Collection2 := Collection{
+		Name: "God of war series",
+		User: User1,
+	}
+	db.Model(&Collection{}).Create(&Collection2)
+
+	Collection3 := Collection{
+		Name: "Resident evil",
+		User: User1,
+	}
+	db.Model(&Collection{}).Create(&Collection3)
 
 	Storage1 := Storage{
 		Game:       Game1,
@@ -443,7 +457,7 @@ func SetupDatabase() {
 	db.Model(&Order{}).Create(&order1)
 	db.Model(&Order{}).Create(&order2)
 
-	// verification status
+	// Payment_Verification
 
 	vs1 := Verification_Status{
 		Status_type: "ชำระสำเร็จ",
@@ -453,5 +467,14 @@ func SetupDatabase() {
 	}
 	db.Model(&Verification_Status{}).Create(&vs1)
 	db.Model(&Verification_Status{}).Create(&vs2)
+
+	pv1 := Payment_Verification{
+		Admin_ID: &admin1.ID,
+		Order_ID: &order1.ID,
+		VS_ID:    &vs1.ID,
+		Date:     time.Now(),
+		Note:     "ชำระสำเร็จ",
+	}
+	db.Model(&Payment_Verification{}).Create(&pv1)
 
 }

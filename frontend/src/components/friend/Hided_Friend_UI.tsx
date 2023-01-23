@@ -16,6 +16,8 @@ import { Link as RouterLink } from "react-router-dom";
 import { IntimatesInterface } from '../../models/friend/IIntimate';
 import { GamesInterface } from '../../models/game/IGame';
 import { UsersInterface } from '../../models/user/IUser';
+import Moment from 'moment';
+
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -25,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Hided_Friend_UI() {
     const classes = useStyles();
+    Moment.locale('th');
 
     const [friend, setFriend] = useState<FriendsInterface[]>([]);
     const [toEditFriend, setToEditFriend] = useState<FriendsInterface>();
@@ -301,6 +304,7 @@ function Hided_Friend_UI() {
                             <TableCell align="center"><h4>Nickname</h4></TableCell>
                             <TableCell align="center"><h4>Intimate</h4></TableCell>
                             <TableCell align="center"><h4>Play together</h4></TableCell>
+                            <TableCell align="center"><h4>Since</h4></TableCell>
                             <TableCell align="center"><h4>Action</h4></TableCell>
                         </TableRow>
                     </TableHead>
@@ -311,7 +315,8 @@ function Hided_Friend_UI() {
                                     <TableCell component="th" scope="row">{item.User_Friend.Profile_Name}</TableCell>
                                     <TableCell align="center">{item.Nickname}</TableCell>       
                                     <TableCell align="center">{item.Intimate.Intimate_Name}</TableCell>    
-                                    <TableCell align="center">{item.Game.Game_Name}</TableCell>               
+                                    <TableCell align="center">{item.Game.Game_Name}</TableCell>
+                                    <TableCell align="center">{`${Moment(item.Date).format('DD MMMM YYYY')}`}</TableCell>                  
                                     <TableCell align="center">
                                         <Stack direction="column" spacing={2}>
                                             <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/"+String(item.User_Friend.Email)}>
