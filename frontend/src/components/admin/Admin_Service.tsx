@@ -1,7 +1,7 @@
 import React from "react";
-import { GamesInterface } from "../../models/game/IGame";
+import { AdminsInterface } from "../../models/admin/IAdmin";
 const apiUrl = "http://localhost:8080";
-async function GetGame() {
+async function GetAdmin() {
   const requestOptions = {
     method: "GET",
     headers: {
@@ -10,7 +10,7 @@ async function GetGame() {
     },
   };
 
-  let res = await fetch(`${apiUrl}/Game`, requestOptions)
+  let res = await fetch(`${apiUrl}/admin`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {
@@ -23,7 +23,7 @@ async function GetGame() {
   return res;
 }
 
-async function GetGame_Status() {
+async function GetDepartment() {
   const requestOptions = {
     method: "GET",
     headers: {
@@ -32,7 +32,7 @@ async function GetGame_Status() {
     },
   };
 
-  let res = await fetch(`${apiUrl}/Status`, requestOptions)
+  let res = await fetch(`${apiUrl}/Department`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {
@@ -46,7 +46,7 @@ async function GetGame_Status() {
 }
 
 
-async function GetGame_Type() {
+async function GetProvince() {
   const requestOptions = {
     method: "GET",
     headers: {
@@ -55,7 +55,7 @@ async function GetGame_Type() {
     },
   };
 
-  let res = await fetch(`${apiUrl}/Game_Type`, requestOptions)
+  let res = await fetch(`${apiUrl}/Province`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {
@@ -68,7 +68,7 @@ async function GetGame_Type() {
   return res;
 }
 
-async function GetGame_Rating() {
+async function GetGender() {
   const requestOptions = {
     method: "GET",
     headers: {
@@ -77,28 +77,7 @@ async function GetGame_Rating() {
     },
   };
 
-  let res = await fetch(`${apiUrl}/Rating`, requestOptions)
-    .then((response) => response.json())
-    .then((res) => {
-      if (res.data) {
-        return res.data;
-      } else {
-        return false;
-      }
-    });
-
-  return res;
-}
-async function GetUser() {
-  const requestOptions = {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
-    },
-  };
-
-  let res = await fetch(`${apiUrl}/users`, requestOptions)
+  let res = await fetch(`${apiUrl}/genders`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {
@@ -115,7 +94,7 @@ async function GetUser() {
 
 
 
-async function CreateGame(data: any) {
+async function CreateAdmin(data: any) {
   console.log(data)
   const requestOptions = {
     method: "POST",
@@ -126,7 +105,7 @@ async function CreateGame(data: any) {
     body: JSON.stringify(data),
   };
 
-  let res = await fetch(`${apiUrl}/Game`, requestOptions)
+  let res = await fetch(`${apiUrl}/admin`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {
@@ -141,7 +120,7 @@ async function CreateGame(data: any) {
 
 }
 
-async function UpdateGame(data: any) {
+async function UpdateAdmin(data: any) {
   const requestOptions = {
     method: "PATCH",
     headers: {
@@ -151,7 +130,7 @@ async function UpdateGame(data: any) {
     body: JSON.stringify(data),
   };
 
-  let res = await fetch(`${apiUrl}/Game`, requestOptions)
+  let res = await fetch(`${apiUrl}/admin`, requestOptions)
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {
@@ -168,13 +147,12 @@ async function UpdateGame(data: any) {
 
 export {
 
-  UpdateGame,
-  GetGame,
-  GetGame_Rating,
-  GetGame_Status,
-  GetGame_Type,
-  GetUser,
-  CreateGame
+  UpdateAdmin,
+  GetAdmin,
+  GetGender,
+  GetDepartment,
+  GetProvince,
+  CreateAdmin,
 
 
 
