@@ -13,24 +13,34 @@ import (
 func CreateStroage(c *gin.Context) {
 
 	var storage entity.Storage
+	var user entity.User
+	var game entity.Game
 
 	if err := c.ShouldBindJSON(&storage); err != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
 		return
-
 	}
 
-	if err := entity.DB().Create(&storage).Error; err != nil {
-
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
+	if tx := entity.DB().Where("id = ?", storage.User_ID).First(&user); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
 		return
-
+	}
+	if tx := entity.DB().Where("id = ?", storage.Game_ID).First(&game); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": storage})
+	bk := entity.Storage{
+		User: user, // โยงความสัมพันธ์กับ Entity Room
+		Game: game,
+	}
+
+	// 13: บันทึก
+	if err := entity.DB().Create(&bk).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{"data": bk})
 
 }
 
@@ -96,10 +106,13 @@ func ListStoragesUser(c *gin.Context) {
 // DELETE /users/:id
 
 func DeleteStorage(c *gin.Context) {
+	var storage entity.Storage
+	if err := c.ShouldBindJSON(&storage); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
-	id := c.Param("id")
-
-	if tx := entity.DB().Exec("DELETE FROM storages WHERE id = ?", id); tx.RowsAffected == 0 {
+	if tx := entity.DB().Exec("DELETE FROM storages WHERE id = ?", storage.ID); tx.RowsAffected == 0 {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 
@@ -107,7 +120,7 @@ func DeleteStorage(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": id})
+	c.JSON(http.StatusOK, gin.H{"data": storage})
 
 }
 
@@ -116,13 +129,16 @@ func DeleteStorage(c *gin.Context) {
 func UpdateStorage(c *gin.Context) {
 
 	var storage entity.Storage
-
+	// var collect entity.Collection
 	if err := c.ShouldBindJSON(&storage); err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
 
+	}
+	bk := entity.Storage{
+		Collection_ID: storage.Collection_ID,
 	}
 
 	if tx := entity.DB().Where("id = ?", storage.ID).First(&storage); tx.RowsAffected == 0 {
@@ -133,7 +149,7 @@ func UpdateStorage(c *gin.Context) {
 
 	}
 
-	if err := entity.DB().Save(&storage).Error; err != nil {
+	if err := entity.DB().Updates(&storage).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -141,6 +157,6 @@ func UpdateStorage(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": storage})
+	c.JSON(http.StatusOK, gin.H{"data": bk})
 
 }
