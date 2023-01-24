@@ -64,14 +64,8 @@ export default function App() {
           <Route path="/my_basket" element={<Basket_List/>} /> {/** basket */}
           <Route path="/my_friend" element={<Friend_UI/>} /> {/** friend */}
           <Route path="/my_hided_friend" element={<Hided_Friend_UI/>} /> {/** hide friend */}
-<<<<<<< HEAD
           <Route path="/collection" element={<Collection_UI/>} /> {/** collection*/}
           <Route path="/storage" element={<Storage_UI/>} /> {/** storage*/}
-=======
-                 <Route path="/collection" element={<Collection_UI/>} /> {/** collection*/}
-
-          
->>>>>>> 01987a7954821af754a765ae6ab9d3a41f7f712c
 
         </Routes>
       );
