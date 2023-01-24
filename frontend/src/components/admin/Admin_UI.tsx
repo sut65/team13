@@ -6,14 +6,13 @@ import { Box, Paper, Grid, TextField, Button, Autocomplete, Alert } from "@mui/m
 import { FormControl, FormLabel, RadioGroup, Radio, FormControlLabel, FormHelperText } from "@mui/material";
 import { Dialog, Snackbar, DialogTitle, DialogContent, DialogContentText, DialogActions } from "@material-ui/core";
 import Select, { SelectChangeEvent } from "@mui/material/Select";
-import { GendersInterface } from "../../models/user/IGender";
+import { GendersInterface } from "../../models/admin/IGender";
 import { DepartmentInterface } from "../../models/admin/IDepartment";
 import { ProvinceInterface } from "../../models/admin/IProvince";
 import { AdminsInterface } from "../../models/admin/IAdmin";
-import { UsersInterface } from "../../models/user/IUser";
 import { CreateAdmin ,GetDepartment,GetGender,GetProvince} from "./Admin_Service";
 function Admin() {
-  const [user, setUser] = useState<UsersInterface[]>([]);
+  
   const [gender,  setGender] = useState<GendersInterface[]>([]);
   const [department,  setDepartment] = useState<DepartmentInterface[]>([]);
   const [province,  setProvince] = useState<ProvinceInterface[]>([]);
@@ -128,18 +127,18 @@ async function submit() {
               <h2 style={{
                 color: "black"
 
-              }}>Admin Name</h2>
+              }}>Name</h2>
 
               <FormControl fullWidth variant="outlined"  >
                 <TextField
-                  id="Admin_Name"
+                  id="Name"
                   variant="outlined"
                   type="string"
                   size="medium"
                   placeholder="------------------------------------"
 
                  // value={game.Game_Name || ""}
-                 // onChange={}
+                  onChange={handleInputChange}
                 />
               </FormControl>
             </Grid>
@@ -155,7 +154,7 @@ async function submit() {
                   placeholder="------------------------------------"
                  // value={game.Game_Price || ""}
                   // onWheel={event => { event.preventDefault();  }}
-                  //onChange={handleInputChange}
+                  onChange={handleInputChange}
 
 
                  
@@ -172,6 +171,7 @@ async function submit() {
                   size="medium"
                   placeholder="------------------------------------"
                  // defaultValue={localStorage.getItem("email")}
+                 onChange={handleInputChange}
 
                 />
               </FormControl>
@@ -185,7 +185,7 @@ async function submit() {
             <Grid item xs={4} >
           
             <Autocomplete sx={{ mt: 5 }}
-                          id="department_ID-autocomplete"
+                          id="Department-autocomplete"
                           options={department} //ตัวที่เราจะเลือกมีอะไรบ้าง
                           fullWidth
                           size="medium"
@@ -208,11 +208,11 @@ async function submit() {
                           }}
                         />
                         <Autocomplete
-                                id="province-autocomplete"
+                                id="Province-autocomplete"
                                 options={province}
                                 size="medium"
                                 onChange={(event: any, value) => {
-                                    setAdmin({ ...admin, Province_ID: value?.ID }); //Just Set ID to interface
+                                    setAdmin({ ...admin, Province_ID: value?.ID }); 
                                 }}
                                 getOptionLabel={(option: any) =>
                                 `${option.Province_Title}`
@@ -234,7 +234,7 @@ async function submit() {
                                     value={`${option.ID}`}
                                     key={`${option.ID}`}
                                     >{`${option.Province_Title}`}</li>
-                                ); //display value
+                                ); 
                                 }}
                             />
                       

@@ -1,6 +1,6 @@
 import { DepartmentInterface } from "./IDepartment";
 import{ ProvinceInterface } from "./IProvince"
-import{GendersInterface } from "../user/IGender"
+import{GendersInterface } from "../admin/IGender"
 export interface AdminsInterface {
     ID:         number,
     Email:      string,

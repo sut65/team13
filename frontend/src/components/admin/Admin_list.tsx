@@ -28,6 +28,7 @@ import Moment from 'moment';
 import AddIcon from '@mui/icons-material/Add';
 import { AdminsInterface } from "../../models/admin/IAdmin";
 import { CreateAdmin ,GetDepartment,GetGender,GetProvince,GetAdmin} from "./Admin_Service";
+import { GetGame} from "../game/GameService";
 const useStyles = makeStyles((theme) => ({
     table: {
         minWidth: 650,
@@ -35,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 function Admin_list() {
     const [admin, setAdmin] = useState<AdminsInterface[]>([]);
+    const [game, setGame] = useState<GamesInterface[]>([]);
  
 
     const classes = useStyles();
@@ -48,8 +50,19 @@ function Admin_list() {
           console.log(res)
         }
       };
+
+      const getGame = async () => {
+        let res = await GetGame();
+        if (res) {
+          // setImageString(rese)// เพื่อให้ มันมีภาพ ตอนแรกไม่มีภาพ defaultvaule
+          setGame(res);
+    
+          console.log(res)
+        }
+      };
     useEffect(() => {
         getAdmin();
+        getGame();
        
     }, []);
    return ( <TableContainer component={Paper}>
