@@ -32,13 +32,13 @@ function Hided_Friend_UI() {
     const [friend, setFriend] = useState<FriendsInterface[]>([]);
     const [toEditFriend, setToEditFriend] = useState<FriendsInterface>();
     const [deleteFriend, setDeleteFriend] = useState<FriendsInterface>();
-    const [user, setUser] = useState<UsersInterface[]>([]);
     const [intimate, setIntimate] = useState<IntimatesInterface[]>([]);
     const [game, setGame] = useState<GamesInterface[]>([]);
 
     const [nicknameEdit, setNicknameEdit] = React.useState<string>("");
     const [intimateEdit, setIntimateEdit] = React.useState<Number>();
     const [gameEdit, setGameEdit] = React.useState<Number>();
+    
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
@@ -93,25 +93,6 @@ function Hided_Friend_UI() {
             .then((res) => {
                 if (res.data) {
                     setFriend(res.data);
-                }
-            });
-    };
-
-    const getUser = async () => {                                 
-        const apiUrl = "http://localhost:8080/userforaddfriend/"+String(localStorage.getItem("uid"));
-        const requestOptions = {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
-            },
-        };
-  
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                if (res.data) {
-                    setUser(res.data);
                 }
             });
     };
@@ -243,7 +224,6 @@ function Hided_Friend_UI() {
 
     useEffect(() => {
         getUserFriend(); 
-        getUser();
         getIntimate();
         getGame(); 
     }, []);
@@ -333,7 +313,7 @@ function Hided_Friend_UI() {
                                             </Button> 
                                         </Stack>
                                     </TableCell>
-                                    <Dialog maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
+                                    <Dialog maxWidth="sm" fullWidth open={openForEdit} onClose={handleCloseForEdit} >
                                         <DialogTitle>{toEditFriend?.User_Friend.Profile_Name}</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText>
@@ -440,7 +420,7 @@ function Hided_Friend_UI() {
                                             <Button onClick={() => updateFriend(toEditFriend?.ID||0)}>Save</Button>
                                         </DialogActions>
                                     </Dialog>
-                                    <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
+                                    <Dialog maxWidth="sm" fullWidth open={openForDelete} onClose={handleCloseForDelete} >
                                         <DialogTitle>DELETE</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText>
