@@ -12,8 +12,9 @@ import (
 // POST /friends
 func CraeteFriend(c *gin.Context) {
 
+	var user entity.User
 	var friend entity.Friend
-	var User_Friend entity.User
+	var user_Friend entity.User
 	var intimate entity.Intimate
 	var game entity.Game
 
@@ -27,7 +28,7 @@ func CraeteFriend(c *gin.Context) {
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", friend.User_Friend_ID).First(&User_Friend); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", friend.User_Friend_ID).First(&user_Friend); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 		return
 	}
@@ -41,6 +42,15 @@ func CraeteFriend(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
 		return
 	}
+
+	id := friend.User_ID
+
+	if err := entity.DB().Raw("SELECT profile_name FROM users WHERE id = ?", id).Find(&user).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	println(user.Profile_Name)
 
 	friAdd := entity.Friend{
 		User_ID:        friend.User_ID,
@@ -58,9 +68,7 @@ func CraeteFriend(c *gin.Context) {
 	}
 
 	if err := entity.DB().Create(&friAdd).Error; err != nil {
-
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
 		return
 
 	}
@@ -69,6 +77,7 @@ func CraeteFriend(c *gin.Context) {
 		User_ID:        friend.User_Friend_ID,
 		User_Friend_ID: friend.User_ID,
 		Intimate_ID:    friend.Intimate_ID,
+		Nickname:       user.Profile_Name,
 		Game_ID:        friend.Game_ID,
 		Is_Hide:        friend.Is_Hide,
 		Date:           friend.Date.Local(),

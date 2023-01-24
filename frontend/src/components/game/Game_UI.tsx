@@ -32,7 +32,7 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@mui/material/Alert";
 
 
-function Game() {
+function Game_UI() {
   const [user, setUser] = React.useState<Partial<UsersInterface>>({});
   const [game_rating, setGame_rating] = useState<RatingsInterface[]>([]);
   const [game_type, setGame_type] = useState<Type_GamesInterface[]>([]);
@@ -68,13 +68,13 @@ function Game() {
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }>
   ) => {
-    const id = event.target.id as keyof typeof Game;
+    const id = event.target.id as keyof typeof Game_UI;
     const { value } = event.target;
     setGame({ ...game, [id]: value });
   };
   //Select
   const handleChange = (event: SelectChangeEvent) => {
-    const name = event.target.name as keyof typeof Game;
+    const name = event.target.name as keyof typeof Game_UI;
     setGame({
       ...game,
       [name]: event.target.value,
@@ -176,11 +176,11 @@ function Game() {
   }
  if(user.Is_Seller) 
  return (
-    <div style={{
-      //backgroundColor: 'black',
-      backgroundImage: `url("https://images6.alphacoders.com/655/655993.jpg")`
-      //https://images6.alphacoders.com/112/1126233.jpg
-    }}>
+    // <div style={{
+    //   //backgroundColor: 'black',
+    //  // backgroundImage: `url("https://images6.alphacoders.com/655/655993.jpg")`
+    //   //https://images6.alphacoders.com/112/1126233.jpg
+    // }}>
 
       <Container maxWidth="xl" sx={{
         //backgroundColor: '#E3E3E3',
@@ -191,7 +191,7 @@ function Game() {
 
 
         // border: 2,
-        p: 15
+       // p: 15
       }} >
         <Snackbar
           open={success}
@@ -220,12 +220,12 @@ function Game() {
             // bgcolor: "#e3f2fd",
             //ml: 10,
             mt: 5,
-            mb: 5,
-            mr: 10
+          //  mb: 5,
+         //   mr: 10
            // backgroundImage: `url("https://images3.alphacoders.com/112/1126231.png")`
-            , width: "1500px"
-            , height: "1200px"
-            , opacity: 1
+           // , width: "1500px"
+           // , height: "1200px"
+           // , opacity: 1
 
           }}>
             {/* <Box sx={{ ml:0  , width : 150 ,
@@ -239,7 +239,7 @@ function Game() {
          
           />
           </Box> */}
-            <Box
+            {/* <Box
 
               display="flex"
               sx={{
@@ -268,9 +268,9 @@ function Game() {
 
 
 
-            </Box>
+            </Box> */}
 
-            <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
+            <Grid container spacing={3} sx={ { padding: 2 }} columns={{ xs: 16 } }>
               <Grid item xs={3}>
                 <h2 style={{
                   color: "black"
@@ -411,6 +411,16 @@ function Game() {
                   </Select>
 
                 </FormControl>
+                <Button
+              sx={{ mt: 2 }}
+              onClick={submit}
+              variant="contained"
+              color="inherit"
+              startIcon={< CloudUploadIcon />}
+
+            >
+              Upload Game
+            </Button>
               </Grid>
 
               <Grid item xs={4}  >
@@ -479,7 +489,7 @@ function Game() {
 
             </Grid>
 
-            <Button
+            {/* <Button
               component={RouterLink}
               to="/game_list"
               variant="contained"
@@ -489,17 +499,8 @@ function Game() {
 
             >
               Update & Delete
-            </Button>
-            <Button
-              style={{ float: "right" }}
-              onClick={submit}
-              variant="contained"
-              color="inherit"
-              startIcon={< CloudUploadIcon />}
-
-            >
-              Upload Game
-            </Button>
+            </Button> */}
+            
 
           </Paper>
 
@@ -508,10 +509,10 @@ function Game() {
 
 
       </Container>
-    </div>
+    // </div>
   );
   else return(<Box>You is not Seller
     </Box>)
 }
 
-export default Game;
+export default Game_UI;
