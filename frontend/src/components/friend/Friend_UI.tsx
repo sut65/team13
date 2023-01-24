@@ -19,6 +19,7 @@ import { IntimatesInterface } from '../../models/friend/IIntimate';
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
+import Moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -28,12 +29,13 @@ const useStyles = makeStyles((theme) => ({
 
 function Friend_UI() {
     const classes = useStyles();
+    Moment.locale('th');
 
     const [friend, setFriend] = useState<FriendsInterface[]>([]);
     const [toEditFriend, setToEditFriend] = useState<FriendsInterface>();
     const [deleteFriend, setDeleteFriend] = useState<FriendsInterface>();
     const [friendAdd,setFriendAdd] = React.useState<Partial<FriendsInterface>>({});
-    const [user, setUser] = useState<UsersInterface[]>([]);
+    const [userForAdd, setUserForAdd] = useState<UsersInterface[]>([]);
     const [intimate, setIntimate] = useState<IntimatesInterface[]>([]);
     const [game, setGame] = useState<GamesInterface[]>([]);
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
@@ -46,7 +48,6 @@ function Friend_UI() {
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
-    const [errorForAdd, setErrorForAdd] = React.useState(false);
     const [openForAdd, setOpenForAdd] = React.useState(false);
     const [openForEdit, setOpenForEdit] = React.useState(false);
     const [openForDelete, setOpenForDelete] = React.useState(false);
@@ -61,7 +62,6 @@ function Friend_UI() {
         }
         setSuccess(false);
         setError(false);
-        setErrorForAdd(false);
     };
 
     const handleClickOpenForAdd = () => {
@@ -112,7 +112,7 @@ function Friend_UI() {
             });
     };
 
-    const getUser = async () => {                                 
+    const getUserForAdd = async () => {                                 
         const apiUrl = "http://localhost:8080/userforaddfriend/"+String(localStorage.getItem("uid"));
         const requestOptions = {
             method: "GET",
@@ -126,7 +126,7 @@ function Friend_UI() {
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setUser(res.data);
+                    setUserForAdd(res.data);
                 }
             });
     };
@@ -197,7 +197,7 @@ function Friend_UI() {
             await timeout(1000); //for 1 sec delay
             window.location.reload();     
         } else {
-            setErrorForAdd(true);     
+            setError(true);     
         }
     });        
     }
@@ -290,7 +290,7 @@ function Friend_UI() {
 
     useEffect(() => {
         getUserFriend();  
-        getUser();
+        getUserForAdd();
         getIntimate();
         getGame();
     }, []);
@@ -316,17 +316,6 @@ function Friend_UI() {
             >
                 <Alert onClose={handleClose} severity="error">
                     บันทึกข้อมูลไม่สำเร็จ
-                </Alert>
-            </Snackbar>
-
-            <Snackbar                                                                                 //ป้ายบันทึกไม่สำเร็จ
-                open={errorForAdd} 
-                autoHideDuration={6000} 
-                onClose={handleClose} 
-                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-            >
-                <Alert onClose={handleClose} severity="error">
-                    คุณมีเพื่อนคนนี้แล้ว
                 </Alert>
             </Snackbar>
 
@@ -365,7 +354,9 @@ function Friend_UI() {
                             <TableCell align="center"><h4>Nickname</h4></TableCell>
                             <TableCell align="center"><h4>Intimate</h4></TableCell>
                             <TableCell align="center"><h4>Play together</h4></TableCell>
+                            <TableCell align="center"><h4>Since</h4></TableCell>
                             <TableCell align="center"><h4>Action</h4></TableCell>
+                            
                         </TableRow>
                     </TableHead>
                         <TableBody>
@@ -375,7 +366,8 @@ function Friend_UI() {
                                     <TableCell component="th" scope="row">{item.User_Friend.Profile_Name}</TableCell>
                                     <TableCell align="center">{item.Nickname}</TableCell>       
                                     <TableCell align="center">{item.Intimate.Intimate_Name}</TableCell>    
-                                    <TableCell align="center">{item.Game.Game_Name}</TableCell>               
+                                    <TableCell align="center">{item.Game.Game_Name}</TableCell>
+                                    <TableCell align="center">{`${Moment(item.Date).format('DD MMMM YYYY')}`}</TableCell>                 
                                     <TableCell align="center">
                                         <Stack direction="column" spacing={2}>
                                             <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/"+String(item.User_Friend.Email)}>
@@ -392,7 +384,7 @@ function Friend_UI() {
                                             </Button>                                        
                                         </Stack>
                                     </TableCell>
-                                    <Dialog maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
+                                    <Dialog maxWidth="sm" fullWidth open={openForEdit} onClose={handleCloseForEdit}>
                                         <DialogTitle>{toEditFriend?.User_Friend.Profile_Name}</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText>
@@ -499,7 +491,7 @@ function Friend_UI() {
                                             <Button onClick={() => updateFriend(toEditFriend?.ID||0)}>Save</Button>
                                         </DialogActions>
                                     </Dialog>
-                                    <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
+                                    <Dialog maxWidth="sm" fullWidth open={openForDelete} onClose={handleCloseForDelete} >
                                         <DialogTitle>DELETE</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText>
@@ -516,7 +508,7 @@ function Friend_UI() {
                         </TableBody>
                 </Table>
             </TableContainer>
-            <Dialog open={openForAdd} onClose={handleCloseForAdd} >
+            <Dialog maxWidth="sm" fullWidth open={openForAdd} onClose={handleCloseForAdd} >
                 <DialogTitle>Friend</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
@@ -529,7 +521,7 @@ function Friend_UI() {
                         <Grid>
                             <Autocomplete
                                 id="user-autocomplete"
-                                options={user}
+                                options={userForAdd}
                                 size="small"
                                 onChange={(event: any, value) => {
                                     setFriendAdd({ ...friendAdd, User_Friend_ID: value?.ID }); //Just Set ID to interface

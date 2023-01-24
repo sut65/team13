@@ -29,6 +29,7 @@ func CreateGame(c *gin.Context) {
 		return
 
 	}
+	println(seller.ID)
 
 	if tx := entity.DB().Where("id = ?", game.Rating_ID).First(&rating); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Rating not found"})

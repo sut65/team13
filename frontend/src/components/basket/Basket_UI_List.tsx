@@ -33,6 +33,8 @@ function Basket_List() {
     const [openForEdit, setOpenForEdit] = React.useState(false);
     const [openForDelete, setOpenForDelete] = React.useState(false);
 
+    const sum = basket.reduce((acc, item) => acc + item.Game.Game_Price, 0);
+
     const handleClose = (                                                                        
         event?: React.SyntheticEvent | Event,
         reason?: string
@@ -141,8 +143,10 @@ function Basket_List() {
 
 
     useEffect(() => {
-        getUserBasket(); 
-        console.log(basket)  
+        const fetchData = async () => {
+            await getUserBasket(); 
+        }
+        fetchData();     
     }, []);
 
     return (
@@ -184,62 +188,72 @@ function Basket_List() {
                             <TableCell align="center"><h4>Action</h4></TableCell>
                         </TableRow>
                     </TableHead>
-                        <TableBody>
-                            {basket.map((item) => (
-                                <TableRow key={item.ID}>
-                                    <TableCell align="center"><img src={`${item.Game.Game_Picture}`} width="300" height="150"/></TableCell>
-                                    <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
-                                    <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
-                                    <TableCell align="center">{item.Note}</TableCell>
-                                    <TableCell align="center">
-                                        <Stack direction="column" spacing={2}>
-                                            <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
-                                                Edit
-                                            </Button>
-                                            <Button variant="contained" color="secondary" onClick={() => handleClickOpenForDelete(item)}>
-                                                Delete
-                                            </Button>                                        
-                                        </Stack>
-                                    </TableCell>
-                                        <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
-                                            <DialogTitle>{editBasket?.Game.Game_Name}</DialogTitle>
-                                            <DialogContent>
-                                                <DialogContentText>
-                                                    {editBasket?.Game.Game_description}
-                                                </DialogContentText>
-                                                <TextField
-                                                    id="outlined-basic"
-                                                    placeholder="Insert details"
-                                                    variant="outlined"
-                                                    size="medium"
-                                                    multiline={true}
-                                                    minRows={9}
-                                                    maxRows={2}
-                                                    fullWidth={true}
-                                                    defaultValue={editBasket?.Note}
-                                                    onChange={(event) => setNote(event.target.value)}
-                                                />
-                                            </DialogContent>
-                                            <DialogActions>
-                                                <Button onClick={handleCloseForEdit}>Cancel</Button>
-                                                <Button onClick={() => updateItem(editBasket?.ID||0,note)}>Save</Button>
-                                            </DialogActions>
-                                        </Dialog>
-                                        <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
-                                            <DialogTitle>DELETE</DialogTitle>
-                                            <DialogContent>
-                                                <DialogContentText>
-                                                    Are you SURE to DELETE "{item.Game.Game_Name}" from BASKET?
-                                                </DialogContentText>
-                                            </DialogContent>
-                                            <DialogActions>
-                                                <Button onClick={handleCloseForDelete}>Cancel</Button>
-                                                <Button color="secondary" onClick={() => deleteItem(deleteBasket?.ID||0)}>Delete</Button>
-                                            </DialogActions>
-                                        </Dialog>
-                                </TableRow>
-                            ))}
-                        </TableBody>
+                    <TableBody>
+                        {basket.map((item) => (
+                            <TableRow key={item.ID}>
+                                <TableCell align="center"><img src={`${item.Game.Game_Picture}`} width="300" height="150"/></TableCell>
+                                <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
+                                <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
+                                <TableCell align="center">{item.Note}</TableCell>
+                                <TableCell align="center">
+                                    <Stack direction="column" spacing={2}>
+                                        <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
+                                            Edit
+                                        </Button>
+                                        <Button variant="contained" color="secondary" onClick={() => handleClickOpenForDelete(item)}>
+                                            Delete
+                                        </Button>                                        
+                                    </Stack>
+                                </TableCell>
+                                    <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
+                                        <DialogTitle>{editBasket?.Game.Game_Name}</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                {editBasket?.Game.Game_description}
+                                            </DialogContentText>
+                                            <TextField
+                                                id="outlined-basic"
+                                                placeholder="Insert details"
+                                                variant="outlined"
+                                                size="medium"
+                                                multiline={true}
+                                                minRows={9}
+                                                maxRows={2}
+                                                fullWidth={true}
+                                                defaultValue={editBasket?.Note}
+                                                onChange={(event) => setNote(event.target.value)}
+                                            />
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseForEdit}>Cancel</Button>
+                                            <Button onClick={() => updateItem(editBasket?.ID||0,note)}>Save</Button>
+                                        </DialogActions>
+                                    </Dialog>
+                                    <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
+                                        <DialogTitle>DELETE</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                Are you SURE to DELETE "{item.Game.Game_Name}" from BASKET?
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseForDelete}>Cancel</Button>
+                                            <Button color="secondary" onClick={() => deleteItem(deleteBasket?.ID||0)}>Delete</Button>
+                                        </DialogActions>
+                                    </Dialog>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="Total">
+                    <TableBody>
+                        <TableRow>
+                            <TableCell align="center"><h4>Total</h4></TableCell>
+                            <TableCell align="center">{sum}</TableCell>
+                        </TableRow>
+                    </TableBody>
                 </Table>
             </TableContainer>
         </Box>

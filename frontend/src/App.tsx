@@ -7,6 +7,7 @@ import Home_User from "./components/Home_User";
 
 // User import
 import User_UI from "./components/user/User_UI"
+import Admin_UI from "./components/admin/Admin_UI"
 import User_Profile_UI from "./components/user/User_Profile_UI";
 import Store_Profile_UI from "./components/user/Store_Profile_UI";
 import Game_UI from "./components/game/Game_UI"
@@ -22,6 +23,8 @@ import Storage_UI from "./components/storage/Storage_UI";
 
 // Admin import
 import Banner_UI from "./components/banner/Banner_UI";
+import Admin from "./components/admin/Admin_UI";
+import Admin_list from "./components/admin/Admin_list";
 
 export default function App() {
   const [token, setToken] = React.useState<String>("");
@@ -43,6 +46,8 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home_Admin/>} /> {/** home */}
           <Route path="/banner" element={<Banner_UI/>} /> {/** banner */}
+          <Route path="/admin_create" element = {<Admin_UI/>}/> {/*Admin*/}
+          <Route path="/admin_creates" element = {<Admin_list/>}/> {/*Admin*/}
         </Routes>
       );
     }else{ // User Routes
@@ -59,8 +64,14 @@ export default function App() {
           <Route path="/my_basket" element={<Basket_List/>} /> {/** basket */}
           <Route path="/my_friend" element={<Friend_UI/>} /> {/** friend */}
           <Route path="/my_hided_friend" element={<Hided_Friend_UI/>} /> {/** hide friend */}
+<<<<<<< HEAD
           <Route path="/collection" element={<Collection_UI/>} /> {/** collection*/}
           <Route path="/storage" element={<Storage_UI/>} /> {/** storage*/}
+=======
+                 <Route path="/collection" element={<Collection_UI/>} /> {/** collection*/}
+
+          
+>>>>>>> 01987a7954821af754a765ae6ab9d3a41f7f712c
 
         </Routes>
       );

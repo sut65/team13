@@ -55,6 +55,8 @@ func SetupDatabase() {
 
 		// Admin
 		&Admin{},
+		&Department{},
+		&Province{},
 
 		// Order
 		&Option{},
@@ -405,7 +407,17 @@ func SetupDatabase() {
 		Province:        Province1,
 		Profile_Picture: "",
 	}
+	admin2 := Admin{
+		Name:            "Louis",
+		Email:           "Louis",
+		Password:        "$2a$12$hRdKLZTUspkskzjZwBAb6eImCpHYIe48KSUGD83JrzHYx6aKfowb6",
+		Gender:          Gen1,
+		Department:      Department1,
+		Province:        Province2,
+		Profile_Picture: "",
+	}
 	db.Model(&Admin{}).Create(&admin1)
+	db.Model(&Admin{}).Create(&admin2)
 
 	//Banner
 	banner1 := Banner{
