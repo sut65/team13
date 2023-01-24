@@ -18,6 +18,7 @@ import Friend_UI from "./components/friend/Friend_UI";
 import Hided_Friend_UI from "./components/friend/Hided_Friend_UI";
 import Dashboard from "./components/Dashboard";
 import Collection_UI from "./components/storage/Collection_UI";
+import Storage_UI from "./components/storage/Storage_UI";
 
 // Admin import
 import Banner_UI from "./components/banner/Banner_UI";
@@ -59,6 +60,7 @@ export default function App() {
           <Route path="/my_friend" element={<Friend_UI/>} /> {/** friend */}
           <Route path="/my_hided_friend" element={<Hided_Friend_UI/>} /> {/** hide friend */}
           <Route path="/collection" element={<Collection_UI/>} /> {/** collection*/}
+          <Route path="/storage" element={<Storage_UI/>} /> {/** storage*/}
 
         </Routes>
       );

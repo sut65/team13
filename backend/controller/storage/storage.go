@@ -91,7 +91,7 @@ func ListStoragesUser(c *gin.Context) {
 	id := c.Param("id")
 
 	// มี prelaod เพื่อใช้โหลดให้ระบบ Storages
-	if err := entity.DB().Preload("Game").Preload("User").Raw("SELECT * FROM storages WHERE user_id = ?", id).Find(&storages).Error; err != nil {
+	if err := entity.DB().Preload("Game").Preload("User").Preload("Collection").Raw("SELECT * FROM storages WHERE user_id = ?", id).Find(&storages).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -137,11 +137,11 @@ func UpdateStorage(c *gin.Context) {
 		return
 
 	}
-	bk := entity.Storage{
+	stor := entity.Storage{
 		Collection_ID: storage.Collection_ID,
 	}
 
-	if tx := entity.DB().Where("id = ?", storage.ID).First(&storage); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", storage.ID).First(&storage).Updates(&stor); tx.RowsAffected == 0 {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": "storage not found"})
 
@@ -149,14 +149,6 @@ func UpdateStorage(c *gin.Context) {
 
 	}
 
-	if err := entity.DB().Updates(&storage).Error; err != nil {
-
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
-		return
-
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": bk})
+	c.JSON(http.StatusOK, gin.H{"data": stor})
 
 }
