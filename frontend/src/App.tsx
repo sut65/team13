@@ -25,6 +25,7 @@ import Storage_UI from "./components/storage/Storage_UI";
 import Banner_UI from "./components/banner/Banner_UI";
 import Admin from "./components/admin/Admin_UI";
 import Admin_list from "./components/admin/Admin_list";
+import User_list from "./components/admin/User.list";
 
 export default function App() {
   const [token, setToken] = React.useState<String>("");
@@ -48,6 +49,8 @@ export default function App() {
           <Route path="/banner" element={<Banner_UI/>} /> {/** banner */}
           <Route path="/admin_create" element = {<Admin_UI/>}/> {/*Admin*/}
           <Route path="/admin_creates" element = {<Admin_list/>}/> {/*Admin*/}
+          <Route path="/admin_createss" element = {<User_list/>}/> {/*Admin*/}
+         
         </Routes>
       );
     }else{ // User Routes

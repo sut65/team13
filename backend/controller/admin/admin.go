@@ -52,8 +52,8 @@ func CreateAdmin(c *gin.Context) {
 		Email:      admin.Email,
 		Password:   string(hashPassword),
 		Gender:     gender,
-		Department: admin.Department,
-		Province:   admin.Province,
+		Department: department,
+		Province:   province,
 	}
 
 	if err := entity.DB().Create(&newAdmin).Error; err != nil {

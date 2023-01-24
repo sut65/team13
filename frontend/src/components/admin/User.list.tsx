@@ -34,8 +34,8 @@ const useStyles = makeStyles((theme) => ({
         minWidth: 650,
     },
 }));
-function Admin_list() {
-    const [admin, setAdmin] = useState<AdminsInterface[]>([]);
+function User_list() {
+    const [user, setUser] = useState<UsersInterface[]>([]);
     const [game, setGame] = useState<GamesInterface[]>([]);
 
     const [openForAdd, setOpenForAdd] = React.useState(false);
@@ -47,15 +47,27 @@ function Admin_list() {
 
     const classes = useStyles();
 
-    const getAdmin = async () => {
-        let res = await GetAdmin();
-        if (res) {
-          // setImageString(rese)// เพื่อให้ มันมีภาพ ตอนแรกไม่มีภาพ defaultvaule
-          setAdmin(res);
-    
-          console.log(res)
-        }
-      };
+    const getUser = async () => {
+        const apiUrl = "http://localhost:8080/users/";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+       
+        await fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setUser(res.data);
+                     //setImageString(res.data.Profile_Picture);
+                    // setNew_password(res.data.Password);
+                    // setConfirm_password(res.data.Password);
+                }
+            });
+    };
 
       const getGame = async () => {
         let res = await GetGame();
@@ -75,7 +87,7 @@ function Admin_list() {
         setOpenForAdd(false);
     };
 
-    const handleClickOpenForEdit = (item: AdminsInterface) => {
+    const handleClickOpenForEdit = (item: UsersInterface) => {
         setOpenForEdit(true);
        // setToEditFriend(item);
     };
@@ -84,7 +96,7 @@ function Admin_list() {
         setOpenForEdit(false);
     };
 
-    const handleClickOpenForDelete = (item: AdminsInterface) => {
+    const handleClickOpenForDelete = (item: UsersInterface) => {
         setOpenForDelete(true);
       //  setDeleteFriend(item);
     };
@@ -93,7 +105,7 @@ function Admin_list() {
         setOpenForDelete(false);
     };
     useEffect(() => {
-        getAdmin();
+        getUser();
         getGame();
        
     }, []);
@@ -126,16 +138,16 @@ function Admin_list() {
         </TableHead>
         <TableBody>
             {/* //.filter(item => item.Seller_ID == Number(localStorage.getItem("uid")) */}
-        {admin.filter(item => item.Name.toLowerCase().includes(searchQuery.toLowerCase()) || item.Department.Department_Title.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+        {user.filter(item => item.Profile_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
                                 <TableRow key={item.ID}>
-                                     <TableCell align="center">{item.Name}</TableCell> 
+                                     <TableCell align="center">{item.Profile_Name}</TableCell> 
                                     <TableCell align="center"><img src={`${item.Profile_Picture}`} width="100" height="100"/> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
-                                    <TableCell align="center">{item.Email}</TableCell>       
-                                    <TableCell align="center">{item.Department.Department_Title}</TableCell>    
-                                    <TableCell align="center">{item.Gender.Gender}</TableCell>               
+                                    {/* <TableCell align="center">{item.Email}</TableCell>        */}
+                                    {/* <TableCell align="center">{item.}</TableCell>    
+                                    <TableCell align="center">{item.Gender.Gender}</TableCell>                */}
                                     <TableCell align="center">
                                         <Stack direction="column" spacing={2}>
-                                            <Button variant="outlined" color="primary" component={RouterLink} to={"/admin_profile/"+String(item.Email)}>
+                                            {/* <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/"+String(item.Email)}>
                                                 Profile
                                             </Button>
                                             <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
@@ -143,7 +155,7 @@ function Admin_list() {
                                             </Button>
                                             <Button variant="contained" color="error" onClick={() => handleClickOpenForDelete(item)}>
                                                 Delete
-                                            </Button>                                        
+                                            </Button>                                         */}
                                         </Stack>
                                     </TableCell>
                                     {/* <Dialog maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
@@ -278,4 +290,4 @@ function Admin_list() {
 
 }
 
-export default Admin_list;
+export default User_list;

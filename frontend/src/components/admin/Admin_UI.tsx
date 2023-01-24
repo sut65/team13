@@ -31,6 +31,7 @@ function Admin() {
     let res = await GetDepartment();
     if (res) {
       setDepartment(res);
+      console.log(res);
     }
   };
 
@@ -91,6 +92,7 @@ async function submit() {
 
 
   };
+  console.log(department)
 
 
 
@@ -185,11 +187,11 @@ async function submit() {
             <Grid item xs={4} >
           
             <Autocomplete sx={{ mt: 5 }}
-                          id="Department-autocomplete"
+                          id="Departments-autocomplete"
                           options={department} //ตัวที่เราจะเลือกมีอะไรบ้าง
                           fullWidth
                           size="medium"
-                       //  defaultValue={admin.Department} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
+                         //defaultValue={admin.Department} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
                           onChange={(event: any, value) => {
                             setAdmin({ ...admin, Department_ID: value?.ID }); // บันทึกค่าลง interface
                           }}
@@ -207,36 +209,29 @@ async function submit() {
                             ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
                           }}
                         />
-                        <Autocomplete
-                                id="Province-autocomplete"
-                                options={province}
-                                size="medium"
-                                onChange={(event: any, value) => {
-                                    setAdmin({ ...admin, Province_ID: value?.ID }); 
-                                }}
-                                getOptionLabel={(option: any) =>
-                                `${option.Province_Title}`
-                                } //filter value
-                                renderInput={(params) => {
-                                return (
-                                    <TextField
-                                    {...params}
-                                    variant="outlined"
-                                    placeholder="Search..."
-                                    label="Province"
-                                    />
-                                );
-                                }}
-                                renderOption={(props: any, option: any) => {
-                                return (
-                                    <li
-                                    {...props}
-                                    value={`${option.ID}`}
-                                    key={`${option.ID}`}
-                                    >{`${option.Province_Title}`}</li>
-                                ); 
-                                }}
-                            />
+                         <Autocomplete sx={{ mt: 5 }}
+                          id="Province-autocomplete"
+                          options={province} //ตัวที่เราจะเลือกมีอะไรบ้าง
+                          fullWidth
+                          size="medium"
+                       //  defaultValue={admin.Department} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
+                          onChange={(event: any, value) => {
+                            setAdmin({ ...admin, Province_ID: value?.ID }); // บันทึกค่าลง interface
+                          }}
+                          getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                            `${option.Province_Title}`
+                          } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                          renderInput={(params) => <TextField {...params} label="Province" />}
+                          renderOption={(props: any, option: any) => {
+                            return (
+                              <li
+                                {...props}
+                                value={`${option.ID}`}
+                                key={`${option.ID}`}
+                              >{`${option.Province_Title}`}</li>
+                            ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                          }}
+                        />
                       
               
                           <FormControl>
