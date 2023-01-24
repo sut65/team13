@@ -1,6 +1,7 @@
 package main
 
 import (
+	admin_controller "github.com/sut65/team13/controller/admin"
 	banner_controller "github.com/sut65/team13/controller/banner"
 	basket_controller "github.com/sut65/team13/controller/basket"
 	friend_controller "github.com/sut65/team13/controller/friend"
@@ -95,6 +96,18 @@ func main() {
 			protected.POST("/banners", banner_controller.CreateBanner)
 			protected.PATCH("/banners", banner_controller.UpdateBanner)
 			protected.DELETE("/banner/:id", banner_controller.DeleteBanner)
+			// Admin Routes
+			protected.GET("/admin", admin_controller.ListAdmin)
+			protected.GET("/admin/:id", admin_controller.GetAdmin)
+			protected.POST("/admin", admin_controller.CreateAdmin)
+			//protected.PATCH("/admin", admin_controller.UpdateAdmin)
+			protected.DELETE("/admin/:id", admin_controller.DeleteAdmin)
+
+			protected.GET("/Department/:id", admin_controller.GetDepartment)
+			protected.GET("/Department", admin_controller.ListDepartment)
+
+			protected.GET("/Province", admin_controller.ListGenders)
+
 		}
 	}
 	// Run the server

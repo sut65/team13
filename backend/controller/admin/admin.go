@@ -67,47 +67,47 @@ func CreateAdmin(c *gin.Context) {
 
 // GET /user/:email --> ใช้อยู่
 
-func GetUser(c *gin.Context) {
-	var user entity.User
+func GetAdmin(c *gin.Context) {
+	var admin entity.Admin
 	email := c.Param("email")
 
-	if err := entity.DB().Preload("Game").Preload("Storage").Preload("Gender").Raw("SELECT * FROM users WHERE email = ?", email).Find(&user).Error; err != nil {
+	if err := entity.DB().Preload("Department").Preload("Province").Preload("Gender").Raw("SELECT * FROM admins WHERE email = ?", email).Find(&admin).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	c.JSON(http.StatusOK, gin.H{"data": admin})
 }
 
 // GET /users
 
-func ListUsers(c *gin.Context) {
-	var users []entity.User
+func ListAdmin(c *gin.Context) {
+	var admin []entity.Admin
 
-	if err := entity.DB().Preload("Game").Preload("Storage").Raw("SELECT * FROM users").Scan(&users).Error; err != nil {
+	if err := entity.DB().Preload("Department").Preload("Province").Preload("Gender").Raw("SELECT * FROM admins").Scan(&admin).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"data": users})
+	c.JSON(http.StatusOK, gin.H{"data": admin})
 }
 
-// GET /sellers
-func ListSellers(c *gin.Context) {
-	var users []entity.User
+// // GET /sellers
+// func ListSellers(c *gin.Context) {
+// 	var users []entity.User
 
-	if err := entity.DB().Preload("Game").Preload("Storage").Raw("SELECT * FROM users WHERE Is_Seller = ?", true).Scan(&users).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"data": users})
-}
+// 	if err := entity.DB().Preload("Game").Preload("Storage").Raw("SELECT * FROM users WHERE Is_Seller = ?", true).Scan(&users).Error; err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
+// 	c.JSON(http.StatusOK, gin.H{"data": users})
+// }
 
 // DELETE /users/:email --> ใช้อยู่
 
-func DeleteUser(c *gin.Context) {
+func DeleteAdmin(c *gin.Context) {
 	email := c.Param("email")
-	if tx := entity.DB().Exec("DELETE FROM users WHERE email = ?", email); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
+	if tx := entity.DB().Exec("DELETE FROM admins WHERE email = ?", email); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "admin not found"})
 		return
 	}
 
@@ -116,7 +116,7 @@ func DeleteUser(c *gin.Context) {
 
 // PATCH /users --> ใช้อยู่
 
-func UpdateUser(c *gin.Context) {
+func UpdateAdmin(c *gin.Context) {
 	var user entity.User
 	var gender entity.Gender
 	var storage entity.Storage
@@ -182,57 +182,57 @@ func UpdateUser(c *gin.Context) {
 }
 
 // Get /user_storage/:email --> ใช้อยู่
-func ListUserStorages(c *gin.Context) {
-	var storages []entity.Storage
-	var user entity.User
-	email := c.Param("email")
+// func ListUserStorages(c *gin.Context) {
+// 	var storages []entity.Storage
+// 	var user entity.User
+// 	email := c.Param("email")
 
-	// get user ที่ตรงกับ email ออกมาก่อนเพื่อเอา ID มาใช้ get storage ของ user คนนั้นๆอีกที
-	if err := entity.DB().Raw("SELECT * FROM users WHERE email = ?", email).Scan(&user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	// get user ที่ตรงกับ email ออกมาก่อนเพื่อเอา ID มาใช้ get storage ของ user คนนั้นๆอีกที
+// 	if err := entity.DB().Raw("SELECT * FROM users WHERE email = ?", email).Scan(&user).Error; err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	// list เฉพาะ storage ของ user คนนั้นๆ | ต้องใช้ .Find สำหรับ .Preload
-	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages WHERE user_id = ?", user.ID).Find(&storages).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	// list เฉพาะ storage ของ user คนนั้นๆ | ต้องใช้ .Find สำหรับ .Preload
+// 	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages WHERE user_id = ?", user.ID).Find(&storages).Error; err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": storages})
+// 	c.JSON(http.StatusOK, gin.H{"data": storages})
 
-}
+// }
 
-// Get /user_game/:email (Seller) --> ใช้อยู่
-func ListUserGames(c *gin.Context) {
-	var games []entity.Game
-	var user entity.User
-	email := c.Param("email")
+// // Get /user_game/:email (Seller) --> ใช้อยู่
+// func ListUserGames(c *gin.Context) {
+// 	var games []entity.Game
+// 	var user entity.User
+// 	email := c.Param("email")
 
-	// get user ที่ตรงกับ email ออกมาก่อนเพื่อเอา ID มาใช้ get game ของ user คนนั้นๆอีกที
-	if err := entity.DB().Raw("SELECT * FROM users WHERE email = ?", email).Scan(&user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	// get user ที่ตรงกับ email ออกมาก่อนเพื่อเอา ID มาใช้ get game ของ user คนนั้นๆอีกที
+// 	if err := entity.DB().Raw("SELECT * FROM users WHERE email = ?", email).Scan(&user).Error; err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	// list เฉพาะ game ของ user คนนั้นๆ
-	if err := entity.DB().Raw("SELECT * FROM games WHERE seller_id = ?", user.ID).Scan(&games).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// 	// list เฉพาะ game ของ user คนนั้นๆ
+// 	if err := entity.DB().Raw("SELECT * FROM games WHERE seller_id = ?", user.ID).Scan(&games).Error; err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": games})
+// 	c.JSON(http.StatusOK, gin.H{"data": games})
 
-}
+// }
 
-// Get /useraddfriend/:uid  --> ใช้อยู่
-func GetUserForAddFriend(c *gin.Context) {
-	var user []entity.User
-	uid := c.Param("uid")
-	if err := entity.DB().Raw("SELECT * FROM users WHERE id != ?", uid).Find(&user).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+// // Get /useraddfriend/:uid  --> ใช้อยู่
+// func GetUserForAddFriend(c *gin.Context) {
+// 	var user []entity.User
+// 	uid := c.Param("uid")
+// 	if err := entity.DB().Raw("SELECT * FROM users WHERE id != ?", uid).Find(&user).Error; err != nil {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+// 		return
+// 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
-}
+// 	c.JSON(http.StatusOK, gin.H{"data": user})
+// }
