@@ -92,9 +92,9 @@ function drawerList() {
           <PeopleIcon/>
           <ListItemText primary="My Friend" sx={{padding: 2}}/>
         </ListItem>
-        <ListItem button component={RouterLink} to="/collection">
+        <ListItem button component={RouterLink} to="/storage">
           <FeaturedPlayListIcon/>
-          <ListItemText primary="Collection" sx={{padding: 2}}/>
+          <ListItemText primary="Storage" sx={{padding: 2}}/>
         </ListItem>
 
       </List>
