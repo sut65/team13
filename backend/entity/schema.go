@@ -39,6 +39,7 @@ type User struct {
 	Banner               []Banner     `gorm:"foreignKey:User_ID"`
 	Collection           []Collection `gorm:"foreignKey:User_ID"`
 	Order                []Order      `gorm:"foreignKey:User_ID"`
+	Wishlist             []Wishlitst  `gorm:"foreignKey:User_ID"`
 }
 
 // ---ระบบขายเกม(Game)---
@@ -76,11 +77,12 @@ type Game struct {
 	Rating                 Rating `gorm:"references:id"`
 	Game_file              string
 	Game_Picture           string
-	Storage                []Storage `gorm:"foreignKey:Game_ID"`
-	User_Out_Standing_Game []User    `gorm:"foreignKey:Out_Standing_Game_ID"`
-	Basket                 []Basket  `gorm:"foreignKey:Game_ID"`
-	Friend                 []Friend  `gorm:"foreignKey:Game_ID"`
-	Banner                 []Banner  `gorm:"foreignKey:Game_ID"`
+	Storage                []Storage   `gorm:"foreignKey:Game_ID"`
+	User_Out_Standing_Game []User      `gorm:"foreignKey:Out_Standing_Game_ID"`
+	Basket                 []Basket    `gorm:"foreignKey:Game_ID"`
+	Friend                 []Friend    `gorm:"foreignKey:Game_ID"`
+	Banner                 []Banner    `gorm:"foreignKey:Game_ID"`
+	Wishlist               []Wishlitst `gorm:"foreignKey:Game_ID"`
 }
 
 // ---ระบบคลังเกม(Storage)---
@@ -273,4 +275,22 @@ type Payment_Verification struct {
 	Verification_Status Verification_Status `gorm:"references:id"`
 	Date                time.Time
 	Note                string
+}
+
+// ----ระบบ Wishlist---
+type Wish_Level struct {
+	gorm.Model
+	Level     string
+	Wishlitst []Wishlitst `gorm:"foreignKey:Level_ID"`
+}
+type Wishlitst struct {
+	gorm.Model
+	Date       time.Time
+	Note       string
+	Game_ID    *uint
+	Game       Game `gorm:"references:id"`
+	User_ID    *uint
+	User       User `gorm:"references:id"`
+	Level_ID   *uint
+	Wish_Level Wish_Level `gorm:"references:id"`
 }
