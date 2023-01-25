@@ -65,6 +65,10 @@ func SetupDatabase() {
 		// Payment_Verification
 		&Verification_Status{},
 		&Payment_Verification{},
+
+		// Wishlist
+		&Wishlist{},
+		&Wish_Level{},
 	)
 
 	db = database
