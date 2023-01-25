@@ -11,7 +11,7 @@ import (
 // GET /Province
 
 func ListProvince(c *gin.Context) {
-	var provinces []entity.Gender
+	var provinces []entity.Province
 
 	if err := entity.DB().Raw("SELECT * FROM provinces").Scan(&provinces).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

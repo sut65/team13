@@ -11,7 +11,7 @@ import (
 // GET /department
 
 func ListDepartment(c *gin.Context) {
-	var departments []entity.Gender
+	var departments []entity.Department
 
 	if err := entity.DB().Raw("SELECT * FROM departments").Scan(&departments).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

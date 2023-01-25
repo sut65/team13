@@ -249,7 +249,7 @@ type Order struct {
 	Option    Option `gorm:"references:id"`
 	Slip      string
 	Date      time.Time
-	Send_gift bool
+	Send_gift *bool
 	Friend_ID *uint
 	Friend    Friend `gorm:"references:id"`
 
@@ -267,14 +267,14 @@ type Verification_Status struct {
 
 type Payment_Verification struct {
 	gorm.Model
-	Admin_ID            *uint
-	Admin               Admin `gorm:"references:id"`
-	Order_ID            *uint
-	Order               Order `gorm:"references:id"`
-	VS_ID               *uint
-	Verification_Status Verification_Status `gorm:"references:id"`
-	Date                time.Time
-	Note                string
+	Admin_ID *uint
+	Admin    Admin `gorm:"references:id"`
+	Order_ID *uint
+	Order    Order `gorm:"references:id"`
+	VS_ID    *uint
+	VS       Verification_Status `gorm:"references:id"`
+	Date     time.Time
+	Note     string
 }
 
 // ----ระบบ Wishlist---
