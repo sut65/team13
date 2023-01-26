@@ -23,6 +23,7 @@ import ShoppingBasketIcon from '@mui/icons-material/ShoppingBasket';
 import SettingsIcon from '@mui/icons-material/Settings';
 import PeopleIcon from '@mui/icons-material/People';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
+import PaidIcon from '@mui/icons-material/Paid';
 
 // Admin Icon
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
@@ -81,6 +82,11 @@ function drawerList() {
         <ListItem button component={RouterLink} to="/my_basket">
           <ShoppingBasketIcon/>
           <ListItemText primary="My Basket" sx={{padding: 2}}/>
+        </ListItem>
+
+        <ListItem button component={RouterLink} to="/my_order">
+          <PaidIcon/>
+          <ListItemText primary="My Order" sx={{padding: 2}}/>
         </ListItem>
 
         <ListItem button component={RouterLink} to="/user_store_setting">
