@@ -260,7 +260,7 @@ function Game() {
         </Grid>
         <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}>
 
-          {game.filter(item => item.Seller_ID == Number(localStorage.getItem("uid")) && item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+          {game.filter(item => item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
 
             <Grid item xs={3} key={item.ID} >
 
