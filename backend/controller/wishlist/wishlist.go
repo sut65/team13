@@ -30,7 +30,7 @@ func CreateWishlist(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
 		return
 	}
-	if tx := entity.DB().Where("id = ?", wishlist.Level_ID).First(&wish_Level); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", wishlist.Wish_Level_ID).First(&wish_Level); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
 		return
 	}
@@ -60,7 +60,7 @@ func GetWishlist(c *gin.Context) {
 
 	id := c.Param("id")
 
-	if err := entity.DB().Raw("SELECT * FROM wishlists WHERE id = ?", id).Scan(&wishlist).Error; err != nil {
+	if err := entity.DB().Preload("User").Preload("Game").Preload("Wish_Level").Raw("SELECT * FROM wishlists WHERE User_ID = ?", id).Find(&wishlist).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -76,10 +76,10 @@ func GetWishlist(c *gin.Context) {
 
 func ListWishlists(c *gin.Context) {
 
-	var wishlists []entity.Wishlist
+	var wishlist []entity.Wishlist
 	id := c.Param("id")
 
-	if err := entity.DB().Preload("User").Preload("Game").Preload("Wish_level").Raw("SELECT * FROM wishlists WHERE User_ID = ? ", id).Scan(&wishlists).Error; err != nil {
+	if err := entity.DB().Preload("Game").Preload("User").Preload("Wish_Level").Raw("SELECT * FROM wishlists WHERE User_ID = ? ", id).Find(&wishlist).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -87,7 +87,7 @@ func ListWishlists(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": wishlists})
+	c.JSON(http.StatusOK, gin.H{"data": wishlist})
 
 }
 
