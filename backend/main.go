@@ -77,6 +77,8 @@ func main() {
 			protected.PATCH("/Game", game_controller.UpdateGame)
 			protected.DELETE("/Game/:id", game_controller.DeleteGame)
 
+			protected.GET("/ALLGame", game_controller.ListALLGames) // เอาตัวที่ถูกลบแล้วขึ้นมาด้วย
+
 			protected.GET("/Rating", game_controller.ListRating)
 			protected.GET("/Rating/:id", game_controller.GetRating)
 
@@ -91,6 +93,8 @@ func main() {
 			protected.GET("/storages/:id", storage_controller.ListStoragesUser)
 			protected.PATCH("/storages", storage_controller.UpdateStorage)
 			protected.DELETE("/storages/:id", storage_controller.DeleteStorage)
+
+			protected.GET("/ALLstorages", storage_controller.ListALLStorages) // เอาตัวที่ถูกลบแล้วขึ้นมาด้วย
 
 			protected.GET("/collections/:id", storage_controller.ListCollections)
 			protected.POST("/collections", storage_controller.CreateCollection)

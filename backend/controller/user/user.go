@@ -184,7 +184,7 @@ func ListUserStorages(c *gin.Context) {
 	}
 
 	// list เฉพาะ storage ของ user คนนั้นๆ | ต้องใช้ .Find สำหรับ .Preload
-	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages WHERE user_id = ?", user.ID).Find(&storages).Error; err != nil {
+	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages WHERE user_id = ? AND deleted_at IS NULL", user.ID).Find(&storages).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -206,7 +206,7 @@ func ListUserGames(c *gin.Context) {
 	}
 
 	// list เฉพาะ game ของ user คนนั้นๆ
-	if err := entity.DB().Raw("SELECT * FROM games WHERE seller_id = ?", user.ID).Scan(&games).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM games WHERE seller_id = ? AND deleted_at IS NULL", user.ID).Scan(&games).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

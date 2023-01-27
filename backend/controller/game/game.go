@@ -86,6 +86,17 @@ func GetGame(c *gin.Context) {
 func ListGames(c *gin.Context) {
 	var game []entity.Game
 
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games WHERE deleted_at IS NULL").Find(&game).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": game})
+}
+
+// GET /ALLgame// // ไม่สนใจ deleted_at เอาทุกตัวขึ้นมา
+func ListALLGames(c *gin.Context) {
+	var game []entity.Game
+
 	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games").Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -98,10 +109,16 @@ func ListGames(c *gin.Context) {
 func DeleteGame(c *gin.Context) {
 
 	id := c.Param("id")
-	if tx := entity.DB().Exec("DELETE FROM games WHERE id = ?", id); tx.RowsAffected == 0 {
+
+	if tx := entity.DB().Where("id = ?", id).Delete(&entity.Game{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
 		return
 	}
+
+	// if tx := entity.DB().Exec("DELETE FROM games WHERE id = ?", id); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
+	// 	return
+	// }
 
 	c.JSON(http.StatusOK, gin.H{"data": id})
 }
