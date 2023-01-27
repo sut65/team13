@@ -67,8 +67,8 @@ func SetupDatabase() {
 		&Payment_Verification{},
 
 		// Wishlist
-		&Wishlist{},
 		&Wish_Level{},
+		&Wishlist{},
 	)
 
 	db = database
@@ -493,4 +493,68 @@ func SetupDatabase() {
 	}
 	db.Model(&Payment_Verification{}).Create(&pv1)
 
+	//Wishlist
+
+	WL1 := Wish_Level{
+		Level: "10",
+	}
+	db.Model(&Wish_Level{}).Create(&WL1)
+	WL2 := Wish_Level{
+		Level: "9",
+	}
+	db.Model(&Wish_Level{}).Create(&WL2)
+	WL3 := Wish_Level{
+		Level: "8",
+	}
+	db.Model(&Wish_Level{}).Create(&WL3)
+	WL4 := Wish_Level{
+		Level: "7",
+	}
+	db.Model(&Wish_Level{}).Create(&WL4)
+	WL5 := Wish_Level{
+		Level: "6",
+	}
+	db.Model(&Wish_Level{}).Create(&WL5)
+	WL6 := Wish_Level{
+		Level: "5",
+	}
+	db.Model(&Wish_Level{}).Create(&WL6)
+	WL7 := Wish_Level{
+		Level: "4",
+	}
+	db.Model(&Wish_Level{}).Create(&WL7)
+	WL8 := Wish_Level{
+		Level: "3",
+	}
+	db.Model(&Wish_Level{}).Create(&WL8)
+	WL9 := Wish_Level{
+		Level: "2",
+	}
+	db.Model(&Wish_Level{}).Create(&WL9)
+	WL10 := Wish_Level{
+		Level: "1",
+	}
+	db.Model(&Wish_Level{}).Create(&WL10)
+
+	W1 := Wishlist{
+		User_ID:       &User1.ID,
+		Game_ID:       &Game1.ID,
+		Wish_Level_ID: &WL1.ID,
+	}
+	db.Model(&Wishlist{}).Create(&W1)
+
+	W2 := Wishlist{
+		User_ID:       &User2.ID,
+		Game_ID:       &Game2.ID,
+		Wish_Level_ID: &WL6.ID,
+	}
+	db.Model(&Wishlist{}).Create(&W2)
+
+	W3 := Wishlist{
+		User_ID:       &User1.ID,
+		Game_ID:       &Game3.ID,
+		Wish_Level_ID: &WL5.ID,
+		Note:          "Best Game Forever",
+	}
+	db.Model(&Wishlist{}).Create(&W3)
 }
