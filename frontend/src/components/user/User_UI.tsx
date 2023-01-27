@@ -122,7 +122,7 @@ function User(){
     };
 
     const getALLStorage = async () => {
-        const apiUrl = "http://localhost:8080/storages";
+        const apiUrl = "http://localhost:8080/ALLstorages";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -141,7 +141,7 @@ function User(){
     };
 
     const getALLGame = async () => {
-        const apiUrl = "http://localhost:8080/Game";
+        const apiUrl = "http://localhost:8080/ALLGame";
         const requestOptions = {
             method: "GET",
             headers: {

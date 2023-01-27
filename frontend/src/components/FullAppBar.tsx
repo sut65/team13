@@ -89,18 +89,19 @@ function drawerList() {
           <ListItemText primary="My Order" sx={{padding: 2}}/>
         </ListItem>
 
-        <ListItem button component={RouterLink} to="/user_store_setting">
-          <SettingsIcon/>
-          <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
-        </ListItem>
-
         <ListItem button component={RouterLink} to="/my_friend">
           <PeopleIcon/>
           <ListItemText primary="My Friend" sx={{padding: 2}}/>
         </ListItem>
+
         <ListItem button component={RouterLink} to="/storage">
           <FeaturedPlayListIcon/>
           <ListItemText primary="Storage" sx={{padding: 2}}/>
+        </ListItem>
+
+        <ListItem button component={RouterLink} to="/user_store_setting">
+          <SettingsIcon/>
+          <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
         </ListItem>
 
       </List>

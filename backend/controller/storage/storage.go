@@ -72,6 +72,23 @@ func ListStorages(c *gin.Context) {
 
 	// มี prelaod เพื่อใช้โหลดให้ระบบ user
 
+	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages WHERE deleted_at IS NULL").Find(&storages).Error; err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": storages})
+
+}
+
+// GET /ALLstorages // ไม่สนใจ deleted_at เอาทุกตัวขึ้นมา
+func ListALLStorages(c *gin.Context) {
+
+	var storages []entity.Storage
+
 	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages").Find(&storages).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -91,7 +108,7 @@ func ListStoragesUser(c *gin.Context) {
 	id := c.Param("id")
 
 	// มี prelaod เพื่อใช้โหลดให้ระบบ Storages
-	if err := entity.DB().Preload("Game").Preload("User").Preload("Collection").Raw("SELECT * FROM storages WHERE user_id = ?", id).Find(&storages).Error; err != nil {
+	if err := entity.DB().Preload("Game").Preload("User").Preload("Collection").Raw("SELECT * FROM storages WHERE user_id = ? AND deleted_at IS NULL", id).Find(&storages).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -112,7 +129,7 @@ func DeleteStorage(c *gin.Context) {
 		return
 	}
 
-	if tx := entity.DB().Exec("DELETE FROM storages WHERE id = ?", storage.ID); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", storage.ID).Delete(&entity.Storage{}); tx.RowsAffected == 0 {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
 
