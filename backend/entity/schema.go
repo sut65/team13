@@ -280,17 +280,20 @@ type Payment_Verification struct {
 // ----ระบบ Wishlist---
 type Wish_Level struct {
 	gorm.Model
-	Level     string
-	Wishlitst []Wishlist `gorm:"foreignKey:Level_ID"`
+	Level    string
+	Wishlist []Wishlist `gorm:"foreignKey:Wish_Level_ID"`
 }
 type Wishlist struct {
 	gorm.Model
-	Date       time.Time
-	Note       string
-	Game_ID    *uint
-	Game       Game `gorm:"references:id"`
-	User_ID    *uint
-	User       User `gorm:"references:id"`
-	Level_ID   *uint
-	Wish_Level Wish_Level `gorm:"references:id"`
+	Date time.Time
+	Note string
+
+	Game_ID *uint
+	Game    Game `gorm:"references:id"`
+
+	User_ID *uint
+	User    User `gorm:"references:id"`
+
+	Wish_Level_ID *uint
+	Wish_Level    Wish_Level `gorm:"references:id"`
 }

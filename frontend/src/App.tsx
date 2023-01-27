@@ -21,6 +21,7 @@ import Dashboard from "./components/Dashboard";
 import Collection_UI from "./components/storage/Collection_UI";
 import Storage_UI from "./components/storage/Storage_UI";
 import Order_UI from "./components/order/Order_UI";
+import Wishlist_UI from "./components/wishlist/Wishlist_UI";
 
 // Admin import
 import Banner_UI from "./components/banner/Banner_UI";
@@ -71,6 +72,8 @@ export default function App() {
           <Route path="/collection" element={<Collection_UI/>} /> {/** collection*/}
           <Route path="/storage" element={<Storage_UI/>} /> {/** storage*/}
           <Route path="/my_order" element={<Order_UI/>} /> {/** order */}
+          <Route path="/wishlist" element={<Wishlist_UI/>} /> {/** wishlist*/}
+
 
         </Routes>
       );

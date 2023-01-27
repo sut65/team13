@@ -24,6 +24,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import PeopleIcon from '@mui/icons-material/People';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import PaidIcon from '@mui/icons-material/Paid';
+import BookmarkIcon from '@mui/icons-material/Bookmark';
 
 // Admin Icon
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
@@ -101,6 +102,10 @@ function drawerList() {
         <ListItem button component={RouterLink} to="/storage">
           <FeaturedPlayListIcon/>
           <ListItemText primary="Storage" sx={{padding: 2}}/>
+        </ListItem>
+        <ListItem button component={RouterLink} to="/wishlist">
+          <BookmarkIcon/>
+          <ListItemText primary="Wishlist" sx={{padding: 2}}/>
         </ListItem>
 
       </List>

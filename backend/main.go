@@ -9,6 +9,7 @@ import (
 	login_controller "github.com/sut65/team13/controller/login"
 	storage_controller "github.com/sut65/team13/controller/storage"
 	user_controller "github.com/sut65/team13/controller/user"
+	wishlist_controller "github.com/sut65/team13/controller/wishlist"
 	"github.com/sut65/team13/entity"
 	middlewares "github.com/sut65/team13/middlewares"
 
@@ -110,6 +111,14 @@ func main() {
 			protected.GET("/Department", admin_controller.ListDepartment)
 
 			protected.GET("/Province", admin_controller.ListGenders)
+
+			// Wishlist Routes
+			// protected.GET("/wishlists/:id", wishlist_controller.GetWishlist)
+			protected.GET("/wishlists/:id", wishlist_controller.ListWishlists)
+			protected.PATCH("/wishlists", wishlist_controller.UpdateWishlist)
+			protected.DELETE("/wishlists/:id", wishlist_controller.DeleteWishlist)
+
+			protected.GET("/wish_levels", wishlist_controller.ListWish_Level)
 
 		}
 	}
