@@ -26,6 +26,7 @@ import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import PaidIcon from '@mui/icons-material/Paid';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 
 // Admin Icon
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
@@ -60,11 +61,6 @@ function drawerList() {
           <ViewCarouselIcon/>
           <ListItemText primary="Banner" sx={{padding: 2}}/>
         </ListItem>
-
-        <ListItem button component={RouterLink} to="/payment_ver">
-          <PriceCheckIcon/>
-          <ListItemText primary="Payment Verification" sx={{padding: 2}}/>
-        </ListItem>
       </List>
     );
   }else{ // User Drawer
@@ -80,8 +76,7 @@ function drawerList() {
           <DashboardIcon/>
           <ListItemText primary="Dashboard" sx={{padding: 2}}/>
         </ListItem>
-
-        <ListItem button component={RouterLink} to="/sell_game">
+        <ListItem button component={RouterLink} to="/game_list">
           <SellIcon/>         
           <ListItemText primary="Game Market" sx={{padding: 2}}/>
         </ListItem>

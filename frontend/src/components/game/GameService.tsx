@@ -10,7 +10,7 @@ async function GetGame() {
     },
   };
 
-  let res = await fetch(`${apiUrl}/Game`, requestOptions)
+  let res = await fetch(`${apiUrl}/Game/`+localStorage.getItem("uid"), requestOptions)
     .then((response) => response.json())
     .then((res) => {
       if (res.data) {

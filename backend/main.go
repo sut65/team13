@@ -106,11 +106,10 @@ func main() {
 			protected.GET("/admin", admin_controller.ListAdmin)
 			protected.GET("/admin/:id", admin_controller.GetAdmin)
 			protected.POST("/admin", admin_controller.CreateAdmin)
-			//protected.PATCH("/admin", admin_controller.UpdateAdmin)
+			protected.PATCH("/admin", admin_controller.UpdateAdmin)
 			protected.DELETE("/admin/:id", admin_controller.DeleteAdmin)
-
-			protected.GET("/Department/:id", admin_controller.GetDepartment)
 			protected.GET("/Department", admin_controller.ListDepartment)
+			protected.GET("/Province", admin_controller.ListProvince)
 
 			protected.GET("/Province", admin_controller.ListGenders)
 			//Order Routes

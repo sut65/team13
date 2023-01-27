@@ -17,8 +17,8 @@ import {
   GetGame_Rating,
   GetGame,
 } from "../../components/game/GameService";
-import {Container,Box,Snackbar,TextField,Paper,Card,CardActionArea,CardContent,CardMedia,Fab} from "@mui/material";
-import {Dialog,DialogTitle,DialogContent,DialogActions} from "@mui/material";
+import { Container, Box, Snackbar, TextField, Paper, Card, CardActionArea, CardContent, CardMedia, Fab } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -181,14 +181,14 @@ function Game() {
   };
   const handleClickOpenForCreate = () => {
     setOpenForCreate(true);
- 
+
   };
   const handleCloseForCreate = () => {
     setOpenForCreate(false);
   };
   const handleClickOpenForDelete = () => {
     setOpenForDelete(true);
- 
+
   };
   const handleCloseForDelete = () => {
     setOpenForDelete(false);
@@ -224,7 +224,7 @@ function Game() {
     }
   };
 
- 
+
   if (isDataLoaded) return (
     <div style={{
       opacity: 1,
@@ -247,24 +247,16 @@ function Game() {
                 variant="outlined"
                 placeholder="Searching..."
                 size="medium"
-
-
-              /></Grid>
-
+              />
+              </Grid>
             <Grid item xs={1} display="flex"
               justifyContent="flex-end"
               alignItems="flex-end">
-
               <Fab color="secondary" aria-label="add" onClick={() => handleClickOpenForCreate()}>
                 <AddIcon />
               </Fab>
-
             </Grid>
-
           </Grid>
-
-
-
         </Grid>
         <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}>
 
@@ -518,7 +510,7 @@ function Game() {
                           color="error"
                           startIcon={< CloudUploadIcon />}
                           onClick={() => handleClickOpenForDelete()}
-                         
+
 
                         >
                           Delete
@@ -603,19 +595,19 @@ function Game() {
         <Dialog fullWidth maxWidth="xl" open={openForCreate} onClose={handleCloseForCreate}>
           <DialogTitle>Create Game</DialogTitle>
           <DialogContent>
-            <Game_UI/>
+            <Game_UI />
           </DialogContent>
         </Dialog>
         <Dialog fullWidth maxWidth="sm" open={openForDelete} onClose={handleCloseForDelete} >
           <DialogTitle>Are you sure to DELETE  this game</DialogTitle>
           <DialogContent>
-            
+
           </DialogContent>
           <DialogActions>
-                                        
-                                        <Button  color="error" onClick={DeleteGame}> Yes </Button>
-                                       
-                                    </DialogActions>
+
+            <Button color="error" onClick={DeleteGame}> Yes </Button>
+
+          </DialogActions>
         </Dialog>
 
 
