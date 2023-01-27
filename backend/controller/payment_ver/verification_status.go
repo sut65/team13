@@ -14,7 +14,7 @@ func ListVerification_Status(c *gin.Context) {
 
 	var v_status []entity.Verification_Status
 
-	if err := entity.DB().Raw("SELECT * FROM verification_statuses").Scan(&v_status).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM verification_status").Scan(&v_status).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 

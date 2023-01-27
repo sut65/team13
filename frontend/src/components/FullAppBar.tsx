@@ -25,6 +25,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import FeaturedPlayListIcon from '@mui/icons-material/FeaturedPlayList';
 import PaidIcon from '@mui/icons-material/Paid';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
+import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 
 // Admin Icon
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
@@ -58,6 +59,11 @@ function drawerList() {
         <ListItem button component={RouterLink} to="/banner">
           <ViewCarouselIcon/>
           <ListItemText primary="Banner" sx={{padding: 2}}/>
+        </ListItem>
+
+        <ListItem button component={RouterLink} to="/payment_ver">
+          <PriceCheckIcon/>
+          <ListItemText primary="Payment Verification" sx={{padding: 2}}/>
         </ListItem>
       </List>
     );

@@ -41,7 +41,6 @@ function Order_UI() {
     const [basket, setBasket] = React.useState<BasketInterface[]>([]);
     const [option, setOption] = React.useState<OptionsInterface[]>([]);
     const [userfriend, setUserFriend] = React.useState<FriendsInterface[]>([]);
-    // const [sendgift, setSendgift] = React.useState<OrderInterface[]>([]);
 
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
     const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
@@ -84,72 +83,15 @@ function Order_UI() {
             setImageString(base64Data)
         }
       }
-
-    function timeout(delay: number) {
-        return new Promise( res => setTimeout(res, delay) );
-    }
-
-    // const getUserOrder = async () => {                                 
-    //     const apiUrl = "http://localhost:8080/userorder/"+String(localStorage.getItem("uid"));
-    //     const requestOptions = {
-    //         method: "GET",      
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },     
-    //     };
-    //     fetch(apiUrl, requestOptions)
-    //         .then((response) => response.json())
-    //         .then((res) => {
-    //             if (res.data) {
-    //                 setOrder(res.data);
-    //             }
-    //         });
-    // };
-
-    const getUser = async () => {                                                                                        
-        const apiUrl = "http://localhost:8080/user/"+localStorage.getItem("email");
-        const requestOptions = {
-            method: "GET",
-            eaders: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-      
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                if (res.data) {
-                    setUser(res.data);
-                }
-            });
-    };
-
-    const getBasket = async () => {                                                                                        
-        const apiUrl = "http://localhost:8080/baskets";
-        const requestOptions = {
-            method: "GET",
-            eaders: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-      
-        fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                if (res.data) {
-                    setBasket(res.data);
-                }
-            });
-    };
     
     const getOption = async () => {                                
         const apiUrl = "http://localhost:8080/options";
         const requestOptions = {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
+            method: "GET",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
         };
       
         fetch(apiUrl, requestOptions)
@@ -161,16 +103,15 @@ function Order_UI() {
             });
     };
 
-    const getUserFriend = async () => {                                                                                    
-        const apiUrl = "http://localhost:8080/userfriend"+String(localStorage.getItem("uid"));
+    const getUserFriend = async () => {                                 
+        const apiUrl = "http://localhost:8080/userfriend/"+String(localStorage.getItem("uid"));
         const requestOptions = {
-            method: "GET",
-            eaders: {
+            method: "GET",      
+            headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
-            },
+            },     
         };
-      
         fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -200,8 +141,8 @@ function Order_UI() {
             });
     };
 
-    const getUserOrder = async () => {                                 
-        const apiUrl = "http://localhost:8080/userorder/"+localStorage.getItem("email");
+    const getUserBasket = async () => {                                 
+        const apiUrl = "http://localhost:8080/userbasket/"+String(localStorage.getItem("uid"));
         const requestOptions = {
             method: "GET",      
             headers: {
@@ -214,6 +155,24 @@ function Order_UI() {
             .then((res) => {
                 if (res.data) {
                     setBasket(res.data);
+                }
+            });
+    };
+
+    const getUserOrder = async () => {                                 
+        const apiUrl = "http://localhost:8080/userorder/"+localStorage.getItem("uid");
+        const requestOptions = {
+            method: "GET",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },     
+        };
+        fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setUserOrder(res.data);
                 }
             });
     };
@@ -239,7 +198,6 @@ function Order_UI() {
     //     .then(async (res) => {      
     //         if (res.data) {
     //             setSuccess(true);
-    //             await timeout(1000); //for 1 sec delay
     //             window.location.reload();     
     //         } else {
     //             setError(true);     
@@ -250,7 +208,6 @@ function Order_UI() {
     const Neworder = () => {
         let data = {
             User_ID: Number(localStorage.getItem("uid")),
-            Basket_ID: order.Basket_ID,
             Option_ID: order.Option_ID,
             Slip: imageString,
             Date: date,
@@ -286,8 +243,6 @@ function Order_UI() {
     useEffect(() => {
         getOrder();
         getUserOrder(); 
-        getUser();
-        getBasket();
         getOption();
         getUserFriend();
         console.log(order)  

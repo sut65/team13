@@ -147,7 +147,8 @@ type Basket struct {
 	Payment_Status    Payment_Status `gorm:"references:id"`
 	Note              string
 	Date              time.Time
-	Order             []Order `gorm:"foreignKey:Basket_ID"`
+	Order_ID          *uint
+	Order             Order `gorm:"references:id"`
 }
 
 // ---ระบบรีวิวเกม(GameReview)---
@@ -243,8 +244,6 @@ type Order struct {
 	gorm.Model
 	User_ID   *uint
 	User      User `gorm:"references:id"`
-	Basket_ID *uint
-	Basket    Basket `gorm:"references:id"`
 	Option_ID *uint
 	Option    Option `gorm:"references:id"`
 	Slip      string
@@ -253,6 +252,7 @@ type Order struct {
 	Friend_ID *uint
 	Friend    Friend `gorm:"references:id"`
 
+	Basket               []Basket               `gorm:"foreignKey:Order_ID"`
 	Payment_Verification []Payment_Verification `gorm:"foreignKey:Order_ID"`
 }
 

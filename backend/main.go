@@ -7,6 +7,8 @@ import (
 	friend_controller "github.com/sut65/team13/controller/friend"
 	game_controller "github.com/sut65/team13/controller/game"
 	login_controller "github.com/sut65/team13/controller/login"
+	order_controller "github.com/sut65/team13/controller/order"
+	payment_ver_controller "github.com/sut65/team13/controller/payment_ver"
 	storage_controller "github.com/sut65/team13/controller/storage"
 	user_controller "github.com/sut65/team13/controller/user"
 	wishlist_controller "github.com/sut65/team13/controller/wishlist"
@@ -111,6 +113,23 @@ func main() {
 			protected.GET("/Department", admin_controller.ListDepartment)
 
 			protected.GET("/Province", admin_controller.ListGenders)
+			//Order Routes
+			protected.GET("/options", order_controller.ListOptions)
+
+			protected.GET("/order", order_controller.ListOrder)
+			protected.GET("/order/:id", order_controller.GetOrder)
+			protected.POST("/order", order_controller.CreateOrder)
+
+			protected.GET("/userorder/:id", order_controller.ListUserOrder)
+			protected.GET("/userfriend/", order_controller.ListUserFriend)
+			//Payment_Ver Routes
+			protected.GET("/Verification_Status", payment_ver_controller.ListVerification_Status)
+
+			protected.GET("/payment_ver", payment_ver_controller.ListPaymentVer)
+			protected.GET("/payment_ver/:id", payment_ver_controller.GetPaymentVer)
+			protected.POST("/payment_ver", payment_ver_controller.CreatePaymentVer)
+
+			protected.PATCH("/payment_ver", payment_ver_controller.UpdatePaymentVer)
 
 			// Wishlist Routes
 			// protected.GET("/wishlists/:id", wishlist_controller.GetWishlist)

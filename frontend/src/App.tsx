@@ -28,6 +28,7 @@ import Banner_UI from "./components/banner/Banner_UI";
 import Admin from "./components/admin/Admin_UI";
 import Admin_list from "./components/admin/Admin_list";
 import User_list from "./components/admin/User.list";
+import PaymentVer_UI from "./components/payment_verification/PaymentVer_UI";
 
 export default function App() {
   const [token, setToken] = React.useState<String>("");
@@ -52,6 +53,7 @@ export default function App() {
           <Route path="/admin_create" element = {<Admin_UI/>}/> {/*Admin*/}
           <Route path="/admin_creates" element = {<Admin_list/>}/> {/*Admin*/}
           <Route path="/admin_createss" element = {<User_list/>}/> {/*Admin*/}
+          <Route path="/payment_ver" element={<PaymentVer_UI/>} /> {/** payment verification */}
          
         </Routes>
       );
