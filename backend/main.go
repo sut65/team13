@@ -114,8 +114,6 @@ func main() {
 			protected.DELETE("/admin/:id", admin_controller.DeleteAdmin)
 			protected.GET("/Department", admin_controller.ListDepartment)
 			protected.GET("/Province", admin_controller.ListProvince)
-
-			protected.GET("/Province", admin_controller.ListGenders)
 			//Order Routes
 			protected.GET("/options", order_controller.ListOptions)
 
