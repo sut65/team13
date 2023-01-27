@@ -132,7 +132,7 @@ func main() {
 			protected.PATCH("/payment_ver", payment_ver_controller.UpdatePaymentVer)
 
 			// Wishlist Routes
-			// protected.GET("/wishlists/:id", wishlist_controller.GetWishlist)
+			protected.POST("/wishlists", wishlist_controller.CreateWishlist)
 			protected.GET("/wishlists/:id", wishlist_controller.ListWishlists)
 			protected.PATCH("/wishlists", wishlist_controller.UpdateWishlist)
 			protected.DELETE("/wishlists/:id", wishlist_controller.DeleteWishlist)

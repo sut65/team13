@@ -21,17 +21,21 @@ func CreateWishlist(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if tx := entity.DB().Raw("SELECT * FROM wishlists WHERE user_id = ? AND game_id = ?", wishlist.User_ID, wishlist.Game_ID).First(&wishlist); tx.RowsAffected == 1 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "game in basket"})
+		return
+	}
 
 	if tx := entity.DB().Where("id = ?", wishlist.User_ID).First(&user); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
 		return
 	}
 	if tx := entity.DB().Where("id = ?", wishlist.Game_ID).First(&game); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Game not found"})
 		return
 	}
 	if tx := entity.DB().Where("id = ?", wishlist.Wish_Level_ID).First(&wish_Level); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "wish_level not found"})
 		return
 	}
 
