@@ -71,10 +71,10 @@ func CreateGame(c *gin.Context) {
 // GET /game/:id
 
 func GetGame(c *gin.Context) {
-	var game entity.Game
+	var game []entity.Game
 	id := c.Param("id")
 
-	if err := entity.DB().Preload("Game_Status").Preload("Type_Game").Preload("Rating").Preload("Seller").Raw("SELECT * FROM games WHERE id = ?", id).Find(&game).Error; err != nil {
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games WHERE seller_id = ? AND deleted_at IS NULL", id).Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -113,6 +113,12 @@ func DeleteGame(c *gin.Context) {
 	if tx := entity.DB().Where("id = ?", id).Delete(&entity.Game{}); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
 		return
+	}
+
+	if tx := entity.DB().Where("game_id = ?", id).Delete(&entity.Storage{}); tx.RowsAffected == 0 {
+		// อนุญาตให้หาไม่เจอได้เพราะตอนลบมันอาจจะยังไม่มีเจ้าของ
+		// c.JSON(http.StatusBadRequest, gin.H{"error": "storage not found"})
+		// return
 	}
 
 	// if tx := entity.DB().Exec("DELETE FROM games WHERE id = ?", id); tx.RowsAffected == 0 {
