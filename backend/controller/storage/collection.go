@@ -84,11 +84,13 @@ func ListCollections(c *gin.Context) {
 
 func DeleteCollection(c *gin.Context) {
 	var collection entity.Collection
+	var zeroCollection entity.Collection
+
 	if err := c.ShouldBindJSON(&collection); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
+	println(1)
 	if tx := entity.DB().Exec("DELETE FROM collections WHERE id = ?", collection.ID); tx.RowsAffected == 0 {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
@@ -96,7 +98,18 @@ func DeleteCollection(c *gin.Context) {
 		return
 
 	}
+	println(2)
+	stor := entity.Storage{
+		Collection_ID: &zeroCollection.ID,
+	}
+	if tx := entity.DB().Where("collection_id = ?", collection.ID).Updates(&stor); tx.RowsAffected == 0 {
 
+		// c.JSON(http.StatusBadRequest, gin.H{"error": "collection not found"})
+
+		//return
+
+	}
+	println(3)
 	c.JSON(http.StatusOK, gin.H{"data": collection})
 
 }
