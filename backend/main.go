@@ -53,6 +53,7 @@ func main() {
 			protected.GET("/baskets", basket_controller.ListBasket)
 			protected.GET("/basket/:id", basket_controller.GetBasket)
 			protected.GET("/userbasket/:uid", basket_controller.GetUserBasket)
+			protected.GET("/userbasketfororder/:uid", basket_controller.GetUserBasketForOrder)
 
 			protected.POST("/baskets", basket_controller.CraeteBasket)
 			protected.PATCH("/baskets", basket_controller.UpdateBasket)
