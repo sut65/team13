@@ -1,6 +1,7 @@
 import { UsersInterface } from "../user/IUser";
 import { GamesInterface } from "../game/IGame";
 import { Payment_StatusInterface } from "./IPayment_Status";
+import { OrderInterface } from "../order/IOrder";
 
 export interface BasketInterface {
     ID: number,
@@ -12,4 +13,6 @@ export interface BasketInterface {
     Payment_Status: Payment_StatusInterface,
     Note: string,
     Date: Date,
+    Order_ID: number,
+    Order: OrderInterface,
 }
