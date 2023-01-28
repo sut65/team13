@@ -61,7 +61,7 @@ func CreateOrder(c *gin.Context) {
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", id).Last(&orderLast); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("user_id = ?", id).Last(&orderLast); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "order not found"})
 		return
 	}

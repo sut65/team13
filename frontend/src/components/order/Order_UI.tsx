@@ -53,6 +53,8 @@ function Order_UI() {
     const [openForNew, setOpenForNew] = React.useState(false);
     const [openForEdit, setOpenForEdit] = React.useState(false);
 
+    const sum = basket.filter(item => item.Payment_Status.ID == 1).reduce((acc, item) => acc + item.Game.Game_Price, 0);
+
     const handleClose = (                                                                        
         event?: React.SyntheticEvent | Event,
         reason?: string
@@ -436,6 +438,16 @@ function Order_UI() {
                                 <TableCell align="center">{item.Note}</TableCell>                     
                             </TableRow>
                         ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="Total">
+                    <TableBody>
+                        <TableRow>
+                            <TableCell align="center"><h4>Total unpaid</h4></TableCell>
+                            <TableCell align="center">{sum}</TableCell>
+                        </TableRow>
                     </TableBody>
                 </Table>
             </TableContainer>
