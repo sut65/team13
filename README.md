@@ -31,6 +31,6 @@ node-module react-router-dom ไม่ติดตั้งมาพร้อม
 หรือติดตั้งด้วย `npm i package --force` <br />
 
 #### dayjs
-node-module react-router-dom ไม่ติดตั้งมาพร้อมกับคำสั่ง <br />
+node-module dayjs ไม่ติดตั้งมาพร้อมกับคำสั่ง <br />
 `npm install package` หรือ `npm i package` <br />
 ให้ติดตั้งด้วย `npm i package --force` <br />

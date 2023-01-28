@@ -78,6 +78,7 @@ func main() {
 			protected.PATCH("/Game", game_controller.UpdateGame)
 			protected.DELETE("/Game/:id", game_controller.DeleteGame)
 
+			protected.GET("/Individual_Game/:id", game_controller.GetIndividualGame)
 			protected.GET("/ALLGame", game_controller.ListALLGames) // เอาตัวที่ถูกลบแล้วขึ้นมาด้วย
 
 			protected.GET("/Rating", game_controller.ListRating)

@@ -22,7 +22,8 @@ function Individual_game() {
     Moment.locale('th');
     const { id } = useParams(); // ดึง parameter จาก url-parameter
     const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
-    const [games, setgames] = React.useState<Partial<GamesInterface>>({});
+    const [isGameOnStore, setIsGameOnStore] = React.useState<boolean | null>(false);
+    const [games, setgames] = React.useState<GamesInterface[]>([]);
 
     const [wish_levels, setWish_Levels] = React.useState<Wish_levelInterface[]>([]);
     const [toEditWishlist, setToEditWishlist] = React.useState<WishlistsInterface>();
@@ -41,7 +42,7 @@ function Individual_game() {
 
 
     const getGame = async () => {
-        const apiUrl = "http://localhost:8080/Game/" + id;
+        const apiUrl = "http://localhost:8080/Individual_Game/" + id;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -54,8 +55,12 @@ function Individual_game() {
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setgames(res.data);
-                    console.log(res.data);
+                    // เป็นการทำให้ state ของ games ถูกเปลี่ยนทันที เพราะหากไม่ทำแบบนี้ games จะไม่ถูก set โดยทันทีแล้วค่าจะไม่ออก
+                    // แต่จริงๆแล้วมันน่าจะเป็นการเติม array เข้าไปมากกว่า แต่ด้วยเหตุผลทางเทคนิคมันทำให้ใช้ได้
+                    setgames(prevgames => ([...prevgames, ...res.data]));
+                    if(res.data[0].DeletedAt == null){
+                        setIsGameOnStore(true);
+                    }
                 }
             });
     };
@@ -107,6 +112,7 @@ function Individual_game() {
     const handleCloseForAddWishlist = () => {
         setOpenAddWishlist(false);
     };
+
     const AddToBasket = () => {
         let data = {                                   //ประกาศก้อนข้อมูล
             User_ID: Number(localStorage.getItem("uid")),
@@ -136,7 +142,7 @@ function Individual_game() {
                     setError(true);
                 }
             });
-    }
+    };
 
     const AddToWishlist = () => {
         let data = {                                   //ประกาศก้อนข้อมูล
@@ -167,30 +173,30 @@ function Individual_game() {
                     setErrorWishlist(true);
                 }
             });
-    }
+    };
 
     React.useEffect(() => {
 
         const fetchData = async () => {
-            await getGame();
             await getWish_Level();
+            await getGame();
             setIsDataloaded(true);
         }
         fetchData();
 
     }, []);
 
-    if (isDataLoaded) return (
+    if (isDataLoaded && isGameOnStore) return (
         <Container>
             <Box>
                 <Paper elevation={2} sx={{ padding: 2, margin: 2 }}>
                     <Grid container>
-                        <h2>{games.Game_Name}</h2>
+                        <h2>{games[0].Game_Name}</h2>
                     </Grid>
 
                     <Grid container> {/** Game Description */}
                         <Grid>
-                            <img src={`${games.Game_Picture}`} width="700" height="400" />
+                            <img src={`${games[0].Game_Picture}`} width="700" height="400" />
                         </Grid>
                         <Grid marginLeft={4}>
                             <Box
@@ -213,23 +219,23 @@ function Individual_game() {
                                     fontWeight: '700',
                                 }}
                             >{/** กำหนดให้เว้นบรรทัด auto จาก white space */}
-                                {games.Game_description}
+                                {games[0].Game_description}
                             </Box>
                             <Grid>
-                                Publish Date : {`${Moment(games.Publish_Date).format('DD MMMM YYYY')}`}
+                                Publish Date : {`${Moment(games[0].Publish_Date).format('DD MMMM YYYY')}`}
                             </Grid>
                             <Grid>
-                                Publisher : {`${games.Seller?.Profile_Name}`}
+                                Publisher : {`${games[0].Seller?.Profile_Name}`}
                             </Grid>
                             <Grid>
-                                Rating : {`${games.Rating?.Rating_Name}`}
+                                Rating : {`${games[0].Rating?.Rating_Name}`}
                             </Grid>
                             <Grid>
-                                Tag : {`${games.Type_Game?.Type_Game_Name}`}
+                                Tag : {`${games[0].Type_Game?.Type_Game_Name}`}
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid container>
+                    <Grid container> {/** Wish list */}
                         <Box sx={{ mt: 1 }}
                             m={1}
                             display="flex"
@@ -293,7 +299,7 @@ function Individual_game() {
                     <DialogTitle>Add to Basket</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            {games.Game_Name}
+                            {games[0].Game_Name}
                         </DialogContentText>
                         <TextField
                             id="outlined-basic"
@@ -341,7 +347,7 @@ function Individual_game() {
                     <DialogTitle>Add to Wishlist</DialogTitle>
                     <DialogContent>
                         <DialogContentText>
-                            {games.Game_Name}
+                            {games[0].Game_Name}
                         </DialogContentText>
 
                         <Grid marginTop={2}>
@@ -416,7 +422,24 @@ function Individual_game() {
             </Box>
         </Container>
     );
-    return null;
+    else if(!isGameOnStore) return (
+        <Container>
+            <Box>
+                <Grid container justifyContent={"center"} marginTop={50}>
+                    <h1>ไม่มีเกมนี้อยู่หรือถูกถอดออกจากหน้าร้านค้าไปแล้ว</h1>
+                </Grid>
+            </Box>
+        </Container>
+    );
+    else return(
+        <Container>
+            <Box>
+                <Grid container justifyContent={"center"} marginTop={50}>
+                    <h1>Loading</h1>
+                </Grid>
+            </Box>
+        </Container>
+    );
 }
 
 export default Individual_game
