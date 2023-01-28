@@ -77,6 +77,8 @@ func main() {
 			protected.PATCH("/Game", game_controller.UpdateGame)
 			protected.DELETE("/Game/:id", game_controller.DeleteGame)
 
+			protected.GET("/ALLGame", game_controller.ListALLGames) // เอาตัวที่ถูกลบแล้วขึ้นมาด้วย
+
 			protected.GET("/Rating", game_controller.ListRating)
 			protected.GET("/Rating/:id", game_controller.GetRating)
 
@@ -92,6 +94,8 @@ func main() {
 			protected.PATCH("/storages", storage_controller.UpdateStorage)
 			protected.DELETE("/storages/:id", storage_controller.DeleteStorage)
 
+			protected.GET("/ALLstorages", storage_controller.ListALLStorages) // เอาตัวที่ถูกลบแล้วขึ้นมาด้วย
+
 			protected.GET("/collections/:id", storage_controller.ListCollections)
 			protected.POST("/collections", storage_controller.CreateCollection)
 			protected.PATCH("/collections", storage_controller.UpdateCollection)
@@ -106,22 +110,21 @@ func main() {
 			protected.GET("/admin", admin_controller.ListAdmin)
 			protected.GET("/admin/:id", admin_controller.GetAdmin)
 			protected.POST("/admin", admin_controller.CreateAdmin)
-			//protected.PATCH("/admin", admin_controller.UpdateAdmin)
+			protected.PATCH("/admin", admin_controller.UpdateAdmin)
 			protected.DELETE("/admin/:id", admin_controller.DeleteAdmin)
-
-			protected.GET("/Department/:id", admin_controller.GetDepartment)
 			protected.GET("/Department", admin_controller.ListDepartment)
-
-			protected.GET("/Province", admin_controller.ListGenders)
+			protected.GET("/Province", admin_controller.ListProvince)
 			//Order Routes
 			protected.GET("/options", order_controller.ListOptions)
 
 			protected.GET("/order", order_controller.ListOrder)
 			protected.GET("/order/:id", order_controller.GetOrder)
-			protected.POST("/order", order_controller.CreateOrder)
+			protected.POST("/order/:id", order_controller.CreateOrder)
 
-			protected.GET("/userorder/:id", order_controller.ListUserOrder)
+			protected.GET("/userorder/:uid", order_controller.ListUserOrder)
 			protected.GET("/userfriend/", order_controller.ListUserFriend)
+
+			protected.PATCH("/order", order_controller.UpdateOrder)
 			//Payment_Ver Routes
 			protected.GET("/Verification_Status", payment_ver_controller.ListVerification_Status)
 
@@ -132,7 +135,7 @@ func main() {
 			protected.PATCH("/payment_ver", payment_ver_controller.UpdatePaymentVer)
 
 			// Wishlist Routes
-			// protected.GET("/wishlists/:id", wishlist_controller.GetWishlist)
+			protected.POST("/wishlists", wishlist_controller.CreateWishlist)
 			protected.GET("/wishlists/:id", wishlist_controller.ListWishlists)
 			protected.PATCH("/wishlists", wishlist_controller.UpdateWishlist)
 			protected.DELETE("/wishlists/:id", wishlist_controller.DeleteWishlist)

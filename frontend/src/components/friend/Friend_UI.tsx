@@ -362,7 +362,7 @@ function Friend_UI() {
                         <TableBody>
                             {friend.filter(item => item.User_Friend.Profile_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
                                 <TableRow key={item.ID}>
-                                    <TableCell align="center"><img src={`${item.User_Friend.Profile_Picture}`} width="250" height="250"/> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
+                                    <TableCell align="center"><img src={`${item.User_Friend.Profile_Picture}`} width="250" height="250"/></TableCell>
                                     <TableCell component="th" scope="row">{item.User_Friend.Profile_Name}</TableCell>
                                     <TableCell align="center">{item.Nickname}</TableCell>       
                                     <TableCell align="center">{item.Intimate.Intimate_Name}</TableCell>    

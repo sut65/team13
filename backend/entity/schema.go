@@ -242,15 +242,17 @@ type Option struct {
 
 type Order struct {
 	gorm.Model
-	User_ID   *uint
-	User      User `gorm:"references:id"`
-	Option_ID *uint
-	Option    Option `gorm:"references:id"`
-	Slip      string
-	Date      time.Time
-	Send_gift *bool
-	Friend_ID *uint
-	Friend    Friend `gorm:"references:id"`
+	User_ID                *uint
+	User                   User `gorm:"references:id"`
+	Option_ID              *uint
+	Option                 Option `gorm:"references:id"`
+	Verification_Status_ID *uint
+	Verification_Status    Verification_Status `gorm:"references:id"`
+	Slip                   string
+	Date                   time.Time
+	Send_gift              *bool
+	Friend_ID              *uint
+	Friend                 Friend `gorm:"references:id"`
 
 	Basket               []Basket               `gorm:"foreignKey:Order_ID"`
 	Payment_Verification []Payment_Verification `gorm:"foreignKey:Order_ID"`
@@ -262,19 +264,20 @@ type Verification_Status struct {
 	gorm.Model
 	Status_type string
 
-	Payment_Verification []Payment_Verification `gorm:"foreignKey:VS_ID"`
+	Order                []Order                `gorm:"foreignKey:Verification_Status_ID"`
+	Payment_Verification []Payment_Verification `gorm:"foreignKey:Verification_Status_ID"`
 }
 
 type Payment_Verification struct {
 	gorm.Model
-	Admin_ID *uint
-	Admin    Admin `gorm:"references:id"`
-	Order_ID *uint
-	Order    Order `gorm:"references:id"`
-	VS_ID    *uint
-	VS       Verification_Status `gorm:"references:id"`
-	Date     time.Time
-	Note     string
+	Admin_ID               *uint
+	Admin                  Admin `gorm:"references:id"`
+	Order_ID               *uint
+	Order                  Order `gorm:"references:id"`
+	Verification_Status_ID *uint
+	Verification_Status    Verification_Status `gorm:"references:id"`
+	Date                   time.Time
+	Note                   string
 }
 
 // ----ระบบ Wishlist---

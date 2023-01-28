@@ -48,12 +48,13 @@ func CreateAdmin(c *gin.Context) {
 	}
 
 	newAdmin := entity.Admin{
-		Name:       admin.Name,
-		Email:      admin.Email,
-		Password:   string(hashPassword),
-		Gender:     gender,
-		Department: department,
-		Province:   province,
+		Name:            admin.Name,
+		Email:           admin.Email,
+		Profile_Picture: admin.Profile_Picture,
+		Password:        string(hashPassword),
+		Gender:          gender,
+		Department:      department,
+		Province:        province,
 	}
 
 	if err := entity.DB().Create(&newAdmin).Error; err != nil {
@@ -84,7 +85,7 @@ func GetAdmin(c *gin.Context) {
 func ListAdmin(c *gin.Context) {
 	var admin []entity.Admin
 
-	if err := entity.DB().Preload("Department").Preload("Province").Preload("Gender").Raw("SELECT * FROM admins").Scan(&admin).Error; err != nil {
+	if err := entity.DB().Preload("Department").Preload("Province").Preload("Gender").Raw("SELECT * FROM admins").Find(&admin).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -104,80 +105,95 @@ func ListAdmin(c *gin.Context) {
 
 // DELETE /users/:email --> ใช้อยู่
 
+// func DeleteAdmin(c *gin.Context) {
+// 	email := c.Param("email")
+// 	if tx := entity.DB().Exec("DELETE FROM admins WHERE email = ?", email); tx.RowsAffected == 0 {
+// 		c.JSON(http.StatusBadRequest, gin.H{"error": "admin not found"})
+// 		return
+// 	}
+
+//		c.JSON(http.StatusOK, gin.H{"data": email})
+//	}
 func DeleteAdmin(c *gin.Context) {
-	email := c.Param("email")
-	if tx := entity.DB().Exec("DELETE FROM admins WHERE email = ?", email); tx.RowsAffected == 0 {
+
+	id := c.Param("id")
+	if tx := entity.DB().Exec("DELETE FROM admins WHERE id = ?", id); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "admin not found"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": email})
+	c.JSON(http.StatusOK, gin.H{"data": id})
 }
 
 // PATCH /users --> ใช้อยู่
 
 func UpdateAdmin(c *gin.Context) {
-	var user entity.User
+	var admin entity.Admin
 	var gender entity.Gender
-	var storage entity.Storage
-	var game entity.Game
+	var department entity.Department
+	var province entity.Province
 
-	if err := c.ShouldBindJSON(&user); err != nil {
+	if err := c.ShouldBindJSON(&admin); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if len(user.Password) <= 7 {
+	if len(admin.Password) <= 7 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัว"})
 		return
 	}
 
-	if !(user.Password[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
-		hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
+	if !(admin.Password[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
+		hashPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), 12)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
 			return
 		}
 		print("HASH!!!!")
-		user.Password = string(hashPassword)
+		admin.Password = string(hashPassword)
 	} else {
 		print("NOT HASH!!!")
 	}
 
-	if tx := entity.DB().Where("id = ?", user.Gender_ID).First(&gender); tx.RowsAffected == 0 {
+	if tx := entity.DB().Where("id = ?", admin.Gender_ID).First(&gender); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "gender not found"})
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", user.Favorite_Game_ID).First(&storage); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "storage not found"})
+	// if tx := entity.DB().Where("id = ?", admin.Department_ID).First(&department); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "department not found"})
+	// 	return
+	// }
+
+	if tx := entity.DB().Where("id = ?", admin.Province_ID).First(&province); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "province not found"})
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", user.Out_Standing_Game_ID).First(&game); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
-		return
+	updateAdmin := entity.Admin{
+		Name:            admin.Name,
+		Password:        admin.Password,
+		Profile_Picture: admin.Profile_Picture,
+		Gender:          gender,
+		Department:      department,
+		Province:        province,
+
+		// Game_Name:        game.Game_Name,
+		// Game_Price:       game.Game_Price,
+		// Game_description: game.Game_description,
+		// Rating:           rating,
+		// Game_Status:      game_status,
+		// Type_Game:        type_game,
+		// Game_file:        game.Game_file,
+		// Game_Picture:     game.Game_Picture,
 	}
 
-	updateUser := entity.User{
-		Password:             user.Password,
-		Profile_Name:         user.Profile_Name,
-		Profile_Description:  user.Profile_Description,
-		Profile_Picture:      user.Profile_Picture,
-		Gender:               gender,
-		Favorite_Game_ID:     &storage.ID,
-		Is_Seller:            user.Is_Seller,
-		Store_Description:    user.Store_Description,
-		Out_Standing_Game_ID: &game.ID,
-		Store_Contact:        user.Store_Contact,
-	}
-
-	if err := entity.DB().Where("email = ?", user.Email).Updates(&updateUser).Error; err != nil {
+	if err := entity.DB().Where("ID = ?", admin.ID).Updates(&updateAdmin).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": user})
+	c.JSON(http.StatusOK, gin.H{"data": admin})
 
 }
 

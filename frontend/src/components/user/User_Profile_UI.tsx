@@ -12,8 +12,8 @@ function User_Profile(){
     const [storages, setStorages] = React.useState<StoragesInterface[]>([]);
     const [user, setUser] = React.useState<Partial<UsersInterface>>({});
 
-    const getStorage = async () => {
-        const apiUrl = "http://localhost:8080/storages";
+    const getALLStorage = async () => {
+        const apiUrl = "http://localhost:8080/ALLstorages";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -56,7 +56,7 @@ function User_Profile(){
         }else{
             return(
                 <Grid>
-                    {storages[Number(ID)].Game.Game_Name}
+                    {storages[Number(ID)].Game.Game_Name} {/** จะมีปัญหาเวลาเกมถูกลบแล้ว ใน array มี 1 ตัวแต่ id เราคือ 2 */}
                 </Grid>
             );
         }
@@ -65,7 +65,7 @@ function User_Profile(){
     React.useEffect(() => {
         const fetchData = async () => {
             await getUser();
-            await getStorage();
+            await getALLStorage();
             setIsDataloaded(true);
         }
         fetchData();

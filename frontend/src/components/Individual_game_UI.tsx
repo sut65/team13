@@ -6,20 +6,27 @@ import Moment from 'moment';
 import dayjs, { Dayjs } from "dayjs";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
-import { DialogActions, DialogContent, DialogContentText, DialogTitle} from '@material-ui/core';
+import { DialogActions, DialogContent, DialogContentText, DialogTitle } from '@material-ui/core';
 import { Dialog } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
 import TextField from "@mui/material/TextField";
+import Autocomplete from '@mui/material/Autocomplete';
 
 import { useParams } from 'react-router-dom';
 import { GamesInterface } from '../models/game/IGame';
+import { Wish_levelInterface } from '../models/wishlist/IWish_Level';
+import { WishlistsInterface } from '../models/wishlist/IWishlist';
 
-function Individual_game(){
+function Individual_game() {
     Moment.locale('th');
     const { id } = useParams(); // ดึง parameter จาก url-parameter
     const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
     const [games, setgames] = React.useState<Partial<GamesInterface>>({});
+
+    const [wish_levels, setWish_Levels] = React.useState<Wish_levelInterface[]>([]);
+    const [toEditWishlist, setToEditWishlist] = React.useState<WishlistsInterface>();
+    const [wish_levelEdit, setWish_LevelEdit] = React.useState<String>();
 
     const [note, setNote] = React.useState<string>("");
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
@@ -28,8 +35,13 @@ function Individual_game(){
     const [error, setError] = React.useState(false);
     const [openForAdd, setOpenForAdd] = React.useState(false);
 
+    const [errorwishlist, setErrorWishlist] = React.useState(false);
+    const [openAddWishlist, setOpenAddWishlist] = React.useState(false);
+    const [noteWishlist, setNoteWishlist] = React.useState<string>("");
+
+
     const getGame = async () => {
-        const apiUrl = "http://localhost:8080/Game/"+id;
+        const apiUrl = "http://localhost:8080/Game/" + id;
         const requestOptions = {
             method: "GET",
             headers: {
@@ -37,7 +49,7 @@ function Individual_game(){
                 "Content-Type": "application/json",
             },
         };
-       
+
         await fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -48,15 +60,36 @@ function Individual_game(){
             });
     };
 
-    const handleClose = (                                                                        
+    const getWish_Level = async () => {
+        const apiUrl = "http://localhost:8080/wish_levels";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+
+        await fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setWish_Levels(res.data);
+                    console.log(res.data);
+                }
+            });
+    };
+
+    const handleClose = (
         event?: React.SyntheticEvent | Event,
         reason?: string
     ) => {
         if (reason === "clickaway") {
-        return;
+            return;
         }
         setSuccess(false);
         setError(false);
+        setErrorWishlist(false);
     };
 
     const handleClickOpenForAdd = () => {
@@ -67,7 +100,14 @@ function Individual_game(){
         setOpenForAdd(false);
     };
 
-    const AddToBasket = () => { 
+    const handleClickOpenForAddWishlist = () => {
+        setOpenAddWishlist(true);
+    };
+
+    const handleCloseForAddWishlist = () => {
+        setOpenAddWishlist(false);
+    };
+    const AddToBasket = () => {
         let data = {                                   //ประกาศก้อนข้อมูล
             User_ID: Number(localStorage.getItem("uid")),
             Game_ID: Number(id),
@@ -75,17 +115,17 @@ function Individual_game(){
             Note: note,
             Date: date,
         };
-      
+
         const apiUrl = "http://localhost:8080/baskets";           //ส่งขอบันทึก
         const requestOptions = {
             method: "POST",
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
-              "Content-Type": "application/json",
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
             },
             body: JSON.stringify(data),
-        }; 
-      
+        };
+
         fetch(apiUrl, requestOptions)                                       //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
             .then((response) => response.json())
             .then((res) => {
@@ -98,47 +138,81 @@ function Individual_game(){
             });
     }
 
+    const AddToWishlist = () => {
+        let data = {                                   //ประกาศก้อนข้อมูล
+            User_ID: Number(localStorage.getItem("uid")),
+            Game_ID: Number(id),
+            Wish_Level_ID: wish_levelEdit,
+            Note: noteWishlist,
+            Date: date,
+        };
+
+        const apiUrl = "http://localhost:8080/wishlists";           //ส่งขอบันทึก
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        };
+
+        fetch(apiUrl, requestOptions)                                       //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setSuccess(true);
+                    setOpenAddWishlist(false);
+                } else {
+                    setErrorWishlist(true);
+                }
+            });
+    }
+
     React.useEffect(() => {
+
         const fetchData = async () => {
             await getGame();
+            await getWish_Level();
             setIsDataloaded(true);
         }
         fetchData();
+
     }, []);
 
-    if(isDataLoaded) return (
+    if (isDataLoaded) return (
         <Container>
             <Box>
-                <Paper elevation={2} sx={{padding:2,margin:2}}>
+                <Paper elevation={2} sx={{ padding: 2, margin: 2 }}>
                     <Grid container>
                         <h2>{games.Game_Name}</h2>
                     </Grid>
 
                     <Grid container> {/** Game Description */}
                         <Grid>
-                            <img src={`${games.Game_Picture}`} width="700" height="400"/>
+                            <img src={`${games.Game_Picture}`} width="700" height="400" />
                         </Grid>
                         <Grid marginLeft={4}>
                             <Box
                                 component="div"
                                 sx={{
-                                width : 300,
-                                textOverflow: 'ellipsis',overflow: 'hidden',
-                                whiteSpace: 'break-spaces',
-                                my: 2,
-                                p: 1,
-                                bgcolor: (theme) =>
-                                    theme.palette.mode === 'dark' ? '#101010' : 'grey.100',
-                                color: (theme) =>
-                                    theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
-                                border: '1px solid',
-                                borderColor: (theme) =>
-                                    theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
-                                borderRadius: 2,
-                                fontSize: '0.875rem',
-                                fontWeight: '700',
+                                    width: 300,
+                                    textOverflow: 'ellipsis', overflow: 'hidden',
+                                    whiteSpace: 'break-spaces',
+                                    my: 2,
+                                    p: 1,
+                                    bgcolor: (theme) =>
+                                        theme.palette.mode === 'dark' ? '#101010' : 'grey.100',
+                                    color: (theme) =>
+                                        theme.palette.mode === 'dark' ? 'grey.300' : 'grey.800',
+                                    border: '1px solid',
+                                    borderColor: (theme) =>
+                                        theme.palette.mode === 'dark' ? 'grey.800' : 'grey.300',
+                                    borderRadius: 2,
+                                    fontSize: '0.875rem',
+                                    fontWeight: '700',
                                 }}
-                                >{/** กำหนดให้เว้นบรรทัด auto จาก white space */}
+                            >{/** กำหนดให้เว้นบรรทัด auto จาก white space */}
                                 {games.Game_description}
                             </Box>
                             <Grid>
@@ -156,7 +230,7 @@ function Individual_game(){
                         </Grid>
                     </Grid>
                     <Grid container>
-                        <Box sx={{ mt: 1}}
+                        <Box sx={{ mt: 1 }}
                             m={1}
                             display="flex"
                             justifyContent="flex-end"
@@ -173,6 +247,23 @@ function Individual_game(){
                                 Add to Basket
                             </Button>
                         </Box>
+                        <Box sx={{ mt: 1 }}
+                            m={1}
+                            display="flex"
+                            justifyContent="flex-end"
+                            alignItems="flex-end"
+                        >
+                            <Button
+                                type="submit"
+                                fullWidth
+                                variant="contained"
+                                color="success"
+                                sx={{ mt: 1, mb: 2 }}
+                                onClick={handleClickOpenForAddWishlist}
+                            >
+                                Add to Wishlist
+                            </Button>
+                        </Box>
                     </Grid>
                 </Paper>
             </Box>
@@ -183,15 +274,15 @@ function Individual_game(){
                     onClose={handleClose}
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 >
-                    <Alert onClose={handleClose} severity="success">              
+                    <Alert onClose={handleClose} severity="success">
                         บันทึกข้อมูลสำเร็จ
                     </Alert>
                 </Snackbar>
 
                 <Snackbar                                                                                 //ป้ายบันทึกไม่สำเร็จ
-                    open={error} 
-                    autoHideDuration={6000} 
-                    onClose={handleClose} 
+                    open={error}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 >
                     <Alert onClose={handleClose} severity="error">
@@ -216,7 +307,7 @@ function Individual_game(){
                             onChange={(event) => setNote(event.target.value)}
                         />
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateTimePicker   
+                            <DateTimePicker
                                 label="disabled"
                                 disabled
                                 value={date}
@@ -224,12 +315,102 @@ function Individual_game(){
                                     setDate(newValue);
                                 }}
                                 renderInput={(params) => <TextField sx={{ marginY: 2 }} {...params} />}
-                        />
+                            />
                         </LocalizationProvider>
                     </DialogContent>
                     <DialogActions>
                         <Button onClick={handleCloseForAdd}>Cancel</Button>
                         <Button color="success" onClick={AddToBasket}>Add</Button>
+                    </DialogActions>
+                </Dialog>
+            </Box>
+
+
+            <Box> {/** Popup ต่างๆ ระบบ Wishlist */}
+                <Snackbar                                                                                 //ป้ายบันทึกไม่สำเร็จ
+                    open={errorwishlist}
+                    autoHideDuration={6000}
+                    onClose={handleClose}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Alert onClose={handleClose} severity="error">
+                        บันทึกข้อมูลไม่สำเร็จ หรือคุณมีเกมอยู่ใน Wishlist แล้ว
+                    </Alert>
+                </Snackbar>
+                <Dialog fullWidth maxWidth="md" open={openAddWishlist} onClose={handleCloseForAddWishlist} >
+                    <DialogTitle>Add to Wishlist</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText>
+                            {games.Game_Name}
+                        </DialogContentText>
+
+                        <Grid marginTop={2}>
+                            <Grid>
+                                Wish Level
+                            </Grid>
+                            <Grid>
+                                <Autocomplete
+                                    id="intimate-edit-autocomplete"
+                                    options={wish_levels}
+                                    size="small"
+                                    defaultValue={toEditWishlist?.Wish_Level}
+                                    onChange={(event: any, value) => {
+                                        setWish_LevelEdit(event.target.value);
+                                    }}
+                                    getOptionLabel={(option: any) =>
+                                        `${option.Level}`
+                                    } //filter value
+                                    renderInput={(params) => {
+                                        return (
+                                            <TextField
+                                                {...params}
+                                                variant="outlined"
+                                                placeholder="Search..."
+                                            />
+                                        );
+                                    }}
+                                    renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                                {...props}
+                                                value={`${option.ID}`}
+                                                key={`${option.ID}`}
+                                            >{`${option.Level}`}</li>
+                                        ); //display value
+                                    }}
+                                />
+                                </Grid>
+                                <Grid marginTop={2}>
+                                <TextField
+                                    id="outlined-basic"
+                                    placeholder="Insert details"
+                                    variant="outlined"
+                                    size="medium"
+                                    multiline={true}
+                                    minRows={9}
+                                    maxRows={2}
+                                    fullWidth={true}
+                                    onChange={(event) => setNoteWishlist(event.target.value)}
+                                />
+                                </Grid>
+                                <Grid>
+                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                    <DateTimePicker
+                                        label="disabled"
+                                        disabled
+                                        value={date}
+                                        onChange={(newValue) => {
+                                            setDate(newValue);
+                                        }}
+                                        renderInput={(params) => <TextField sx={{ marginY: 2 }} {...params} />}
+                                    />
+                                </LocalizationProvider>
+                            </Grid>
+                        </Grid>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleCloseForAddWishlist}>Cancel</Button>
+                        <Button color="success" onClick={AddToWishlist}>Add</Button>
                     </DialogActions>
                 </Dialog>
             </Box>

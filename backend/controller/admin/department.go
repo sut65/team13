@@ -20,14 +20,3 @@ func ListDepartment(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": departments})
 }
-func GetDepartment(c *gin.Context) {
-	var departments entity.Type_Game
-	id := c.Param("id")
-
-	if err := entity.DB().Raw("SELECT * FROM departments WHERE id = ?", id).Scan(&departments).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": departments})
-}

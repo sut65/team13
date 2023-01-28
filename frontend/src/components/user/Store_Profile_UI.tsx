@@ -12,8 +12,8 @@ function Store_Profile(){
     const [games, setGames] = React.useState<GamesInterface[]>([]);
     const [user, setUser] = React.useState<Partial<UsersInterface>>({});
 
-    const getGame = async () => {
-        const apiUrl = "http://localhost:8080/Game";
+    const getALLGame = async () => {
+        const apiUrl = "http://localhost:8080/ALLGame";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -65,7 +65,7 @@ function Store_Profile(){
     React.useEffect(() => {
         const fetchData = async () => {
             await getUser();
-            await getGame();
+            await getALLGame();
             setIsDataloaded(true);
         }
         fetchData();

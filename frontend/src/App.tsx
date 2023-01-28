@@ -55,6 +55,7 @@ export default function App() {
           <Route path="/admin_createss" element = {<User_list/>}/> {/*Admin*/}
           <Route path="/payment_ver" element={<PaymentVer_UI/>} /> {/** payment verification */}
          
+          <Route path="/admin_list" element = {<Admin_list/>}/> {/*Admin*/}
         </Routes>
       );
     }else{ // User Routes
@@ -65,7 +66,6 @@ export default function App() {
           <Route path="/user_store_setting" element={<User_UI/>} /> {/** user & store setting */}
           <Route path="/user_profile/:email" element={<User_Profile_UI/>} /> {/** user profile */}
           <Route path="/store_profile/:email" element={<Store_Profile_UI/>} /> {/** store profile */}
-          <Route path="/sell_game" element={<Game_UI/>} /> {/**sell game */}
           <Route path="/game_list" element={<Game_List/>} /> {/** list game */}
           <Route path="/individual_game/:id" element={<Individual_game_UI/>} /> {/** individual game */}
           <Route path="/my_basket" element={<Basket_List/>} /> {/** basket */}
@@ -73,9 +73,6 @@ export default function App() {
           <Route path="/my_hided_friend" element={<Hided_Friend_UI/>} /> {/** hide friend */}
           <Route path="/collection" element={<Collection_UI/>} /> {/** collection*/}
           <Route path="/storage" element={<Storage_UI/>} /> {/** storage*/}
-          <Route path="/my_order" element={<Order_UI/>} /> {/** order */}
-          <Route path="/wishlist" element={<Wishlist_UI/>} /> {/** wishlist*/}
-
 
         </Routes>
       );

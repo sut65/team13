@@ -101,8 +101,8 @@ func UpdateBasket(c *gin.Context) {
 	var basket entity.Basket
 
 	if err := c.ShouldBindJSON(&basket); err != nil {
-		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		//return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	updateBasket := entity.Basket{

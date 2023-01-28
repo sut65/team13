@@ -32,6 +32,11 @@ function User(){
     const [genders, setGenders] = React.useState<GendersInterface[]>([]);
     const [user, setUser] = React.useState<Partial<UsersInterface>>({});
 
+    const convertType = (data: number | undefined) => {
+        let val = typeof data === "number" ? data : 0;
+        return val;
+    };
+
     const handleImageChange = (event: any) => {
         const image = event.target.files[0];
 
@@ -41,10 +46,6 @@ function User(){
             const base64Data = reader.result;
             setImageString(base64Data)
         }
-    }
-
-    const handleApplySeller = () => {
-        setUser({ ...user, Is_Seller: true });
     }
 
     const handleClose = ( // AlertBar
@@ -122,7 +123,7 @@ function User(){
     };
 
     const getALLStorage = async () => {
-        const apiUrl = "http://localhost:8080/storages";
+        const apiUrl = "http://localhost:8080/ALLstorages";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -141,7 +142,7 @@ function User(){
     };
 
     const getALLGame = async () => {
-        const apiUrl = "http://localhost:8080/Game";
+        const apiUrl = "http://localhost:8080/ALLGame";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -190,10 +191,10 @@ function User(){
                 Profile_Description: user.Profile_Description,
                 Profile_Picture: imageString,
                 Gender_ID: user.Gender_ID,
-                Favorite_Game_ID: user.Favorite_Game_ID,
+                Favorite_Game_ID: convertType(user.Favorite_Game_ID),
                 Is_Seller: user.Is_Seller,
                 Store_Description: user.Store_Description,
-                Out_Standing_Game_ID: user.Out_Standing_Game_ID, // ยังไม่ได้ทำ ดึงข้อมูลจากตารางเกมกรองด้วยคนขาย
+                Out_Standing_Game_ID: convertType(user.Out_Standing_Game_ID), // ยังไม่ได้ทำ ดึงข้อมูลจากตารางเกมกรองด้วยคนขาย
                 Store_Contact: user.Store_Contact,
             };
     
@@ -224,6 +225,47 @@ function User(){
             setErrorMsg(" - รหัสผ่านไม่ตรงกัน");
         }
 
+    }
+
+    const handleApplySeller = async () => {
+        let UpdateData = {
+            Email: localStorage.getItem("email"), // รอทำ localStorage.getitem
+            Password: new_password, // ตัวแปรชื่อ new_password ก็จริงแต่อาจเป็น password เดิมก็ได้
+            Profile_Name: user.Profile_Name,
+            Profile_Description: user.Profile_Description,
+            Profile_Picture: imageString,
+            Gender_ID: user.Gender_ID,
+            Favorite_Game_ID: convertType(user.Favorite_Game_ID),
+            Is_Seller: true,
+            Store_Description: user.Store_Description,
+            Out_Standing_Game_ID: convertType(user.Out_Standing_Game_ID), // ยังไม่ได้ทำ ดึงข้อมูลจากตารางเกมกรองด้วยคนขาย
+            Store_Contact: user.Store_Contact,
+        };
+
+        console.log(UpdateData)
+
+        const apiUrl = "http://localhost:8080/users";
+        const requestOptions = {
+            method: "PATCH",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(UpdateData),
+        };
+
+        fetch(apiUrl, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+            if (res.data) {
+                setSubmitSuccess(true);
+                window.location.reload();
+            } else {
+                setSubmitError(true);
+                setErrorMsg(" - "+res.error);
+            }
+        });
+    
     }
 
     const deleteAccount = () => {
