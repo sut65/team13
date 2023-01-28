@@ -324,12 +324,16 @@ function Storage_UI() {
                       {/* <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/" + String(item.User_Friend.Email)}>
                         Profile
                       </Button> */}
+                      <Button variant="contained" color="error">
+                        Dowload
+                      </Button>
                       <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
                         Add to Collection
                       </Button>
                       <Button variant="contained" color="error" onClick={() => handleClickOpenForDelete(item)}>
                         Delete
                       </Button>
+                      
                     </Stack>
                   </TableCell>
                   <Dialog maxWidth="lg" open={openForEdit} onClose={handleCloseForEdit} >
