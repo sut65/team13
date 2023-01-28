@@ -13,6 +13,7 @@ func CreatePaymentVer(c *gin.Context) {
 	var payment_ver entity.Payment_Verification
 	var admin entity.Admin
 	var ver_status entity.Verification_Status
+	var ver_status_if entity.Verification_Status
 	var order entity.Order
 
 	if err := c.ShouldBindJSON(&payment_ver); err != nil {
@@ -52,6 +53,18 @@ func CreatePaymentVer(c *gin.Context) {
 	if err := entity.DB().Exec("UPDATE orders SET verification_status_id = ? WHERE id = ? AND verification_status_id = 1", payment_ver.Verification_Status_ID, order.ID).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "order not found"})
 		return
+	}
+
+	if tx := entity.DB().Where("id = 2").Last(&ver_status_if); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "verifications tatus not found"})
+		return
+	}
+
+	if *payment_ver.Verification_Status_ID == ver_status_if.ID {
+		if err := entity.DB().Exec("UPDATE baskets SET payment_status_id = 3 WHERE order_id = ?", payment_ver.Order_ID).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "basket not found"})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": payment_ver})
