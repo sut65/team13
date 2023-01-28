@@ -119,10 +119,12 @@ func main() {
 
 			protected.GET("/order", order_controller.ListOrder)
 			protected.GET("/order/:id", order_controller.GetOrder)
-			protected.POST("/order", order_controller.CreateOrder)
+			protected.POST("/order/:id", order_controller.CreateOrder)
 
-			protected.GET("/userorder/:id", order_controller.ListUserOrder)
+			protected.GET("/userorder/:uid", order_controller.ListUserOrder)
 			protected.GET("/userfriend/", order_controller.ListUserFriend)
+
+			protected.PATCH("/order", order_controller.UpdateOrder)
 			//Payment_Ver Routes
 			protected.GET("/Verification_Status", payment_ver_controller.ListVerification_Status)
 

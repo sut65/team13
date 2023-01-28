@@ -34,13 +34,13 @@ function PaymentVerTable_UI() {
       const paymentver_columns: GridColDef[] = [
         { field: "ID", headerName: "ID", width: 50 },
         {
-            field: "Order_ID",
+            field: "Order",
             headerName: "Order",
             width: 200,
-            valueGetter:(params) => params.value.Order_ID,
+            valueGetter:(params) => params.value.ID,
         },
         {
-            field: "VS_ID",
+            field: "Verification_Status",
             headerName: "Status",
             width: 200,
             valueGetter:(params) => params.value.Status_type,
@@ -49,10 +49,10 @@ function PaymentVerTable_UI() {
             field: "Note",
             headerName: "Note",
             width: 400,
-            valueGetter:(params) => params.value.Note,
+            valueGetter:(params) => params.value,
         },
         {
-            field: "Admin_ID",
+            field: "Admin",
             headerName: "Admin",
             width: 200,
             valueGetter: (params) => params.value.Name,
@@ -61,7 +61,7 @@ function PaymentVerTable_UI() {
             field: "Date",
             headerName: "Date",
             width: 300,
-            valueGetter:(params) => params.value.Date,
+            valueGetter:(params) => params.value,
         },
       ];
 

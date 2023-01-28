@@ -164,10 +164,6 @@ func UpdateFriend(c *gin.Context) {
 		Is_Hide:     friend.Is_Hide,
 	}
 
-	println(friend.Is_Hide)
-	println(fri.Is_Hide)
-	println(friend.ID)
-
 	if err := entity.DB().Where("id = ?", friend.ID).Updates(&fri).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -182,8 +178,8 @@ func DeleteFriend(c *gin.Context) {
 	var friend entity.Friend
 
 	if err := c.ShouldBindJSON(&friend); err != nil {
-		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		//return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	if tx := entity.DB().Exec("DELETE FROM friends WHERE id = ?", friend.ID); tx.RowsAffected == 0 {

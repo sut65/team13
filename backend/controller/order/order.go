@@ -11,29 +11,47 @@ import (
 // POST/order
 func CreateOrder(c *gin.Context) {
 	var order entity.Order
-	var user entity.User
-	var options entity.Option
+	var orderLast entity.Order
+	var payment_status entity.Payment_Status
+	var ver_status entity.Verification_Status
+	var user_Friend entity.Friend
+
+	println("Test1")
+
+	id := c.Param("id")
+
+	println("Test2")
 
 	if err := c.ShouldBindJSON(&order); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// if tx := entity.DB().Raw("SELECT * FROM order WHERE user_id = ? AND basket_id = ?", order.User_ID, order.Basket_ID).First(&order); tx.RowsAffected == 1 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "my order"})
-	// 	return
-	// }
+	println("Test3")
 
-	if tx := entity.DB().Where("id = ?", order.Option_ID).First(&options); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "option not found"})
+	if tx := entity.DB().Where("id = ?", order.Verification_Status_ID).First(&ver_status); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "verification status not found"})
 		return
 	}
 
+	println("Test4")
+
+	if user_Friend.User_Friend_ID != nil {
+		if tx := entity.DB().Where("id = ?", user_Friend.User_Friend_ID).First(&user_Friend); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "user not found"})
+			return
+		}
+	}
+
+	println("Test5")
+
 	od := entity.Order{
-		User:   user,
-		Option: options,
-		Slip:   order.Slip,
-		Date:   order.Date.Local(),
+		User_ID:             order.User_ID,
+		Verification_Status: ver_status,
+		Slip:                order.Slip,
+		Date:                order.Date.Local(),
+		Send_gift:           order.Send_gift,
+		Friend_ID:           order.Friend_ID,
 	}
 
 	if err := entity.DB().Create(&od).Error; err != nil {
@@ -41,8 +59,24 @@ func CreateOrder(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
-
 	}
+
+	if tx := entity.DB().Where("id = ?", id).Last(&orderLast); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "order not found"})
+		return
+	}
+
+	//เลือกเฉพาะ order ที่ payment status = 2 (pending)
+	if tx := entity.DB().Where("id = 2").Last(&payment_status); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "payment status not found"})
+		return
+	}
+
+	if err := entity.DB().Exec("UPDATE baskets SET payment_status_id = 2, order_id = ? WHERE user_id = ? AND payment_status_id = 1", orderLast.ID, order.User_ID).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "basket not found"})
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{"data": order})
 }
 
@@ -73,12 +107,8 @@ func ListOrder(c *gin.Context) {
 // GET /userorder/
 func ListUserOrder(c *gin.Context) {
 	var order []entity.Order
-	var baskets []entity.Basket
-
-	id := c.Param("id")
-
-	//list เฉพาะ order ของ user
-	if err := entity.DB().Preload("User").Preload("Game").Preload("Payment_Status").Raw("SELECT * FROM baskets WHERE user_id = ?", id).Find(&baskets).Error; err != nil {
+	uid := c.Param("uid")
+	if err := entity.DB().Preload("User").Preload("Basket").Preload("Verification_Status").Raw("SELECT * FROM orders WHERE user_id = ?", uid).Find(&order).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -96,4 +126,52 @@ func ListUserFriend(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": friend})
+}
+
+//PATCH /order
+
+func UpdateOrder(c *gin.Context) {
+	var order entity.Order
+	// var orderLast entity.Order
+	// var payment_status entity.Payment_Status
+	// var ver_status entity.Verification_Status
+
+	//id := c.Param("id")
+
+	if err := c.ShouldBindJSON(&order); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updateOrder := entity.Order{
+		Slip: order.Slip,
+		Date: order.Date.Local(),
+	}
+
+	if err := entity.DB().Where("id =?", order.ID).Updates(&updateOrder).Error; err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	// if err := entity.DB().Create(&updateOrder).Error; err != nil {
+
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+	// 	return
+	// }
+
+	// if tx := entity.DB().Where("id = ?", id).Last(&orderLast); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "order not found"})
+	// 	return
+	// }
+
+	// //เลือกเฉพาะ order ที่ payment status = 2 (pending)
+	// if tx := entity.DB().Where("id = 2").Last(&payment_status); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "payment status not found"})
+	// 	return
+	// }
+
+	c.JSON(http.StatusOK, gin.H{"data": order})
 }

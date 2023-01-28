@@ -12,9 +12,9 @@ import (
 
 func ListVerification_Status(c *gin.Context) {
 
-	var v_status []entity.Verification_Status
+	var verification_status []entity.Verification_Status
 
-	if err := entity.DB().Raw("SELECT * FROM verification_status").Scan(&v_status).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM verification_statuses").Scan(&verification_status).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -22,6 +22,6 @@ func ListVerification_Status(c *gin.Context) {
 
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": v_status})
+	c.JSON(http.StatusOK, gin.H{"data": verification_status})
 
 }

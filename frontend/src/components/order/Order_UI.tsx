@@ -21,6 +21,7 @@ import { UsersInterface } from '../../models/user/IUser';
 import { BasketInterface } from '../../models/basket/IBasket';
 import { OptionsInterface } from '../../models/order/IOption';
 import { FriendsInterface } from '../../models/friend/IFriend';
+import { VerificationStatusInterface } from '../../models/payment_verification/IVerificationStatus';
 
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import CardGiftcardIcon from '@mui/icons-material/CardGiftcard';
@@ -39,8 +40,10 @@ function Order_UI() {
     const [user, setUser] = React.useState<UsersInterface[]>([]);
     const [userOrder, setUserOrder] = React.useState<OrderInterface[]>([]);
     const [basket, setBasket] = React.useState<BasketInterface[]>([]);
-    const [option, setOption] = React.useState<OptionsInterface[]>([]);
+    // const [option, setOption] = React.useState<OptionsInterface[]>([]);
+    const [ver_status, setVerStatus] = React.useState<VerificationStatusInterface[]>([]);
     const [userfriend, setUserFriend] = React.useState<FriendsInterface[]>([]);
+    const [editOrder, setEditOrder] = useState<OrderInterface>();
 
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
     const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
@@ -48,7 +51,7 @@ function Order_UI() {
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
     const [openForNew, setOpenForNew] = React.useState(false);
-    const [CloseForNew, setCloseForNew] = React.useState(false);
+    const [openForEdit, setOpenForEdit] = React.useState(false);
 
     const handleClose = (                                                                        
         event?: React.SyntheticEvent | Event,
@@ -69,6 +72,15 @@ function Order_UI() {
         setOpenForNew(false);
     };
 
+    const handleClickOpenForEdit = (item: OrderInterface) => {
+        setOpenForEdit(true);
+        setEditOrder(item);
+    };
+
+    const handleCloseForEdit = () => {
+        setOpenForEdit(false);
+    };
+
     const handleSendGift = () => {
         setOrder({ ...order, Send_gift: true });
     }
@@ -84,23 +96,43 @@ function Order_UI() {
         }
       }
     
-    const getOption = async () => {                                
-        const apiUrl = "http://localhost:8080/options";
+    // const getOption = async () => {                                
+    //     const apiUrl = "http://localhost:8080/options";
+    //     const requestOptions = {
+    //         method: "GET",      
+    //         headers: {
+    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
+    //             "Content-Type": "application/json",
+    //         },
+    //     };
+      
+    //     fetch(apiUrl, requestOptions)
+    //         .then((response) => response.json())
+    //         .then((res) => {
+    //             if (res.data) {
+    //                 setOption(res.data);
+    //             }
+    //         });
+    // };
+
+    const getVerStatus = async () => {
+        const apiUrl = "http://localhost:8080/Verification_Status";
         const requestOptions = {
-            method: "GET",      
+            method: "GET",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
         };
-      
-        fetch(apiUrl, requestOptions)
+       
+        await fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setOption(res.data);
+                    setVerStatus(res.data);
                 }
             });
+        console.log(ver_status)
     };
 
     const getUserFriend = async () => {                                 
@@ -173,42 +205,17 @@ function Order_UI() {
             .then((res) => {
                 if (res.data) {
                     setUserOrder(res.data);
+                    console.log("============1");
+                    console.log(res.data);
+                    console.log("============2");
                 }
             });
     };
 
-
-    // const updateItem = () => {
-    //     let data = {
-    //         Basket_ID: Number(localStorage.getItem("bid")),
-    //         Option_ID: Number(localStorage.getItem("option_id")),   
-    //     };
-    //     const apiUrl = "http://localhost:8080/order";  
-    //     const requestOptions = {     
-    //         method: "PATCH",      
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },     
-    //         body: JSON.stringify(data),
-    //     };
-      
-    //     fetch(apiUrl, requestOptions)
-    //     .then((response) => response.json())      
-    //     .then(async (res) => {      
-    //         if (res.data) {
-    //             setSuccess(true);
-    //             window.location.reload();     
-    //         } else {
-    //             setError(true);     
-    //         }
-    //     });        
-    // }
-
     const Neworder = () => {
         let data = {
             User_ID: Number(localStorage.getItem("uid")),
-            Option_ID: order.Option_ID,
+            Verification_Status_ID: 1,
             Slip: imageString,
             Date: date,
             Send_gift: order.Send_gift,
@@ -216,13 +223,16 @@ function Order_UI() {
         };
         console.log(data)
 
-        const apiUrl = "http://localhost:8080/order";
+        const apiUrl = "http://localhost:8080/order/"+localStorage.getItem("uid");
   
         const requestOptions = {
   
           method: "POST",
   
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+        },
   
           body: JSON.stringify(data),
       };
@@ -240,11 +250,40 @@ function Order_UI() {
       
     }
 
+    const updateOrder = () => {
+        let data = {
+            ID: editOrder?.ID,
+            Verification_Status_ID: 1,
+            Slip: imageString,   
+        };
+        const apiUrl = "http://localhost:8080/order";  
+        const requestOptions = {     
+            method: "PATCH",      
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },     
+            body: JSON.stringify(data),
+        };
+      
+        fetch(apiUrl, requestOptions)
+        .then((response) => response.json())      
+        .then(async (res) => {      
+            if (res.data) {
+                setSuccess(true);
+                window.location.reload();     
+            } else {
+                setError(true);     
+            }
+        });        
+    }
+
     useEffect(() => {
         getOrder();
         getUserOrder(); 
-        getOption();
+        getVerStatus();
         getUserFriend();
+        getUserBasket();
         console.log(order)  
     }, []);
 
@@ -300,7 +339,7 @@ function Order_UI() {
                             {...props}
                             value={`${option.ID}`}
                             key={`${option.ID}`}
-                            >{`${option.Friend_ID}`}</li>
+                            >{`${option.Nickname}`}</li>
                         );
                         }}
                         />
@@ -313,6 +352,27 @@ function Order_UI() {
 
     return (
         <Box>
+            <Snackbar                                                                                 //ป้ายบันทึกสำเร็จ
+                open={success}
+                autoHideDuration={6000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Alert onClose={handleClose} severity="success">              
+                    สั่งซื้อสำเร็จ
+                </Alert>
+            </Snackbar>
+
+            <Snackbar                                                                                 //ป้ายบันทึกไม่สำเร็จ
+                open={error} 
+                autoHideDuration={6000} 
+                onClose={handleClose} 
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Alert onClose={handleClose} severity="error">
+                    สั่งซื้อไม่สำเร็จ
+                </Alert>
+            </Snackbar>
 
             <Grid container justifyContent="center">
                 <h1>My Order</h1>
@@ -333,16 +393,21 @@ function Order_UI() {
                     <TableHead>
                         <TableRow>
                             <TableCell align="center"><h4>Order ID</h4></TableCell>
-                            <TableCell align="center"><h4>Basket ID</h4></TableCell>
-                            <TableCell align="center"><h4>Option</h4></TableCell>
+                            <TableCell align="center"><h4>Status</h4></TableCell>
+                            <TableCell align="center"><h4>Slip</h4></TableCell>
                         </TableRow>
                     </TableHead>
                         <TableBody>
                             {userOrder.map((item) => (
                                 <TableRow key={item.ID}>
                                     <TableCell align="center">{item.ID}</TableCell> 
-                                    <TableCell align="center">{item.Basket_ID}</TableCell> 
-                                    <TableCell component="th" scope="row">{item.Option.Option_name}</TableCell>                         
+                                    <TableCell align="center">{item.Verification_Status.Status_type}</TableCell>      
+                                    <TableCell align="center"><img src={`${item.Slip}`} width="250" height="250"/></TableCell>                    
+                                        <Stack direction="column" spacing={3}>
+                                            <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
+                                                Edit
+                                            </Button>
+                                        </Stack>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -354,103 +419,37 @@ function Order_UI() {
                 <DialogContent>
                     <DialogContentText>Make a new order</DialogContentText>
                     
-                    <Snackbar                                                                                 //ป้ายบันทึกสำเร็จ
-                        open={success}
-                        autoHideDuration={6000}
-                        onClose={handleClose}
-                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    >
-                        <Alert onClose={handleClose} severity="success">              
-                            สั่งซื้อสำเร็จ
-                        </Alert>
-                    </Snackbar>
-
-                    <Snackbar                                                                                 //ป้ายบันทึกไม่สำเร็จ
-                        open={error} 
-                        autoHideDuration={6000} 
-                        onClose={handleClose} 
-                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
-                    >
-                        <Alert onClose={handleClose} severity="error">
-                            สั่งซื้อไม่สำเร็จ
-                        </Alert>
-                    </Snackbar>
-
-                    {/* Basket ID */}
+                    <TableContainer component={Paper}>
+                <Table className={classes.table} aria-label="Basket">
+                    <TableHead>
+                        <TableRow>
+                            <TableCell align="center"><h4>Game</h4></TableCell>
+                            <TableCell align="center"><h4>Price</h4></TableCell>
+                            <TableCell align="center"><h4>Note</h4></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {basket.map((item) => (
+                            <TableRow key={item.ID}>
+                                <TableCell align="center" component="th" scope="row">{item.Game.Game_Name}</TableCell>
+                                <TableCell align="center">{item.Game.Game_Price}</TableCell>     
+                                <TableCell align="center">{item.Note}</TableCell>                     
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+                    {/* Verification Status */}
                     <Grid container justifyContent={"center"} marginTop={2} sx={{ paddingY: 2,}}>
                         <Grid item xs={1}>
-                            <h4>Basket ID:</h4>
+                            <h4>Status:</h4>
                         </Grid>
                         <Grid margin={1} item xs={4}>
-                            <Autocomplete
-                                id="basket-autocomplete"
-                                options={basket}
-                                fullWidth
-                                size="small"
-                                onChange={(event: any, value) => {
-                                console.log(value?.ID); 
-                                    setOrder({ ...order, Basket_ID: value?.ID });
-                                }}
-                                getOptionLabel={(option: any) =>
-                                `${option.Basket_ID}`
-                                }
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                        {...params}
-                                        variant="outlined"
-                                        placeholder="Search..."
-                                    />
-                                    );
-                                }}
-                                renderOption={(props: any, option: any) => {
-                                    return (
-                                        <li
-                                        {...props}
-                                        value={`${option.ID}`}
-                                        key={`${option.ID}`}
-                                        >{`${option.Basket_ID}`}</li>
-                                    );
-                                }}
-                            />
-                        </Grid>
-                    </Grid>
-
-                    {/* Option ID */}
-                    <Grid container justifyContent={"center"} marginTop={2} sx={{ paddingY: 2,}}>
-                        <Grid item xs={1}>
-                            <h4>Option ID:</h4>
-                        </Grid>
-                        <Grid margin={1} item xs={4}>
-                            <Autocomplete
-                                id="option-autocomplete"
-                                options={option}
-                                fullWidth
-                                size="small"
-                                onChange={(event: any, value) => {
-                                    setOrder({ ...order, Option_ID: value?.ID });
-                                }}
-                                getOptionLabel={(option: any) =>
-                                `${option.Option_ID}`
-                                }
-                                renderInput={(params) => {
-                                    return (
-                                        <TextField
-                                            {...params}
-                                            variant="outlined"
-                                            placeholder="Search..."
-                                        />
-                                    );
-                                }}
-                                renderOption={(props: any, option: any) => {
-                                    return (
-                                        <li
-                                        {...props}
-                                        value={`${option.ID}`}
-                                        key={`${option.ID}`}
-                                        >{`${option.Option_name}`}</li>
-                                    );
-                                }}
+                            <TextField
+                                disabled
+                                id="ver_status-id"
+                                label="รอตรวจสอบ"
+                                variant="outlined"                                
                             />
                         </Grid>
                     </Grid>
@@ -494,6 +493,50 @@ function Order_UI() {
                 <DialogActions>
                     <Button onClick={handleCloseForNew} color="secondary">Cancel</Button>
                     <Button variant="contained" color="primary" onClick={Neworder} autoFocus>Buy</Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
+                <DialogTitle>Edit Slip</DialogTitle>
+                <DialogContent>
+                    {/* <DialogContentText>
+                        {editOrder?.Slip}
+                    </DialogContentText> */}
+                    <Grid container justifyContent={"center"} sx={{ paddingY: 2,}}>
+                        <Grid item xs={1}>
+                            <h4>Slip:</h4>
+                        </Grid>
+                        <Grid margin={1} item xs={6} md={4}>
+                            <img src={`${imageString}`} width="300" height="400"/>
+                            <Grid>
+                                <input type="file" onChange={handleImageChange} />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    {/* Date */}
+                    <Grid container justifyContent={"center"} sx={{ paddingY: 2,}}>
+                        <Grid item xs={1}>
+                            <h4>Date:</h4>
+                        </Grid>
+                        <Grid margin={1} item xs={6} md={4}>
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <DateTimePicker   
+                                    label="disabled"
+                                    disabled
+                                    value={date}
+                                    onChange={(newValue) => {
+                                        setDate(newValue);
+                                    }}
+                                    renderInput={(params) => <TextField sx={{ marginY: 2 }} {...params} />}
+                                />
+                            </LocalizationProvider>
+                        </Grid>
+                    </Grid>    
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseForEdit}>Cancel</Button>
+                    <Button onClick={updateOrder}>Save</Button>
                 </DialogActions>
             </Dialog>
         </Box>
