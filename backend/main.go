@@ -134,7 +134,7 @@ func main() {
 			protected.GET("/payment_ver/:id", payment_ver_controller.GetPaymentVer)
 			protected.POST("/payment_ver", payment_ver_controller.CreatePaymentVer)
 
-			protected.PATCH("/payment_ver", payment_ver_controller.UpdatePaymentVer)
+			protected.PATCH("/payments_ver", payment_ver_controller.UpdatePaymentVer)
 
 			// Wishlist Routes
 			protected.POST("/wishlists", wishlist_controller.CreateWishlist)

@@ -29,6 +29,7 @@ import Admin from "./components/admin/Admin_UI";
 import Admin_list from "./components/admin/Admin_list";
 import User_list from "./components/admin/User.list";
 import PaymentVer_UI from "./components/payment_verification/PaymentVer_UI";
+import PaymentVerTable_UI from "./components/payment_verification/PaymentVerTable_UI";
 
 export default function App() {
   const [token, setToken] = React.useState<String>("");
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="/admin_creates" element = {<Admin_list/>}/> {/*Admin*/}
           <Route path="/admin_createss" element = {<User_list/>}/> {/*Admin*/}
           <Route path="/payment_ver" element={<PaymentVer_UI/>} /> {/** payment verification */}
+          <Route path="/payment_ver_table" element={<PaymentVerTable_UI/>} /> {/** payment verification */}
          
           <Route path="/admin_list" element = {<Admin_list/>}/> {/*Admin*/}
         </Routes>
@@ -69,6 +71,7 @@ export default function App() {
           <Route path="/game_list" element={<Game_List/>} /> {/** list game */}
           <Route path="/individual_game/:id" element={<Individual_game_UI/>} /> {/** individual game */}
           <Route path="/my_basket" element={<Basket_List/>} /> {/** basket */}
+          <Route path="/my_order" element={<Order_UI/>} /> {/** order */}
           <Route path="/my_friend" element={<Friend_UI/>} /> {/** friend */}
           <Route path="/my_hided_friend" element={<Hided_Friend_UI/>} /> {/** hide friend */}
           <Route path="/my_order" element={<Order_UI/>} /> {/** order */}

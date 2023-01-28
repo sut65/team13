@@ -49,8 +49,8 @@ func CreatePaymentVer(c *gin.Context) {
 	}
 
 	// //update verification status จาก = 1(รอการตรวจสอบ)
-	if err := entity.DB().Exec("UPDATE orders SET verification_status_id = ? WHERE order_id = ? AND verification_status_id = 1", payment_ver.Verification_Status_ID, order.ID).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "basket not found"})
+	if err := entity.DB().Exec("UPDATE orders SET verification_status_id = ? WHERE id = ? AND verification_status_id = 1", payment_ver.Verification_Status_ID, order.ID).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "order not found"})
 		return
 	}
 
@@ -88,35 +88,46 @@ func UpdatePaymentVer(c *gin.Context) {
 	var ver_status entity.Verification_Status
 	// var order entity.Order
 
+	println("Test1")
+
 	if err := c.ShouldBindJSON(&payment_ver); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	println("Test2")
 
 	if tx := entity.DB().Where("id = ?", payment_ver.Verification_Status_ID).First(&ver_status); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "กรุณาเลือกสถานะ"})
 		return
 	}
 
-	// 	//เลือกเฉพาะ order ที่ verification status ไม่ใช่สถานะ 2 (ชำระสำเร็จ)
-	// 	if tx := entity.DB().Where("id != 2 ").Last(&ver_status); tx.RowsAffected == 0 {
-	// 		c.JSON(http.StatusBadRequest, gin.H{"error": "ชำระสำเร็จแล้ว"})
-	// 		return
-	// 	}
+	println("Test3")
 
-	// updatepaymentver := entity.Payment_Verification
-	//     Verification_Status: ver_status,
-	// 	Note:                payment_ver.Note,
-	// 	Date:                payment_ver.Date.Local(),
-	// }
-
-	// if tx := entity.DB().Where("id = ?", payment_ver.ID).Updates(&updatepaymentver); tx.RowsAffected == 0 {
-
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "payment verification not found"})
-
+	// //เลือกเฉพาะ order ที่ verification status ไม่ใช่สถานะ 2 (ชำระสำเร็จ)
+	// if tx := entity.DB().Where("id != 2 ").Last(&ver_status); tx.RowsAffected == 0 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "ชำระสำเร็จแล้ว"})
 	// 	return
-
 	// }
 
-	// c.JSON(http.StatusOK, gin.H{"data": payment_ver})
+	updatePaymentVer := entity.Payment_Verification{
+		Verification_Status_ID: payment_ver.Verification_Status_ID,
+		Note:                   payment_ver.Note,
+		Date:                   payment_ver.Date.Local(),
+	}
+
+	println("Test4")
+	println(payment_ver.ID)
+
+	if tx := entity.DB().Where("id = ?", payment_ver.ID).Updates(&updatePaymentVer); tx.RowsAffected == 0 {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": "payment verification not found"})
+
+		return
+
+	}
+
+	println("Test5")
+
+	c.JSON(http.StatusOK, gin.H{"data": payment_ver})
 }

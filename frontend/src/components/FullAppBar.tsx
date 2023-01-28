@@ -61,6 +61,11 @@ function drawerList() {
           <ViewCarouselIcon/>
           <ListItemText primary="Banner" sx={{padding: 2}}/>
         </ListItem>
+
+        <ListItem button component={RouterLink} to="/payment_ver">
+          <PriceCheckIcon/>
+          <ListItemText primary="Payment Verification" sx={{padding: 2}}/>
+        </ListItem>
       </List>
     );
   }else{ // User Drawer

@@ -13,6 +13,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import { Link as RouterLink } from "react-router-dom";
 
 import { PaymentVerificationInterface } from '../../models/payment_verification/IPaymentVerification';
 import { AdminsInterface } from '../../models/admin/IAdmin';
@@ -33,11 +34,9 @@ function PaymentVer_UI() {
     const [submitSuccess, setSubmitSuccess] = React.useState(false);
     const [submitError, setSubmitError] = React.useState(false);
     const [openForNew, setOpenForNew] = React.useState(false);
-    const [openForEdit, setOpenForEdit] = React.useState(false);
 
     const [payment_ver, setPaymentVer] = React.useState<Partial<PaymentVerificationInterface>>({});
     const [paymentver, setPaymentVer_ID] = React.useState<PaymentVerificationInterface[]>([]);
-    const [editPaymentVer, setEditPaymentVer] = React.useState<PaymentVerificationInterface[]>([]);
     const [order, setOrder] = React.useState<OrderInterface[]>([]);
     const [ver_status, setVerStatus] = React.useState<VerificationStatusInterface[]>([]);
     const [admin, setAdmin] = React.useState<AdminsInterface[]>([]);
@@ -60,18 +59,11 @@ function PaymentVer_UI() {
         setOpenForNew(true);
         setPaymentVer({ ...payment_ver, Order_ID: item })
     }
-    const handleClickOpenForEdit = (item: number) => {
-        setOpenForEdit(true);
-        setPaymentVer({ ...payment_ver, Order_ID: item })
-    }
     const handleCloseForNew = () => {
         setOpenForNew(false);
         
     }
-    const handleCloseForEdit = () => {
-        setOpenForEdit(false);
-        
-    }
+
 
     const getOrder = async () => {
         const apiUrl = "http://localhost:8080/order";
@@ -169,37 +161,6 @@ function PaymentVer_UI() {
             });
     }
 
-    const updatePaymentVer = () => {
-        let updateData = {
-            Admin_ID: Number(localStorage.getItem('aid')),
-            Order_ID: payment_ver.Order_ID,
-            Verification_Status_ID: payment_ver.Verification_Status_ID,
-            Note: note,
-            Date: date,
-        };
-        const apiUrl = "http://localhost:8080/payment_ver";
-        const requestOptions = {
-            method: "PATCH",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(updateData),
-        };
-
-        fetch(apiUrl, requestOptions)
-        .then((response) => response.json())
-        .then((res) => {
-            if (res.data) {
-                setSubmitSuccess(true);
-                console.log(res.data);
-            } else {
-                setSubmitError(true);
-            }
-        });
-
-    }
-
     React.useEffect(() => {
         const fetchData = async () => {
             await getOrder();
@@ -231,6 +192,16 @@ function PaymentVer_UI() {
                 </Alert>
             </Snackbar>
 
+            <Grid container sx={{ padding: 2}} direction='row-reverse'>
+                <Grid container item xs={4} direction='row-reverse'>
+                    <Stack direction="row" spacing={2}>
+                        <Button component={RouterLink} to="/payment_ver_table" variant="contained" color="inherit">
+                            Edit Verification
+                        </Button>
+                    </Stack>
+                </Grid>
+            </Grid>
+
             <Container maxWidth="md">
                 <Paper>
                     <TableContainer component={Paper}>
@@ -238,7 +209,7 @@ function PaymentVer_UI() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center"><h4>Order ID</h4></TableCell>
-                                    <TableCell align="center"><h4>Status</h4></TableCell>
+                                    {/* <TableCell align="center"><h4>Status</h4></TableCell> */}
                                     <TableCell align="center"><h4>Slip</h4></TableCell>
                                 </TableRow>
                             </TableHead>
@@ -246,14 +217,11 @@ function PaymentVer_UI() {
                                     {order.map((item) => (
                                         <TableRow key={item.ID}>
                                             <TableCell align="center">{item.ID}</TableCell> 
-                                            <TableCell align="center">{item.Verification_Status.Status_type}</TableCell>      
+                                            {/* <TableCell align="center">{item.Verification_Status.Status_type}</TableCell>       */}
                                             <TableCell align="center"><img src={`${item.Slip}`} width="250" height="250"/></TableCell>                 
                                                 <Stack direction="column" spacing={3}>
-                                                <Button variant="outlined" color="primary" onClick={() => handleClickOpenForNew(item.ID)}>
+                                                <Button variant="contained" color="primary" onClick={() => handleClickOpenForNew(item.ID)}>
                                                         Verify
-                                                    </Button>
-                                                    <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item.ID)}>
-                                                        Edit
                                                     </Button>
                                                 </Stack> 
                                         </TableRow>
@@ -261,91 +229,9 @@ function PaymentVer_UI() {
                                 </TableBody>
                         </Table>
                     </TableContainer>
-                </Paper>
-            </Container>
 
-            <Dialog fullWidth maxWidth="xl" open={openForNew} onClose={handleCloseForNew}>
-                <DialogTitle id="alert-dialog-title">{"payment_verification"}</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>Payment Verification</DialogContentText>
-                    <Box display={"flex"} justifyContent={"center"} sx={{marginTop: 6, paddingX: 2, paddingY: 2,}}><h2>Payment Verification</h2></Box>
-
-                        <Grid container spacing={2}>
-                            <Grid container justifyContent={"center"} sx={{paddingY: 2,}}>
-                                <Grid item xs={2}><p>Status:</p></Grid>
-                                <Grid item xs={6}>
-                                    <Autocomplete
-                                        id="verstatus-autocomplete"
-                                        options={ver_status}
-                                        fullWidth
-                                        size="medium"
-                                        onChange={(event: any, value) => {
-                                            setPaymentVer({ ...payment_ver, Verification_Status_ID: value?.ID }); // บันทึกค่าลง interface
-                                        }}
-                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                                            `${option.ID} - ${option.Status_type}`
-                                        } 
-                                        renderInput={(params) => <TextField {...params} label="Status" />}
-                                        renderOption={(props: any, option: any) => {
-                                        return (
-                                            <li
-                                            {...props}
-                                            value={`${option.ID}`}
-                                            key={`${option.ID}`}
-                                            >{`${option.ID} - ${option.Status_type}`}</li>
-                                        );
-                                        }}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container spacing={2}>
-                            <Grid container justifyContent={"center"} sx={{paddingY: 2,}}>
-                                <Grid item xs={2}><p>Note:</p></Grid>
-                                <Grid item xs={6}>
-                                    <TextField
-                                        id="outlined-basic"
-                                        placeholder="Insert details"
-                                        variant="outlined"
-                                        size="medium"
-                                        multiline={true}
-                                        minRows={9}
-                                        maxRows={2}
-                                        fullWidth={true}
-                                        onChange={(event) => setNote(event.target.value)}
-                                    />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                        <Grid container spacing={2}>
-                            <Grid container justifyContent={"center"} sx={{paddingY: 2,}}>
-                                <Grid item xs={2}><p>Date:</p></Grid>
-                                <Grid item xs={6}>
-                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                        <DateTimePicker   
-                                            label="disabled"
-                                            disabled
-                                            value={date}
-                                            onChange={(newValue) => {
-                                                setDate(newValue);
-                                            }}
-                                            renderInput={(params) => <TextField sx={{ marginY: 2 }} {...params} />}
-                                        />
-                                    </LocalizationProvider>
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseForNew}>Cancel</Button>
-                    <Button onClick={updatePaymentVer}>Save</Button>
-                </DialogActions>
-            </Dialog>
-
-            <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
-                <DialogTitle>Edit Payment Verification</DialogTitle>
+                    <Dialog fullWidth maxWidth="xl" open={openForNew} onClose={handleCloseForNew} >
+                <DialogTitle>Payment Verification</DialogTitle>
                 <DialogContent>
 
                         <Grid container spacing={2}>
@@ -418,14 +304,12 @@ function PaymentVer_UI() {
                     </Grid>    
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseForEdit}>Cancel</Button>
-                    <Button onClick={updatePaymentVer}>Save</Button>
+                    <Button color="secondary" onClick={handleCloseForNew}>Cancel</Button>
+                    <Button color="primary" onClick={createPaymentVer}>Save</Button>
                 </DialogActions>
             </Dialog>
-
-            <Box>
-                <PaymentVerTable_UI/>
-            </Box>
+                </Paper>
+            </Container>
 
         </Container>
     )     
