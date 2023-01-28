@@ -82,6 +82,19 @@ func GetGame(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": game})
 }
 
+// /Individual_Game/:id
+func GetIndividualGame(c *gin.Context) {
+	var game []entity.Game
+	id := c.Param("id")
+
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games WHERE id = ?", id).Find(&game).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": game})
+}
+
 // GET /game//
 func ListGames(c *gin.Context) {
 	var game []entity.Game
@@ -119,6 +132,12 @@ func DeleteGame(c *gin.Context) {
 		// อนุญาตให้หาไม่เจอได้เพราะตอนลบมันอาจจะยังไม่มีเจ้าของ
 		// c.JSON(http.StatusBadRequest, gin.H{"error": "storage not found"})
 		// return
+	}
+
+	if tx := entity.DB().Exec("DELETE FROM baskets WHERE game_id = ?", id); tx.RowsAffected == 0 {
+		// อนุญาตให้หาไม่เจอได้เพราะตอนลบมันอาจจะยังไม่มีเจ้าของ
+		// 	c.JSON(http.StatusBadRequest, gin.H{"error": "game not found"})
+		// 	return
 	}
 
 	// if tx := entity.DB().Exec("DELETE FROM games WHERE id = ?", id); tx.RowsAffected == 0 {
