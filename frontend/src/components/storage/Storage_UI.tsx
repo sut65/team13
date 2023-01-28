@@ -5,7 +5,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHref } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -324,7 +324,7 @@ function Storage_UI() {
                       {/* <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/" + String(item.User_Friend.Email)}>
                         Profile
                       </Button> */}
-                      <Button variant="contained" color="error">
+                      <Button variant="contained" color="error"  component={RouterLink} to={item.Game.Game_file}>
                         Dowload
                       </Button>
                       <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
