@@ -173,8 +173,8 @@ function Order_UI() {
             });
     };
 
-    const getUserBasket = async () => {                                 
-        const apiUrl = "http://localhost:8080/userbasket/"+String(localStorage.getItem("uid"));
+    const getUserBasketForOrder = async () => {                                 
+        const apiUrl = "http://localhost:8080/userbasketfororder/"+String(localStorage.getItem("uid"));
         const requestOptions = {
             method: "GET",      
             headers: {
@@ -283,7 +283,7 @@ function Order_UI() {
         getUserOrder(); 
         getVerStatus();
         getUserFriend();
-        getUserBasket();
+        getUserBasketForOrder();
         console.log(order)  
     }, []);
 

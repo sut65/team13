@@ -319,7 +319,7 @@ function Individual_game() {
                         </LocalizationProvider>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleCloseForAdd}>Cancel</Button>
+                        <Button color="inherit" onClick={handleCloseForAdd}>Cancel</Button>
                         <Button color="success" onClick={AddToBasket}>Add</Button>
                     </DialogActions>
                 </Dialog>
