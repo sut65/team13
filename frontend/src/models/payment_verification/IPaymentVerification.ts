@@ -9,8 +9,8 @@ export interface PaymentVerificationInterface {
     Admin: AdminsInterface,
     Order_ID: number,
     Order: OrderInterface,
-    VS_ID: number,
-    VerificationStatus: VerificationStatusInterface,
+    Verification_Status_ID: number,
+    Verification_Status: VerificationStatusInterface,
     Date: Date,
     Note: string,
 }

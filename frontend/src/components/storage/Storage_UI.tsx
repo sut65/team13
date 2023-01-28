@@ -5,7 +5,7 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useHref } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,6 +17,7 @@ import { Autocomplete, DialogActions, DialogContent, DialogContentText, DialogTi
 import { Dialog, Paper, TableContainer } from '@mui/material';
 import Games from "@mui/icons-material/Games";
 import Alert from "@mui/material/Alert";
+import Link from '@mui/material/Link'; 
 
 import { GamesInterface } from "../../models/game/IGame";
 import { StoragesInterface } from '../../models/storage/IStorage';
@@ -134,7 +135,7 @@ function Storage_UI() {
     let res = await GetCollection();
     if (res) {
       setCollections(res);
-      
+
     }
   };
   const getStorage = async () => {
@@ -324,12 +325,19 @@ function Storage_UI() {
                       {/* <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/" + String(item.User_Friend.Email)}>
                         Profile
                       </Button> */}
+                      
+                        <Link href={item.Game.Game_file} underline="none" sx={{width : "100%"}}>
+                        
+                        <Button variant="contained" color="primary" fullWidth>Dowload</Button>
+                        </Link>
+                      
                       <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
                         Add to Collection
                       </Button>
                       <Button variant="contained" color="error" onClick={() => handleClickOpenForDelete(item)}>
                         Delete
                       </Button>
+
                     </Stack>
                   </TableCell>
                   <Dialog maxWidth="lg" open={openForEdit} onClose={handleCloseForEdit} >

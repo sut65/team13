@@ -114,17 +114,17 @@ func main() {
 			protected.DELETE("/admin/:id", admin_controller.DeleteAdmin)
 			protected.GET("/Department", admin_controller.ListDepartment)
 			protected.GET("/Province", admin_controller.ListProvince)
-
-			protected.GET("/Province", admin_controller.ListGenders)
 			//Order Routes
 			protected.GET("/options", order_controller.ListOptions)
 
 			protected.GET("/order", order_controller.ListOrder)
 			protected.GET("/order/:id", order_controller.GetOrder)
-			protected.POST("/order", order_controller.CreateOrder)
+			protected.POST("/order/:id", order_controller.CreateOrder)
 
-			protected.GET("/userorder/:id", order_controller.ListUserOrder)
+			protected.GET("/userorder/:uid", order_controller.ListUserOrder)
 			protected.GET("/userfriend/", order_controller.ListUserFriend)
+
+			protected.PATCH("/order", order_controller.UpdateOrder)
 			//Payment_Ver Routes
 			protected.GET("/Verification_Status", payment_ver_controller.ListVerification_Status)
 
