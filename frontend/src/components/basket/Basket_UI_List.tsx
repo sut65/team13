@@ -33,7 +33,7 @@ function Basket_List() {
     const [openForEdit, setOpenForEdit] = React.useState(false);
     const [openForDelete, setOpenForDelete] = React.useState(false);
 
-    const sum = basket.reduce((acc, item) => acc + item.Game.Game_Price, 0);
+    const sum = basket.filter(item => item.Payment_Status.ID == 1).reduce((acc, item) => acc + item.Game.Game_Price, 0);
 
     const handleClose = (                                                                        
         event?: React.SyntheticEvent | Event,
@@ -66,6 +66,16 @@ function Basket_List() {
 
     function timeout(delay: number) {
         return new Promise( res => setTimeout(res, delay) );
+    }
+
+    function DeleteButton(item: BasketInterface){
+        if(item.Payment_Status_ID == 1){
+            return(
+                <Button variant="contained" color="secondary" onClick={() => handleClickOpenForDelete(item)}>
+                    Delete
+                </Button> 
+            )
+        }
     }
 
     const getUserBasket = async () => {                                 
@@ -185,6 +195,8 @@ function Basket_List() {
                             <TableCell><h4>Game</h4></TableCell>
                             <TableCell align="center"><h4>Price</h4></TableCell>
                             <TableCell align="center"><h4>Note</h4></TableCell>
+                            <TableCell align="center"><h4>Status</h4></TableCell>
+                            <TableCell align="center"><h4>Order</h4></TableCell>
                             <TableCell align="center"><h4>Action</h4></TableCell>
                         </TableRow>
                     </TableHead>
@@ -195,14 +207,14 @@ function Basket_List() {
                                 <TableCell component="th" scope="row">{item.Game.Game_Name}</TableCell>
                                 <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
                                 <TableCell align="center">{item.Note}</TableCell>
+                                <TableCell align="center">{item.Payment_Status.Status}</TableCell>
+                                <TableCell align="center">{item.Order_ID}</TableCell>
                                 <TableCell align="center">
                                     <Stack direction="column" spacing={2}>
                                         <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
                                             Edit
-                                        </Button>
-                                        <Button variant="contained" color="secondary" onClick={() => handleClickOpenForDelete(item)}>
-                                            Delete
-                                        </Button>                                        
+                                        </Button>   
+                                        {DeleteButton(item)}                           
                                     </Stack>
                                 </TableCell>
                                     <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
@@ -250,7 +262,7 @@ function Basket_List() {
                 <Table className={classes.table} aria-label="Total">
                     <TableBody>
                         <TableRow>
-                            <TableCell align="center"><h4>Total</h4></TableCell>
+                            <TableCell align="center"><h4>Total unpaid</h4></TableCell>
                             <TableCell align="center">{sum}</TableCell>
                         </TableRow>
                     </TableBody>
