@@ -32,7 +32,7 @@ function Wishlist_UI() {
     const classes = useStyles();
     const [wishlists, setWishlists] = useState<WishlistsInterface[]>([]);
     const [wish_levels, setWish_Levels] = useState<Wish_levelInterface[]>([]);
-    
+
     const [toEditWishlist, setToEditWishlist] = useState<WishlistsInterface>();
     const [deleteWishlist, setDeleteWishlist] = useState<WishlistsInterface>();
     const [success, setSuccess] = React.useState(false);
@@ -143,7 +143,7 @@ function Wishlist_UI() {
         let res = await GetWishlist();
         if (res) {
             setWishlists(res);
-            
+
             console.log(res)
         }
     };
@@ -239,7 +239,7 @@ function Wishlist_UI() {
                         color="primary"
                         gutterBottom
                     >
-                       Wishlist
+                        Wishlist
                     </Typography>
                 </Box>
 
@@ -278,7 +278,7 @@ function Wishlist_UI() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            
+
                             {wishlists.filter(item => item.Game.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
                                 <TableRow key={item.ID}>
                                     <TableCell align="center"><img src={`${item.Game.Game_Picture}`} width="180" height="140" /> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
@@ -356,7 +356,7 @@ function Wishlist_UI() {
                                                         defaultValue={toEditWishlist?.Note}
                                                         onChange={(event) => setNoteEdit(event.target.value)}
                                                     />
-                                                    </Grid>
+                                                </Grid>
                                             </Grid>
 
 

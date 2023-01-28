@@ -73,6 +73,7 @@ export default function App() {
           <Route path="/my_hided_friend" element={<Hided_Friend_UI/>} /> {/** hide friend */}
           <Route path="/collection" element={<Collection_UI/>} /> {/** collection*/}
           <Route path="/storage" element={<Storage_UI/>} /> {/** storage*/}
+          <Route path="/wishlist" element={<Wishlist_UI/>} /> {/** Wishlist*/}
 
         </Routes>
       );
