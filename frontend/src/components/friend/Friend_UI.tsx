@@ -48,6 +48,8 @@ function Friend_UI() {
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
+    const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+
     const [openForAdd, setOpenForAdd] = React.useState(false);
     const [openForEdit, setOpenForEdit] = React.useState(false);
     const [openForDelete, setOpenForDelete] = React.useState(false);
@@ -198,6 +200,7 @@ function Friend_UI() {
             window.location.reload();     
         } else {
             setError(true);     
+            setErrorMsg(" - " + res.error);
         }
     });        
     }
@@ -227,7 +230,8 @@ function Friend_UI() {
                 await timeout(1000); //for 1 sec delay
                 window.location.reload();     
             } else {
-                setError(true);     
+                setError(true);  
+                setErrorMsg(" - "+res.error);    
             }
         });        
     }
@@ -256,6 +260,7 @@ function Friend_UI() {
                 window.location.reload();     
             } else {
                 setError(true);     
+                setErrorMsg(" - "+res.error); 
             }
         });        
     }
@@ -283,6 +288,7 @@ function Friend_UI() {
                 window.location.reload();     
             } else {
                 setError(true);     
+                setErrorMsg(" - "+res.error); 
             }
         });
     }
@@ -315,7 +321,7 @@ function Friend_UI() {
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
                 <Alert onClose={handleClose} severity="error">
-                    บันทึกข้อมูลไม่สำเร็จ
+                    บันทึกข้อมูลไม่สำเร็จ {errorMsg}
                 </Alert>
             </Snackbar>
 

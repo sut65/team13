@@ -145,7 +145,7 @@ type Basket struct {
 	Game              Game `gorm:"references:id"`
 	Payment_Status_ID *uint
 	Payment_Status    Payment_Status `gorm:"references:id"`
-	Note              string
+	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต"`
 	Date              time.Time
 	Order_ID          *uint
 	Order             Order `gorm:"references:id"`

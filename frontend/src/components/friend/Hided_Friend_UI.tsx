@@ -42,6 +42,8 @@ function Hided_Friend_UI() {
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
+    const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+
     const [openForEdit, setOpenForEdit] = React.useState(false);
     const [openForDelete, setOpenForDelete] = React.useState(false);
     const [searchQuery, setSearchQuery] = React.useState("");
@@ -160,7 +162,8 @@ function Hided_Friend_UI() {
                 await timeout(1000); //for 1 sec delay
                 window.location.reload();     
             } else {
-                setError(true);     
+                setError(true);  
+                setErrorMsg(" - " + res.error);   
             }
         });        
     }
@@ -190,6 +193,7 @@ function Hided_Friend_UI() {
                 window.location.reload();     
             } else {
                 setError(true);     
+                setErrorMsg(" - " + res.error);
             }
         });        
     }
@@ -217,10 +221,10 @@ function Hided_Friend_UI() {
                 window.location.reload();     
             } else {
                 setError(true);     
+                setErrorMsg(" - " + res.error);
             }
         });
     }
-
 
     useEffect(() => {
         getUserFriend(); 
