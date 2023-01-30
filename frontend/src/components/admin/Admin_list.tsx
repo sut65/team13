@@ -100,6 +100,7 @@ function Admin_list() {
             Email: adminEdit?.Email,
             Name: adminEdit?.Name,
             Password: adminEdit?.Password,
+            Address:  adminEdit?.Address,
             Gender_ID: adminEdit?.Gender_ID,
             Department_ID: adminEdit?.Department_ID,
             Province_ID: adminEdit?.Province_ID,
@@ -121,6 +122,7 @@ function Admin_list() {
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
+                    window.location.reload()
 
                     //setSuccess(true);
                 } else {
@@ -276,9 +278,9 @@ function Admin_list() {
                                 <TableCell align="center">{item.Gender.Gender}</TableCell>
                                 <TableCell align="center">
                                     <Stack direction="column" spacing={2}>
-                                        <Button variant="outlined" color="primary" component={RouterLink} to={"/admin_profile/" + String(item.Email)}>
+                                        {/* <Button variant="outlined" color="primary" component={RouterLink} to={"/admin_profile/" + String(item.Email)}>
                                             Profile
-                                        </Button>
+                                        </Button> */}
                                         <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)} >
                                             Edit
                                         </Button>
@@ -438,9 +440,9 @@ function Admin_list() {
                                                         placeholder="------"
                                                         multiline={true}
                                                         rows={16}
-                                                    // defaultValue={adminEdit?}
+                                                     defaultValue={adminEdit.Address}
                                                     // value={game.Game_description || ""}
-                                                    // onChange={handleInputChange}
+                                                    onChange={handleInputChange}
                                                     />
                                                 </FormControl>
 

@@ -73,6 +73,7 @@ function Admin() {
       Name: admin.Name,
       Email: admin.Email,
       Password: admin.Password,
+      Address:  admin.Address,
       Department_ID: admin.Department_ID,
       Province_ID: admin.Province_ID,
       Gender_ID: admin.Gender_ID,
@@ -81,6 +82,7 @@ function Admin() {
     };
     let res = await CreateAdmin(data);
     if (res) {
+      window.location.reload();
       setSuccess(true);
     } else {
       setError(true);
@@ -233,7 +235,7 @@ function Admin() {
                 color="inherit"
               //startIcon={< CloudUploadIcon />}
               >
-                Upload Game
+                Create Admin
               </Button>
 
             </Grid>
@@ -253,7 +255,7 @@ function Admin() {
                   rows={16}
 
                 // value={game.Game_description || ""}
-                // onChange={handleInputChange}
+                onChange={handleInputChange}
                 />
               </FormControl>
             </Grid>

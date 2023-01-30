@@ -187,6 +187,7 @@ type Admin struct {
 	Name            string
 	Email           string `gorm:"uniqueIndex"`
 	Password        string
+	Address         string
 	Gender_ID       *uint
 	Gender          Gender `gorm:"references:id"`
 	Department_ID   *uint

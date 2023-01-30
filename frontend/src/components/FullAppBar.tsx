@@ -62,9 +62,9 @@ function drawerList() {
           <ListItemText primary="Banner" sx={{padding: 2}}/>
         </ListItem>
 
-        <ListItem button component={RouterLink} to="/payment_ver">
+        <ListItem button component={RouterLink} to="/admin_list">
           <PriceCheckIcon/>
-          <ListItemText primary="Payment Verification" sx={{padding: 2}}/>
+          <ListItemText primary="Admin Modify" sx={{padding: 2}}/>
         </ListItem>
       </List>
     );
@@ -108,6 +108,11 @@ function drawerList() {
         <ListItem button component={RouterLink} to="/wishlist">
           <BookmarkIcon/>
           <ListItemText primary="Wishlist" sx={{padding: 2}}/>
+        </ListItem>
+
+        <ListItem button component={RouterLink} to="/user_store_setting">
+          <SettingsIcon/>
+          <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
         </ListItem>
 
         <ListItem button component={RouterLink} to="/user_store_setting">

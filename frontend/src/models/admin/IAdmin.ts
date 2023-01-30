@@ -6,6 +6,7 @@ export interface AdminsInterface {
     Email:      string,
     Name :       string,
 	Password:   string,
+    Address:    string,
     Gender_ID: number,
 	Gender: GendersInterface,
     Department_ID: number,
