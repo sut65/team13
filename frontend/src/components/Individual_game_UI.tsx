@@ -34,6 +34,7 @@ function Individual_game() {
 
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
+    const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
     const [openForAdd, setOpenForAdd] = React.useState(false);
 
     const [errorwishlist, setErrorWishlist] = React.useState(false);
@@ -95,6 +96,7 @@ function Individual_game() {
         setSuccess(false);
         setError(false);
         setErrorWishlist(false);
+        setErrorMsg("");
     };
 
     const handleClickOpenForAdd = () => {
@@ -140,6 +142,7 @@ function Individual_game() {
                     setOpenForAdd(false);
                 } else {
                     setError(true);
+                    setErrorMsg(" - " + res.error);
                 }
             });
     };
@@ -292,7 +295,7 @@ function Individual_game() {
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 >
                     <Alert onClose={handleClose} severity="error">
-                        บันทึกข้อมูลไม่สำเร็จ หรือคุณมีเกมอยู่ในตะกร้าอยู่แล้ว
+                        บันทึกข้อมูลไม่สำเร็จ {errorMsg}
                     </Alert>
                 </Snackbar>
                 <Dialog fullWidth maxWidth="xl" open={openForAdd} onClose={handleCloseForAdd} >

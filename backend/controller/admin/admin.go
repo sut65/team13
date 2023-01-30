@@ -50,6 +50,7 @@ func CreateAdmin(c *gin.Context) {
 	newAdmin := entity.Admin{
 		Name:            admin.Name,
 		Email:           admin.Email,
+		Address:         admin.Address,
 		Profile_Picture: admin.Profile_Picture,
 		Password:        string(hashPassword),
 		Gender:          gender,
@@ -173,6 +174,7 @@ func UpdateAdmin(c *gin.Context) {
 	updateAdmin := entity.Admin{
 		Name:            admin.Name,
 		Password:        admin.Password,
+		Address:         admin.Address,
 		Profile_Picture: admin.Profile_Picture,
 		Gender:          gender,
 		Department:      department,
