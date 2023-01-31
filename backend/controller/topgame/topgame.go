@@ -57,7 +57,7 @@ func CreateTopgame(c *gin.Context) {
 	c.JSON(http.StatusCreated, gin.H{"data": bk})
 }
 
-// GET /review/:id
+// GET /topgame/:id
 
 func GetTopgame(c *gin.Context) {
 
