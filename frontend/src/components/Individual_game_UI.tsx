@@ -304,17 +304,22 @@ function Individual_game() {
                         <DialogContentText>
                             {games[0].Game_Name}
                         </DialogContentText>
-                        <TextField
-                            id="outlined-basic"
-                            placeholder="Insert details"
-                            variant="outlined"
-                            size="medium"
-                            multiline={true}
-                            minRows={9}
-                            maxRows={2}
-                            fullWidth={true}
-                            onChange={(event) => setNote(event.target.value)}
-                        />
+                        <Grid>
+                            Note
+                        </Grid>
+                        <Grid>
+                            <TextField
+                                id="outlined-basic"
+                                placeholder="Ex. Nice to have"
+                                variant="outlined"
+                                size="medium"
+                                multiline={true}
+                                minRows={9}
+                                maxRows={2}
+                                fullWidth={true}
+                                onChange={(event) => setNote(event.target.value)}
+                            />
+                        </Grid>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
                                 label="disabled"

@@ -228,18 +228,23 @@ function Basket_List() {
                                             <DialogContentText>
                                                 {editBasket?.Game.Game_description}
                                             </DialogContentText>
-                                            <TextField
-                                                id="outlined-basic"
-                                                placeholder="Insert details"
-                                                variant="outlined"
-                                                size="medium"
-                                                multiline={true}
-                                                minRows={9}
-                                                maxRows={2}
-                                                fullWidth={true}
-                                                defaultValue={editBasket?.Note}
-                                                onChange={(event) => setNote(event.target.value)}
-                                            />
+                                            <Grid>
+                                                Note
+                                            </Grid>
+                                            <Grid>
+                                                <TextField
+                                                    id="outlined-basic"
+                                                    placeholder="Ex. Nice to have"
+                                                    variant="outlined"
+                                                    size="medium"
+                                                    multiline={true}
+                                                    minRows={9}
+                                                    maxRows={2}
+                                                    fullWidth={true}
+                                                    defaultValue={editBasket?.Note}
+                                                    onChange={(event) => setNote(event.target.value)}
+                                                />
+                                            </Grid>
                                         </DialogContent>
                                         <DialogActions>
                                             <Button onClick={handleCloseForEdit}>Cancel</Button>
