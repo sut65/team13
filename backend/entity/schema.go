@@ -16,21 +16,21 @@ type Gender struct {
 type User struct {
 	// Normal User
 	gorm.Model
-	Email               string `gorm:"uniqueIndex" valid:"email~รูปแบบ email ไม่ถูกต้อง,required~กรุณากรอก email"`
-	Password            string `valid:"minstringlength(8)~ความยาวรหัสผ่านต้องไม่ต่ำกว่า 8 ตัวอักษร,required~กรุณากรอกรหัสผ่าน"`
-	Profile_Name        string `valid:"maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร,required~กรุณากรอกชื่อ"`
-	Profile_Description string `valid:"maxstringlength(200)~Profile Description ความยาวไม่เกิน 200 ตัวอักษร"`
-	Profile_Picture     string `valid:"matches((data:image(.+);base64.+))~รูปภาพไม่ถูกต้อง"` // ยังใช้ไม่ได้
+	Email               string
+	Password            string
+	Profile_Name        string
+	Profile_Description string
+	Profile_Picture     string
 	Gender_ID           *uint
 	Gender              Gender `gorm:"references:id"`
 	Favorite_Game_ID    *uint
 	Favorite_Game       *Storage `gorm:"references:id"` // ใช้ pointer เพื่อป้องกันไม่ให้เกิด error invalid cycle declaration , ตั้งชื่อหน้าหลังไม่เหมือนกันจะบัคไหมนะ?
 	// Game Store User
 	Is_Seller            bool
-	Store_Description    string `valid:"maxstringlength(200)~Store Description ความยาวไม่เกิน 200 ตัวอักษร"`
+	Store_Description    string
 	Out_Standing_Game_ID *uint
-	Out_Standing_Game    *Game        `gorm:"references:id"` // ใช้ pointer เพื่อป้องกันไม่ให้เกิด error invalid cycle declaration , ตั้งชื่อหน้าหลังไม่เหมือนกันจะบัคไหมนะ?
-	Store_Contact        string       `valid:"maxstringlength(100)~Store Contact ความยาวไม่เกิน 100 ตัวอักษร"`
+	Out_Standing_Game    *Game `gorm:"references:id"` // ใช้ pointer เพื่อป้องกันไม่ให้เกิด error invalid cycle declaration , ตั้งชื่อหน้าหลังไม่เหมือนกันจะบัคไหมนะ?
+	Store_Contact        string
 	Basket               []Basket     `gorm:"foreignKey:User_ID"`
 	Friend               []Friend     `gorm:"foreignKey:User_ID"`
 	User_Friend          []Friend     `gorm:"foreignKey:User_Friend_ID"`
