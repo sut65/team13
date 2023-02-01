@@ -159,8 +159,10 @@ function Hided_Friend_UI() {
         .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
-                await timeout(1000); //for 1 sec delay
-                window.location.reload();     
+                getUserFriend();
+                setOpenForEdit(false);
+                timeout(1000);
+                window.location.reload();
             } else {
                 setError(true);  
                 setErrorMsg(" - " + res.error);   
@@ -189,8 +191,9 @@ function Hided_Friend_UI() {
         .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
-                await timeout(1000); //for 1 sec delay
-                window.location.reload();     
+                getUserFriend();
+                timeout(1000);
+                window.location.reload();
             } else {
                 setError(true);     
                 setErrorMsg(" - " + res.error);
@@ -217,8 +220,10 @@ function Hided_Friend_UI() {
         .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
-                await timeout(1000); //for 1 sec delay
-                window.location.reload();     
+                getUserFriend();
+                setOpenForDelete(false);   
+                timeout(1000);
+                window.location.reload();
             } else {
                 setError(true);     
                 setErrorMsg(" - " + res.error);
