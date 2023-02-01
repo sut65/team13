@@ -232,6 +232,7 @@ function Banner_UI(){
     if(isDataLoaded) return (
         <Container maxWidth="xl">
             <Snackbar // บันทึกสำเร็จ
+                id="success"
                 open={submitSuccess}
                 autoHideDuration={3000}
                 onClose={handleClose}
@@ -242,6 +243,7 @@ function Banner_UI(){
             </Snackbar>
 
             <Snackbar // บันทึกไม่สำเร็จ
+                id="error"
                 open={submitError} 
                 autoHideDuration={3000} 
                 onClose={handleClose} 

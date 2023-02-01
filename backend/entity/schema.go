@@ -206,14 +206,14 @@ type Banner struct {
 	// Normal User
 	gorm.Model
 	Banner_Picture string
-	Description    string
+	Description    string `valid:"maxstringlength(200)~Banner Description ความยาวไม่เกิน 200 ตัวอักษร"`
 	Edit_at        time.Time
-	User_ID        *uint
-	User           User `gorm:"references:id"`
-	Admin_ID       *uint
-	Admin          Admin `gorm:"references:id"`
-	Game_ID        *uint
-	Game           Game `gorm:"references:id"`
+	User_ID        *uint `valid:"-"`
+	User           User  `gorm:"references:id" valid:"-"`
+	Admin_ID       *uint `valid:"-"`
+	Admin          Admin `gorm:"references:id" valid:"-"`
+	Game_ID        *uint `valid:"-"`
+	Game           Game  `gorm:"references:id" valid:"-"`
 }
 
 // ---ระบบจัดอันดับเกม(TopGame)---

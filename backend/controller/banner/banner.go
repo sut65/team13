@@ -1,9 +1,10 @@
 package controller
 
 import (
-	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
+	"github.com/asaskevich/govalidator"
 
 	"github.com/gin-gonic/gin"
+	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
 
 	"net/http"
 )
@@ -37,6 +38,7 @@ func CreateBanner(c *gin.Context) {
 
 	//loc, _ := time.LoadLocation("Asia/Bangkok")
 
+	// create new object for create new record
 	newBanner := entity.Banner{
 		Banner_Picture: banner.Banner_Picture,
 		Description:    banner.Description,
@@ -44,6 +46,11 @@ func CreateBanner(c *gin.Context) {
 		User:           user,
 		Admin:          admin,
 		Game:           game,
+	}
+
+	if _, err := govalidator.ValidateStruct(newBanner); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	if err := entity.DB().Create(&newBanner).Error; err != nil {
