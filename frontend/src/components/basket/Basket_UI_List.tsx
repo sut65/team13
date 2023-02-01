@@ -67,10 +67,6 @@ function Basket_List() {
         setOpenForDelete(false);
     };
 
-    function timeout(delay: number) {
-        return new Promise( res => setTimeout(res, delay) );
-    }
-
     function DeleteButton(item: BasketInterface){
         if(item.Payment_Status_ID == 1){
             return(
@@ -119,8 +115,8 @@ function Basket_List() {
         .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
-                await timeout(1000); //for 1 sec delay
-                window.location.reload();     
+                getUserBasket();
+                setOpenForEdit(false);
             } else {
                 setError(true);  
                 setErrorMsg(" - "+res.error);  
@@ -147,8 +143,8 @@ function Basket_List() {
         .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
-                await timeout(1000); //for 1 sec delay
-                window.location.reload();     
+                getUserBasket();
+                setOpenForDelete(false);
             } else {
                 setError(true); 
                 setErrorMsg(" - "+res.error);     

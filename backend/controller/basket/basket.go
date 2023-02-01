@@ -120,6 +120,11 @@ func UpdateBasket(c *gin.Context) {
 		Note: basket.Note,
 	}
 
+	if _, err := govalidator.ValidateStruct(updateBasket); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	if err := entity.DB().Where("id = ?", basket.ID).Updates(&updateBasket).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
