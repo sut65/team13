@@ -326,7 +326,7 @@ function Individual_game() {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
                                 label="disabled"
-                                // disabled
+                                disabled
                                 value={date}
                                 onChange={(newValue) => {
                                     setDate(newValue);

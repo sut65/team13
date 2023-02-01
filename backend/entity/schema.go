@@ -64,19 +64,19 @@ type Rating struct {
 
 type Game struct {
 	gorm.Model
-	Game_Name              string `gorm:"uniqueIndex"`
-	Game_Price             uint
-	Game_description       string
-	Publish_Date           time.Time
-	Seller_ID              *uint
-	Seller                 User `gorm:"references:id"`
-	Game_Status_ID         *uint
-	Game_Status            Game_Status `gorm:"references:id"`
-	Type_Game_ID           *uint
-	Type_Game              Type_Game `gorm:"references:id"`
-	Rating_ID              *uint
-	Rating                 Rating `gorm:"references:id"`
-	Game_file              string
+	Game_Name              string      `gorm:"uniqueIndex" valid:"maxstringlength(30)~Name must not more than 30 character,required~Please Enter your Game Name"`
+	Game_Price             uint        `valid:"range(0|100000)~ Price incorrect,required~Please enter price,int"` //` valid: InRangeInt(value, 0)`
+	Game_description       string      `valid:"maxstringlength(200)~Description must not more than 200 character,required~Please Enter your Game Description"`
+	Publish_Date           time.Time   `valid:"required~Date can be null ,IsnotPast~Date incorrect"`
+	Seller_ID              *uint       `valid:"-"`
+	Seller                 User        `gorm:"references:id" valid:"-" `
+	Game_Status_ID         *uint       `valid:"-"`
+	Game_Status            Game_Status `gorm:"references:id" valid:"-"`
+	Type_Game_ID           *uint       `valid:"-"`
+	Type_Game              Type_Game   `gorm:"references:id" valid:"-"`
+	Rating_ID              *uint       `valid:"-"`
+	Rating                 Rating      `gorm:"references:id" valid:"-"`
+	Game_file              string      `valid:"url~Link incorrect ,required~Please Upload Game file"`
 	Game_Picture           string
 	Storage                []Storage  `gorm:"foreignKey:Game_ID"`
 	User_Out_Standing_Game []User     `gorm:"foreignKey:Out_Standing_Game_ID"`
@@ -146,7 +146,7 @@ type Basket struct {
 	Game              Game  `gorm:"references:id" valid:"-"`
 	Payment_Status_ID *uint
 	Payment_Status    Payment_Status `gorm:"references:id"`
-	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
+	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 200 ตัวอักษร"`
 	Date              time.Time      `valid:"required~ไม่ได้ใส่วันที่,IsnotPast~เวลาไม่ถูกต้อง"`
 	Order_ID          *uint          `valid:"-"`
 	Order             Order          `gorm:"references:id" valid:"-"`
@@ -272,14 +272,14 @@ type Verification_Status struct {
 
 type Payment_Verification struct {
 	gorm.Model
-	Admin_ID               *uint
-	Admin                  Admin `gorm:"references:id"`
-	Order_ID               *uint
-	Order                  Order `gorm:"references:id"`
-	Verification_Status_ID *uint
-	Verification_Status    Verification_Status `gorm:"references:id"`
+	Admin_ID               *uint               `valid:"-"`
+	Admin                  Admin               `gorm:"references:id" valid:"-"`
+	Order_ID               *uint               `valid:"-"`
+	Order                  Order               `gorm:"references:id" valid:"-"`
+	Verification_Status_ID *uint               `valid:"-"`
+	Verification_Status    Verification_Status `gorm:"references:id" valid:"-"`
 	Date                   time.Time
-	Note                   string
+	Note                   string `valid:"required~Note cannot be blank"`
 }
 
 // ----ระบบ Wishlist---

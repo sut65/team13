@@ -34,6 +34,7 @@ function PaymentVer_UI() {
     const [submitSuccess, setSubmitSuccess] = React.useState(false);
     const [submitError, setSubmitError] = React.useState(false);
     const [openForNew, setOpenForNew] = React.useState(false);
+    const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
     const [payment_ver, setPaymentVer] = React.useState<Partial<PaymentVerificationInterface>>({});
     const [paymentver, setPaymentVer_ID] = React.useState<PaymentVerificationInterface[]>([]);
@@ -53,6 +54,7 @@ function PaymentVer_UI() {
         }
         setSubmitSuccess(false);
         setSubmitError(false);
+        setErrorMsg("");
     };
 
     const handleClickOpenForNew = (item: number) => {
@@ -157,6 +159,7 @@ function PaymentVer_UI() {
                     window.location.reload();
                 } else {
                     setSubmitError(true);
+                    setErrorMsg(" - "+res.error);
                 }
             });
     }
@@ -188,7 +191,7 @@ function PaymentVer_UI() {
                 onClose={handleClose} 
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
                 <Alert onClose={handleClose} severity="error">
-                    การตรวจสอบไม่สำเร็จ
+                    การตรวจสอบไม่สำเร็จ{errorMsg}
                 </Alert>
             </Snackbar>
 
