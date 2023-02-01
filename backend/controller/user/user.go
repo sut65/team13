@@ -10,6 +10,23 @@ import (
 	"net/http"
 )
 
+// type UserValid struct {
+// 	// Normal User
+// 	gorm.Model
+// 	Email               string `gorm:"uniqueIndex" valid:"email~รูปแบบ email ไม่ถูกต้อง,required~กรุณากรอก email"`
+// 	Password            string `valid:"minstringlength(8)~ความยาวรหัสผ่านต้องไม่ต่ำกว่า 8 ตัวอักษร,required~กรุณากรอกรหัสผ่าน"`
+// 	Profile_Name        string `valid:"maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร,required~กรุณากรอกชื่อ"`
+// 	Profile_Description string `valid:"maxstringlength(200)~Profile Description ความยาวไม่เกิน 200 ตัวอักษร"`
+// 	Profile_Picture     string `valid:"matches((data:image(.+);base64.+))~รูปภาพไม่ถูกต้อง"` // ยังใช้ไม่ได้
+// 	Gender_ID           *uint
+// 	Favorite_Game_ID    *uint
+// 	// Game Store User
+// 	Is_Seller            bool
+// 	Store_Description    string `valid:"maxstringlength(200)~Store Description ความยาวไม่เกิน 200 ตัวอักษร"`
+// 	Out_Standing_Game_ID *uint
+// 	Store_Contact        string `valid:"maxstringlength(100)~Store Contact ความยาวไม่เกิน 100 ตัวอักษร"`
+// }
+
 // POST /users --> ใช้อยู่
 
 func CreateUser(c *gin.Context) {
@@ -32,6 +49,15 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
+	// newUserValid := UserValid{
+	// 	Email:               user.Email,
+	// 	Password:            user.Password,
+	// 	Profile_Name:        user.Profile_Name,
+	// 	Profile_Description: user.Profile_Description,
+	// 	Profile_Picture:     user.Profile_Picture,
+	// }
+
+	// create new object for create new record
 	newUser := entity.User{
 		Email:               user.Email,
 		Password:            user.Password,
@@ -145,6 +171,17 @@ func UpdateUser(c *gin.Context) {
 			return
 		}
 	}
+
+	// updateUserValid := UserValid{
+	// 	Email:               user.Email,
+	// 	Password:            user.Password,
+	// 	Profile_Name:        user.Profile_Name,
+	// 	Profile_Description: user.Profile_Description,
+	// 	Profile_Picture:     user.Profile_Picture,
+	// 	Is_Seller:           user.Is_Seller,
+	// 	Store_Description:   user.Store_Description,
+	// 	Store_Contact:       user.Store_Contact,
+	// }
 
 	updateUser := entity.User{
 		Email:                user.Email,

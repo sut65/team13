@@ -3,8 +3,10 @@ package controller
 import (
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 
+	"fmt"
 	"net/http"
 )
 
@@ -22,7 +24,7 @@ func CreateWishlist(c *gin.Context) {
 		return
 	}
 	if tx := entity.DB().Raw("SELECT * FROM wishlists WHERE user_id = ? AND game_id = ?", wishlist.User_ID, wishlist.Game_ID).First(&wishlist); tx.RowsAffected == 1 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "game in basket"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "เกมอยู่ใน Wishlist แล้ว"})
 		return
 	}
 
@@ -39,20 +41,27 @@ func CreateWishlist(c *gin.Context) {
 		return
 	}
 
-	bk := entity.Wishlist{
-		User:       user, // โยงความสัมพันธ์กับ Entity User
-		Game:       game,
-		Wish_Level: wish_Level,
-		Note:       wishlist.Note,
-		Date:       wishlist.Date,
+	wish := entity.Wishlist{
+		User_ID:       wishlist.User_ID,
+		Game_ID:       wishlist.Game_ID,
+		Wish_Level_ID: wishlist.Wish_Level_ID,
+		Note:          wishlist.Note,
+		Date:          wishlist.Date.Local(),
 	}
 
-	// 13: บันทึก
-	if err := entity.DB().Create(&bk).Error; err != nil {
+	fmt.Printf("%#v", wish)
+
+	if _, err := govalidator.ValidateStruct(wish); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"data": bk})
+
+	// 13: บันทึก
+	if err := entity.DB().Create(&wish).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{"data": wish})
 
 }
 

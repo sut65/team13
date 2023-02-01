@@ -40,6 +40,7 @@ function Individual_game() {
     const [errorwishlist, setErrorWishlist] = React.useState(false);
     const [openAddWishlist, setOpenAddWishlist] = React.useState(false);
     const [noteWishlist, setNoteWishlist] = React.useState<string>("");
+    const [wishMessage, setAlertWihsMessage] = React.useState("");
 
 
     const getGame = async () => {
@@ -172,8 +173,10 @@ function Individual_game() {
                 if (res.data) {
                     setSuccess(true);
                     setOpenAddWishlist(false);
+                    
                 } else {
                     setErrorWishlist(true);
+                    setAlertWihsMessage(res.error);
                 }
             });
     };
@@ -323,7 +326,7 @@ function Individual_game() {
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
                                 label="disabled"
-                                disabled
+                                // disabled
                                 value={date}
                                 onChange={(newValue) => {
                                     setDate(newValue);
@@ -348,7 +351,7 @@ function Individual_game() {
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 >
                     <Alert onClose={handleClose} severity="error">
-                        บันทึกข้อมูลไม่สำเร็จ หรือคุณมีเกมอยู่ใน Wishlist แล้ว
+                        บันทึกข้อมูลไม่สำเร็จ {wishMessage}
                     </Alert>
                 </Snackbar>
                 <Dialog fullWidth maxWidth="md" open={openAddWishlist} onClose={handleCloseForAddWishlist} >
