@@ -386,6 +386,7 @@ function User(){
     if (isDataLoaded) return(
         <Container>
             <Snackbar // บันทึกสำเร็จ
+                id="success"
                 open={submitSuccess}
                 autoHideDuration={3000}
                 onClose={handleClose}
@@ -396,6 +397,7 @@ function User(){
             </Snackbar>
 
             <Snackbar // บันทึกไม่สำเร็จ
+                id="error"
                 open={submitError} 
                 autoHideDuration={3000} 
                 onClose={handleClose} 

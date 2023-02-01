@@ -230,6 +230,7 @@ function SignIn_User() {
       .then((res) => {
           if (res.data) {
             setRegisterSuccess(true);
+            setDialogRegisterOpen(false);
             signout();
           } else {
             setRegisterError(true);
@@ -253,7 +254,9 @@ function SignIn_User() {
     <ThemeProvider theme={theme}>
       {/** Sign In */}
       <Grid container component="main" sx={{ height: "100vh" }}>
+        {/** Sign In Alert*/}
         <Snackbar
+          id="success"
           open={success}
           autoHideDuration={3000}
           onClose={handleClose}
@@ -264,6 +267,7 @@ function SignIn_User() {
           </Alert>
         </Snackbar>
         <Snackbar
+          id="error"
           open={error}
           autoHideDuration={3000}
           onClose={handleClose}
@@ -271,6 +275,30 @@ function SignIn_User() {
         >
           <Alert onClose={handleClose} severity="error">
             อีเมลหรือรหัสผ่านไม่ถูกต้อง
+          </Alert>
+        </Snackbar>
+
+        {/** Register Alert */}
+        <Snackbar
+          id="success"
+          open={registerSuccess}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="success">
+            สมัครสมาชิกสำเร็จ
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          id="error"
+          open={registerError}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="error">
+            {errorMsg}
           </Alert>
         </Snackbar>
         
@@ -380,27 +408,6 @@ function SignIn_User() {
         <DialogTitle id="alert-dialog-title">
             {"REGISTER"}
         </DialogTitle>
-
-        <Snackbar
-          open={registerSuccess}
-          autoHideDuration={3000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert onClose={handleClose} severity="success">
-            สมัครสมาชิกสำเร็จ
-          </Alert>
-        </Snackbar>
-        <Snackbar
-          open={registerError}
-          autoHideDuration={3000}
-          onClose={handleClose}
-          anchorOrigin={{ vertical: "top", horizontal: "center" }}
-        >
-          <Alert onClose={handleClose} severity="error">
-            {errorMsg}
-          </Alert>
-        </Snackbar>
 
         <DialogContent>
           <Box>
