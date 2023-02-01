@@ -146,7 +146,7 @@ type Basket struct {
 	Game              Game  `gorm:"references:id" valid:"-"`
 	Payment_Status_ID *uint
 	Payment_Status    Payment_Status `gorm:"references:id"`
-	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
+	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 200 ตัวอักษร"`
 	Date              time.Time      `valid:"required~ไม่ได้ใส่วันที่,IsnotPast~เวลาไม่ถูกต้อง"`
 	Order_ID          *uint          `valid:"-"`
 	Order             Order          `gorm:"references:id" valid:"-"`
