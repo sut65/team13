@@ -38,6 +38,7 @@ function PaymentVerTable_UI() {
     const [error, setError] = useState(false);
     const [errorForEdit, setErrorForEdit] = useState(false);
     const [openForEdit, setOpenForEdit] = React.useState(false);
+    const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
     const handleRowClick: GridEventListener<'rowClick'> = (params) => {
         setEditPaymentVer(params.row);
@@ -54,6 +55,7 @@ function PaymentVerTable_UI() {
         setSuccess(false);
         setError(false);
         setErrorForEdit(false);
+        setErrorMsg("");
       };
     
     const handleClickOpenForEdit = () => {
@@ -135,6 +137,7 @@ function PaymentVerTable_UI() {
                 console.log(res.data);
             } else {
                 setError(true);
+                setErrorMsg(" - "+res.error)
             }
         });
 
@@ -198,7 +201,7 @@ function PaymentVerTable_UI() {
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
              <Alert onClose={handleClose} severity="error">
-                 อัพเดทข้อมูลไม่สำเร็จ
+                 อัพเดทข้อมูลไม่สำเร็จ{errorMsg}
              </Alert>
             </Snackbar>
 
