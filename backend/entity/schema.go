@@ -139,16 +139,16 @@ type Payment_Status struct {
 
 type Basket struct {
 	gorm.Model
-	User_ID           *uint
-	User              User `gorm:"references:id"`
-	Game_ID           *uint
-	Game              Game `gorm:"references:id"`
+	User_ID           *uint `valid:"-"`
+	User              User  `gorm:"references:id" valid:"-"`
+	Game_ID           *uint `valid:"-"`
+	Game              Game  `gorm:"references:id" valid:"-"`
 	Payment_Status_ID *uint
 	Payment_Status    Payment_Status `gorm:"references:id"`
-	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต"`
-	Date              time.Time
-	Order_ID          *uint
-	Order             Order `gorm:"references:id"`
+	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
+	Date              time.Time      `valid:"required"`
+	Order_ID          *uint          `valid:"-"`
+	Order             Order          `gorm:"references:id" valid:"-"`
 }
 
 // ---ระบบรีวิวเกม(GameReview)---
