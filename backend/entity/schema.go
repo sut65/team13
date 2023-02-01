@@ -140,12 +140,12 @@ type Payment_Status struct {
 
 type Basket struct {
 	gorm.Model
-	User_ID           *uint `valid:"-"`
-	User              User  `gorm:"references:id" valid:"-"`
-	Game_ID           *uint `valid:"-"`
-	Game              Game  `gorm:"references:id" valid:"-"`
-	Payment_Status_ID *uint
-	Payment_Status    Payment_Status `gorm:"references:id"`
+	User_ID           *uint          `valid:"-"`
+	User              User           `gorm:"references:id" valid:"-"`
+	Game_ID           *uint          `valid:"-"`
+	Game              Game           `gorm:"references:id" valid:"-"`
+	Payment_Status_ID *uint          `valid:"-"`
+	Payment_Status    Payment_Status `gorm:"references:id" valid:"-"`
 	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 200 ตัวอักษร"`
 	Date              time.Time      `valid:"required~ไม่ได้ใส่วันที่,IsnotPast~เวลาไม่ถูกต้อง"`
 	Order_ID          *uint          `valid:"-"`
