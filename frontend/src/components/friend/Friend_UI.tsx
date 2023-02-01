@@ -72,6 +72,7 @@ function Friend_UI() {
 
     const handleCloseForAdd = () => {
         setOpenForAdd(false);
+        setFriendAdd({ ...friendAdd, User_Friend_ID: 0, Intimate_ID: 0, Nickname: "", Game_ID: 0});
     };
 
     const handleClickOpenForEdit = (item: FriendsInterface) => {
@@ -172,37 +173,38 @@ function Friend_UI() {
     };
 
     const AddFriend = () => {
-    let data = {
-        User_ID:        Number(localStorage.getItem("uid")), 
-        User_Friend_ID: friendAdd.User_Friend_ID,
-        Intimate_ID:    friendAdd.Intimate_ID||intimateForAdd,
-        Nickname:       nickname,
-        Game_ID:        friendAdd.Game_ID,
-        Is_Hide:        false,
-        Date:           date,
-    };
-    const apiUrl = "http://localhost:8080/friends";           //ส่งขอบันทึก
-    const requestOptions = {
-        method: "POST",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-    }; 
-    
-    fetch(apiUrl, requestOptions)
-    .then((response) => response.json())      
-    .then(async (res) => {      
-        if (res.data) {
-            setSuccess(true);
-            await timeout(1000); //for 1 sec delay
-            window.location.reload();     
-        } else {
-            setError(true);     
-            setErrorMsg(" - " + res.error);
-        }
-    });        
+        let data = {
+            User_ID:        Number(localStorage.getItem("uid")), 
+            User_Friend_ID: friendAdd.User_Friend_ID,
+            Intimate_ID:    friendAdd.Intimate_ID||intimateForAdd,
+            Nickname:       nickname,
+            Game_ID:        friendAdd.Game_ID,
+            Is_Hide:        false,
+            Date:           date,
+        };
+        const apiUrl = "http://localhost:8080/friends";           //ส่งขอบันทึก
+        const requestOptions = {
+            method: "POST",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+        }; 
+        
+        fetch(apiUrl, requestOptions)
+        .then((response) => response.json())      
+        .then(async (res) => {      
+            if (res.data) {
+                setSuccess(true);
+                getUserFriend();
+                setOpenForAdd(false); 
+
+            } else {
+                setError(true);     
+                setErrorMsg(" - " + res.error);
+            }
+        });        
     }
 
     const updateFriend = (id: number) => {
@@ -227,8 +229,8 @@ function Friend_UI() {
         .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
-                await timeout(1000); //for 1 sec delay
-                window.location.reload();     
+                getUserFriend();
+                setOpenForEdit(false);  
             } else {
                 setError(true);  
                 setErrorMsg(" - "+res.error);    
@@ -256,8 +258,7 @@ function Friend_UI() {
         .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
-                await timeout(1000); //for 1 sec delay
-                window.location.reload();     
+                getUserFriend();   
             } else {
                 setError(true);     
                 setErrorMsg(" - "+res.error); 
@@ -284,8 +285,8 @@ function Friend_UI() {
         .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
-                await timeout(1000); //for 1 sec delay
-                window.location.reload();     
+                getUserFriend();  
+                setOpenForDelete(false);  
             } else {
                 setError(true);     
                 setErrorMsg(" - "+res.error); 

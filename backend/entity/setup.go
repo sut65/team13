@@ -86,10 +86,14 @@ func SetupDatabase() {
 	User4 := User{
 		Email: "test1@gmail.com",
 	}
+	User5 := User{
+		Email: "test2@gmail.com",
+	}
 	db.Model(&User{}).Create(&User1)
 	db.Model(&User{}).Create(&User2)
 	db.Model(&User{}).Create(&User3)
 	db.Model(&User{}).Create(&User4)
+	db.Model(&User{}).Create(&User5)
 
 	// Game
 	Game_Status1 := Game_Status{
@@ -264,10 +268,19 @@ func SetupDatabase() {
 		Favorite_Game_ID:    &Storage3.ID,
 		Is_Seller:           false,
 	}
+	User55 := User{
+		Password:            "$2a$12$hRdKLZTUspkskzjZwBAb6eImCpHYIe48KSUGD83JrzHYx6aKfowb6",
+		Profile_Name:        "Test2",
+		Profile_Description: "rtyu",
+		Gender_ID:           &Gen2.ID,
+		Favorite_Game_ID:    &Storage3.ID,
+		Is_Seller:           false,
+	}
 	db.Model(&User{}).Where("email = ?", User1.Email).Updates(&User11)
 	db.Model(&User{}).Where("email = ?", User2.Email).Updates(&User22)
 	db.Model(&User{}).Where("email = ?", User3.Email).Updates(&User33)
 	db.Model(&User{}).Where("email = ?", User4.Email).Updates(&User44)
+	db.Model(&User{}).Where("email = ?", User5.Email).Updates(&User55)
 
 	//Payment_Status
 	Payment_Status1 := Payment_Status{
