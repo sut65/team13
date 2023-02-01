@@ -1,11 +1,24 @@
 package controller
 
 import (
+	"time"
+
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/sut65/team13/entity"
+	"gorm.io/gorm"
 
 	"net/http"
 )
+
+type PaymentVerValid struct {
+	gorm.Model
+	Admin_ID               *uint `valid:"-"`
+	Order_ID               *uint `valid:"-"`
+	Verification_Status_ID *uint `valid:"-"`
+	Date                   time.Time
+	Note                   string `valid:"maxstringlength(100)~Note ความยาวไม่เกิน 100 ตัวอักษร"`
+}
 
 // POST /payment_ver
 
@@ -42,6 +55,12 @@ func CreatePaymentVer(c *gin.Context) {
 		Note:                payment_ver.Note,
 		Admin:               admin,
 		Date:                payment_ver.Date.Local(),
+	}
+
+	//validate payment ver
+	if _, err := govalidator.ValidateStruct(paymentver); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	if err := entity.DB().Create(&paymentver).Error; err != nil {
@@ -131,6 +150,12 @@ func UpdatePaymentVer(c *gin.Context) {
 
 	println("Test4")
 	println(payment_ver.ID)
+
+	//validate updatPaymentVer
+	if _, err := govalidator.ValidateStruct(updatePaymentVer); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	if tx := entity.DB().Where("id = ?", payment_ver.ID).Updates(&updatePaymentVer); tx.RowsAffected == 0 {
 

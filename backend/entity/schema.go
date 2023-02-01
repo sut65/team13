@@ -272,14 +272,14 @@ type Verification_Status struct {
 
 type Payment_Verification struct {
 	gorm.Model
-	Admin_ID               *uint
-	Admin                  Admin `gorm:"references:id"`
-	Order_ID               *uint
-	Order                  Order `gorm:"references:id"`
-	Verification_Status_ID *uint
-	Verification_Status    Verification_Status `gorm:"references:id"`
+	Admin_ID               *uint               `valid:"-"`
+	Admin                  Admin               `gorm:"references:id" valid:"-"`
+	Order_ID               *uint               `valid:"-"`
+	Order                  Order               `gorm:"references:id" valid:"-"`
+	Verification_Status_ID *uint               `valid:"-"`
+	Verification_Status    Verification_Status `gorm:"references:id" valid:"-"`
 	Date                   time.Time
-	Note                   string
+	Note                   string `valid:"required~Note cannot be blank"`
 }
 
 // ----ระบบ Wishlist---
