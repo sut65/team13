@@ -185,7 +185,7 @@ function User(){
     const submit = () => {
         if(new_password == confirm_password){ // password ตรงกันก็จะ มีการ submit
             let UpdateData = {
-                Email: localStorage.getItem("email"), // รอทำ localStorage.getitem
+                Email: localStorage.getItem("email"),
                 Password: new_password, // ตัวแปรชื่อ new_password ก็จริงแต่อาจเป็น password เดิมก็ได้
                 Profile_Name: user.Profile_Name,
                 Profile_Description: user.Profile_Description,
@@ -194,7 +194,7 @@ function User(){
                 Favorite_Game_ID: convertType(user.Favorite_Game_ID),
                 Is_Seller: user.Is_Seller,
                 Store_Description: user.Store_Description,
-                Out_Standing_Game_ID: convertType(user.Out_Standing_Game_ID), // ยังไม่ได้ทำ ดึงข้อมูลจากตารางเกมกรองด้วยคนขาย
+                Out_Standing_Game_ID: convertType(user.Out_Standing_Game_ID),
                 Store_Contact: user.Store_Contact,
             };
     

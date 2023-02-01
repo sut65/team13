@@ -313,7 +313,7 @@ function Individual_game() {
                         <Grid>
                             <TextField
                                 id="outlined-basic"
-                                placeholder="Ex. Nice to have"
+                                placeholder="Ex. Nice to have (no more than 200 characters)"
                                 variant="outlined"
                                 size="medium"
                                 multiline={true}

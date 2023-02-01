@@ -21,7 +21,7 @@ type User struct {
 	Password            string   `valid:"minstringlength(8)~ความยาวรหัสผ่านต้องไม่ต่ำกว่า 8 ตัวอักษร,required~กรุณากรอกรหัสผ่าน"`
 	Profile_Name        string   `valid:"maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร,required~กรุณากรอกชื่อ"`
 	Profile_Description string   `valid:"maxstringlength(200)~Profile Description ความยาวไม่เกิน 200 ตัวอักษร"`
-	Profile_Picture     string   `valid:"matches((data:image(.+);base64.+))~รูปภาพไม่ถูกต้อง"` // ยังใช้ไม่ได้
+	Profile_Picture     string   `valid:"image_valid~รูปภาพไม่ถูกต้อง"`
 	Gender_ID           *uint    `valid:"-"`
 	Gender              Gender   `gorm:"references:id" valid:"-"`
 	Favorite_Game_ID    *uint    `valid:"-"`
@@ -117,18 +117,18 @@ type Intimate struct {
 
 type Friend struct {
 	gorm.Model
-	User_ID        *uint
-	User           User `gorm:"references:id"`
-	User_Friend_ID *uint
-	User_Friend    User `gorm:"references:id"`
-	Intimate_ID    *uint
-	Intimate       Intimate `gorm:"references:id"`
-	Nickname       string
-	Game_ID        *uint
-	Game           Game `gorm:"references:id"`
-	Is_Hide        *bool
-	Date           time.Time
-	Order          []Order `gorm:"foreignKey:Friend_ID"`
+	User_ID        *uint     `valid:"-"`
+	User           User      `gorm:"references:id" valid:"-"`
+	User_Friend_ID *uint     `valid:"-"`
+	User_Friend    User      `gorm:"references:id" valid:"-"`
+	Intimate_ID    *uint     `valid:"-"`
+	Intimate       Intimate  `gorm:"references:id" valid:"-"`
+	Nickname       string    `valid:"required~คุณไม่ได้ใส่ชื่อเล่น,maxstringlength(50)~ชื่อเล่นความยาวไม่เกิน 50 ตัวอักษร"`
+	Game_ID        *uint     `valid:"-"`
+	Game           Game      `gorm:"references:id" valid:"-"`
+	Is_Hide        *bool     `valid:"ToBoolean~การซ่อนผิดพลาด"`
+	Date           time.Time `valid:"required~ไม่ได้ใส่วันที่,IsnotPast~เวลาไม่ถูกต้อง"`
+	Order          []Order   `gorm:"foreignKey:Friend_ID"`
 }
 
 // ---ระบบตะกร้าสินค้า(Basket)---
@@ -146,7 +146,7 @@ type Basket struct {
 	Game              Game           `gorm:"references:id" valid:"-"`
 	Payment_Status_ID *uint          `valid:"-"`
 	Payment_Status    Payment_Status `gorm:"references:id" valid:"-"`
-	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 200 ตัวอักษร"`
+	Note              string         `valid:"required~คุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 200 ตัวอักษร"`
 	Date              time.Time      `valid:"required~ไม่ได้ใส่วันที่,IsnotPast~เวลาไม่ถูกต้อง"`
 	Order_ID          *uint          `valid:"-"`
 	Order             Order          `gorm:"references:id" valid:"-"`
@@ -327,5 +327,9 @@ func init() {
 	govalidator.CustomTypeTagMap.Set("DelayNow5Min", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
 		return t.After(time.Now().Add(5 - time.Minute))
+	})
+
+	govalidator.TagMap["image_valid"] = govalidator.Validator(func(str string) bool {
+		return govalidator.Matches(str, "^(data:image(.+);base64,.+)$")
 	})
 }

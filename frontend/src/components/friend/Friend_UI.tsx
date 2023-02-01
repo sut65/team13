@@ -531,6 +531,7 @@ function Friend_UI() {
                                 size="small"
                                 onChange={(event: any, value) => {
                                     setFriendAdd({ ...friendAdd, User_Friend_ID: value?.ID }); //Just Set ID to interface
+                                    setNickname(value?.Profile_Name || "");
                                 }}
                                 getOptionLabel={(option: any) =>
                                 `${option.Profile_Name}`
@@ -553,25 +554,6 @@ function Friend_UI() {
                                     >{`${option.Profile_Name}`}</li>
                                 ); //display value
                                 }}
-                            />
-                        </Grid>
-                    </Grid>
-
-                    <Grid marginTop={2}>
-                        <Grid>
-                            Nickname
-                        </Grid>
-                        <Grid>
-                            <TextField
-                                id="outlined-basic"
-                                placeholder="Insert nickname"
-                                variant="outlined"
-                                size="medium"
-                                multiline={true}
-                                minRows={9}
-                                maxRows={2}
-                                fullWidth={true}
-                                onChange={(event) => setNickname(event.target.value)}
                             />
                         </Grid>
                     </Grid>
@@ -647,6 +629,26 @@ function Friend_UI() {
                                     >{`${option.Game_Name}`}</li>
                                 ); //display value
                                 }}
+                            />
+                        </Grid>
+                    </Grid>
+
+                    <Grid marginTop={2}>
+                        <Grid>
+                            Nickname
+                        </Grid>
+                        <Grid>
+                            <TextField
+                                id="outlined-basic"
+                                placeholder="Insert nickname (no more than 50 characters)"
+                                variant="outlined"
+                                size="medium"
+                                multiline={true}
+                                minRows={9}
+                                maxRows={2}
+                                fullWidth={true}
+                                defaultValue={nickname}
+                                onChange={(event) => setNickname(event.target.value)}
                             />
                         </Grid>
                     </Grid>

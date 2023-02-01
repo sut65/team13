@@ -14,6 +14,7 @@ func CraeteFriend(c *gin.Context) {
 
 	var user entity.User
 	var friend entity.Friend
+	var friendCheck entity.Friend
 	var user_Friend entity.User
 	var intimate entity.Intimate
 	var game entity.Game
@@ -73,27 +74,26 @@ func CraeteFriend(c *gin.Context) {
 
 	}
 
-	friAdded := entity.Friend{
-		User_ID:        friend.User_Friend_ID,
-		User_Friend_ID: friend.User_ID,
-		Intimate_ID:    friend.Intimate_ID,
-		Nickname:       user.Profile_Name,
-		Game_ID:        friend.Game_ID,
-		Is_Hide:        friend.Is_Hide,
-		Date:           friend.Date.Local(),
-	}
+	if tx := entity.DB().Raw("SELECT * FROM friends WHERE user_id = ? AND user_friend_id = ?", friend.User_Friend_ID, friend.User_ID).First(&friendCheck); tx.RowsAffected == 0 {
+		friAdded := entity.Friend{
+			User_ID:        friend.User_Friend_ID,
+			User_Friend_ID: friend.User_ID,
+			Intimate_ID:    friend.Intimate_ID,
+			Nickname:       user.Profile_Name,
+			Game_ID:        friend.Game_ID,
+			Is_Hide:        friend.Is_Hide,
+			Date:           friend.Date.Local(),
+		}
 
-	if _, err := govalidator.ValidateStruct(friAdded); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
+		if _, err := govalidator.ValidateStruct(friAdded); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 
-	if err := entity.DB().Create(&friAdded).Error; err != nil {
-
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
-		return
-
+		if err := entity.DB().Create(&friAdded).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": friend})
