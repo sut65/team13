@@ -11,7 +11,6 @@ import (
 
 // POST /baskets
 func CraeteBasket(c *gin.Context) {
-
 	var basket entity.Basket
 	var game entity.Game
 	var payment_status entity.Payment_Status
@@ -135,8 +134,8 @@ func DeleteBasket(c *gin.Context) {
 	var basket entity.Basket
 
 	if err := c.ShouldBindJSON(&basket); err != nil {
-		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		//return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	if tx := entity.DB().Exec("DELETE FROM baskets WHERE id = ?", basket.ID); tx.RowsAffected == 0 {

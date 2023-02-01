@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
 	"golang.org/x/crypto/bcrypt"
 
@@ -8,6 +9,23 @@ import (
 
 	"net/http"
 )
+
+// type UserValid struct {
+// 	// Normal User
+// 	gorm.Model
+// 	Email               string `gorm:"uniqueIndex" valid:"email~รูปแบบ email ไม่ถูกต้อง,required~กรุณากรอก email"`
+// 	Password            string `valid:"minstringlength(8)~ความยาวรหัสผ่านต้องไม่ต่ำกว่า 8 ตัวอักษร,required~กรุณากรอกรหัสผ่าน"`
+// 	Profile_Name        string `valid:"maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร,required~กรุณากรอกชื่อ"`
+// 	Profile_Description string `valid:"maxstringlength(200)~Profile Description ความยาวไม่เกิน 200 ตัวอักษร"`
+// 	Profile_Picture     string `valid:"matches((data:image(.+);base64.+))~รูปภาพไม่ถูกต้อง"` // ยังใช้ไม่ได้
+// 	Gender_ID           *uint
+// 	Favorite_Game_ID    *uint
+// 	// Game Store User
+// 	Is_Seller            bool
+// 	Store_Description    string `valid:"maxstringlength(200)~Store Description ความยาวไม่เกิน 200 ตัวอักษร"`
+// 	Out_Standing_Game_ID *uint
+// 	Store_Contact        string `valid:"maxstringlength(100)~Store Contact ความยาวไม่เกิน 100 ตัวอักษร"`
+// }
 
 // POST /users --> ใช้อยู่
 
@@ -31,20 +49,38 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
-		return
-	}
+	// newUserValid := UserValid{
+	// 	Email:               user.Email,
+	// 	Password:            user.Password,
+	// 	Profile_Name:        user.Profile_Name,
+	// 	Profile_Description: user.Profile_Description,
+	// 	Profile_Picture:     user.Profile_Picture,
+	// }
 
+	// create new object for create new record
 	newUser := entity.User{
 		Email:               user.Email,
-		Password:            string(hashPassword),
+		Password:            user.Password,
 		Profile_Name:        user.Profile_Name,
 		Profile_Description: user.Profile_Description,
 		Profile_Picture:     user.Profile_Picture,
 		Gender:              gender,
 	}
+
+	// validate user
+	if _, err := govalidator.ValidateStruct(newUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// hashing after validate
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 12)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
+		return
+	}
+
+	newUser.Password = string(hashPassword)
 
 	if err := entity.DB().Create(&newUser).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -117,23 +153,6 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	if len(user.Password) <= 7 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัว"})
-		return
-	}
-
-	if !(user.Password[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
-		hashPassword, err := bcrypt.GenerateFromPassword([]byte(user.Password), 12)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
-			return
-		}
-		print("HASH!!!!")
-		user.Password = string(hashPassword)
-	} else {
-		print("NOT HASH!!!")
-	}
-
 	if tx := entity.DB().Where("id = ?", user.Gender_ID).First(&gender); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "gender not found"})
 		return
@@ -153,7 +172,19 @@ func UpdateUser(c *gin.Context) {
 		}
 	}
 
+	// updateUserValid := UserValid{
+	// 	Email:               user.Email,
+	// 	Password:            user.Password,
+	// 	Profile_Name:        user.Profile_Name,
+	// 	Profile_Description: user.Profile_Description,
+	// 	Profile_Picture:     user.Profile_Picture,
+	// 	Is_Seller:           user.Is_Seller,
+	// 	Store_Description:   user.Store_Description,
+	// 	Store_Contact:       user.Store_Contact,
+	// }
+
 	updateUser := entity.User{
+		Email:                user.Email,
 		Password:             user.Password,
 		Profile_Name:         user.Profile_Name,
 		Profile_Description:  user.Profile_Description,
@@ -164,6 +195,24 @@ func UpdateUser(c *gin.Context) {
 		Store_Description:    user.Store_Description,
 		Out_Standing_Game_ID: &game.ID,
 		Store_Contact:        user.Store_Contact,
+	}
+
+	// validate user
+	if _, err := govalidator.ValidateStruct(updateUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if !(user.Password[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
+		hashPassword, err := bcrypt.GenerateFromPassword([]byte(updateUser.Password), 12)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
+			return
+		}
+		print("HASH!!!!")
+		updateUser.Password = string(hashPassword)
+	} else {
+		print("NOT HASH!!!")
 	}
 
 	if err := entity.DB().Where("email = ?", user.Email).Updates(&updateUser).Error; err != nil {

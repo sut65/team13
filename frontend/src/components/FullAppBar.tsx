@@ -32,6 +32,7 @@ import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 
 import { Link as RouterLink } from "react-router-dom";
+import { UsersInterface } from '../models/user/IUser';
 
 const useStyles = makeStyles({
   drawer: {
@@ -39,91 +40,105 @@ const useStyles = makeStyles({
   },
   Icon: { // Set all icon to black
     backgroundColor: "black"
-  }
+  },
 });
 
 function FullAppBar() {
+  const [user, setUser] = React.useState<Partial<UsersInterface>>({});
+  
   const signout = () => {
     localStorage.clear();
     window.location.href = "/";
   };
 
-function drawerList() {
-  if(localStorage.getItem("position") == "Admin"){
-    return( // Admin Drawer
-      <List className={classes.drawer} sx={{margin: 1,padding: 2}}>
-        <ListItem button component={RouterLink} to="/">
-          <HomeIcon/>
-          <ListItemText primary="FirstPage" sx={{padding: 2}}/>
-        </ListItem>
+  function drawerList() {
+    function gameMarketList(){
+      if(user.Is_Seller){
+        return(
+          <ListItem button component={RouterLink} to="/game_list">
+            <SellIcon/>         
+            <ListItemText primary="Game Market" sx={{paddingLeft:1}}/>
+          </ListItem>
+        );
+      }
+    }
+    if(localStorage.getItem("position") == "Admin"){
+      return( // Admin Drawer
+        <List className={classes.drawer} sx={{width:"100%"}}>
+          <ListItem button component={RouterLink} to="/">
+            <HomeIcon/>
+            <ListItemText primary="FirstPage" sx={{paddingLeft:1}}/>
+          </ListItem>
 
-        <ListItem button component={RouterLink} to="/banner">
-          <ViewCarouselIcon/>
-          <ListItemText primary="Banner" sx={{padding: 2}}/>
-        </ListItem>
+          <ListItem button component={RouterLink} to="/banner">
+            <ViewCarouselIcon/>
+            <ListItemText primary="Banner" sx={{paddingLeft:1}}/>
+          </ListItem>
 
-        <ListItem button component={RouterLink} to="/admin_list">
-          <PriceCheckIcon/>
-          <ListItemText primary="Admin Modify" sx={{padding: 2}}/>
-        </ListItem>
-      </List>
-    );
-  }else{ // User Drawer
-    return(
-      <List className={classes.drawer} sx={{margin: 1,padding: 2}}>
+          <ListItem button component={RouterLink} to="/admin_list">
+            <PriceCheckIcon/>
+            <ListItemText primary="Admin Modify" sx={{paddingLeft:1}}/>
+          </ListItem>
+        </List>
+      );
+    }else{ // User Drawer
+      return(
+        <List className={classes.drawer} sx={{width:"100%"}}>
 
-        <ListItem button component={RouterLink} to="/">
-          <HomeIcon/>
-          <ListItemText primary="FirstPage" sx={{padding: 2}}/>
-        </ListItem>
+          <ListItem button component={RouterLink} to="/">
+            <HomeIcon/>
+            <ListItemText primary="FirstPage" sx={{paddingLeft:1}}/>
+          </ListItem>
 
-        <ListItem button component={RouterLink} to="/dashboard">
-          <DashboardIcon/>
-          <ListItemText primary="Dashboard" sx={{padding: 2}}/>
-        </ListItem>
-        <ListItem button component={RouterLink} to="/game_list">
-          <SellIcon/>         
-          <ListItemText primary="Game Market" sx={{padding: 2}}/>
-        </ListItem>
+          <ListItem button component={RouterLink} to="/dashboard">
+            <DashboardIcon/>
+            <ListItemText primary="Dashboard" sx={{paddingLeft:1}}/>
+          </ListItem>
 
-        <ListItem button component={RouterLink} to="/my_basket">
-          <ShoppingBasketIcon/>
-          <ListItemText primary="My Basket" sx={{padding: 2}}/>
-        </ListItem>
+          {gameMarketList()} {/** หากเป็น seller จะshow */}
 
-        <ListItem button component={RouterLink} to="/my_order">
-          <PaidIcon/>
-          <ListItemText primary="My Order" sx={{padding: 2}}/>
-        </ListItem>
+          <ListItem button component={RouterLink} to="/my_basket">
+            <ShoppingBasketIcon/>
+            <ListItemText primary="My Basket" sx={{paddingLeft:1}}/>
+          </ListItem>
 
-        <ListItem button component={RouterLink} to="/my_friend">
-          <PeopleIcon/>
-          <ListItemText primary="My Friend" sx={{padding: 2}}/>
-        </ListItem>
+          <ListItem button component={RouterLink} to="/my_order">
+            <PaidIcon/>
+            <ListItemText primary="My Order" sx={{paddingLeft:1}}/>
+          </ListItem>
 
-        <ListItem button component={RouterLink} to="/storage">
-          <FeaturedPlayListIcon/>
-          <ListItemText primary="Storage" sx={{padding: 2}}/>
-        </ListItem>
-        <ListItem button component={RouterLink} to="/wishlist">
-          <BookmarkIcon/>
-          <ListItemText primary="Wishlist" sx={{padding: 2}}/>
-        </ListItem>
+          <ListItem button component={RouterLink} to="/my_friend">
+            <PeopleIcon/>
+            <ListItemText primary="My Friend" sx={{paddingLeft:1}}/>
+          </ListItem>
 
-        <ListItem button component={RouterLink} to="/user_store_setting">
-          <SettingsIcon/>
-          <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
-        </ListItem>
+          <ListItem button component={RouterLink} to="/storage">
+            <FeaturedPlayListIcon/>
+            <ListItemText primary="Storage" sx={{paddingLeft:1}}/>
+          </ListItem>
 
-        <ListItem button component={RouterLink} to="/user_store_setting">
-          <SettingsIcon/>
-          <ListItemText primary="User & Store Setting" sx={{padding: 2}}/>
-        </ListItem>
+          <ListItem button component={RouterLink} to="/wishlist">
+            <BookmarkIcon/>
+            <ListItemText primary="Wishlist" sx={{paddingLeft:1}}/>
+          </ListItem>
 
-      </List>
-    );
+          <ListItem button component={RouterLink} to="/user_store_setting">
+            <SettingsIcon/>
+            <ListItemText primary="User & Store Setting" sx={{paddingLeft:1}}/>
+          </ListItem>
+
+        </List>
+      );
+    }
   }
-}
+
+  function myStoreMenuItem() {
+    if(user.Is_Seller){
+      return(
+        <MenuItem onClick={handleClose} component={RouterLink} to={"/store_profile/"+localStorage.getItem("email")} >My Store</MenuItem>
+      );
+    }
+  }
 
   const [auth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -138,6 +153,32 @@ function drawerList() {
 
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
   const classes = useStyles();
+
+  const getUser = async () => {
+    const apiUrl = "http://localhost:8080/user/"+localStorage.getItem("email");
+    const requestOptions = {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+        },
+    };
+   
+    await fetch(apiUrl, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+            if (res.data) {
+                setUser(res.data);
+            }
+        });
+  };
+
+  React.useEffect(() => {
+    const fetchData = async () => {
+        await getUser();
+    }
+    fetchData();
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -193,7 +234,7 @@ function drawerList() {
                 onClose={handleClose}
               >
                 <MenuItem onClick={handleClose} component={RouterLink} to={"/user_profile/"+localStorage.getItem("email")} >My Profile</MenuItem>
-                <MenuItem onClick={handleClose} component={RouterLink} to={"/store_profile/"+localStorage.getItem("email")} >My Store</MenuItem>
+                {myStoreMenuItem()}
                 <MenuItem onClick={signout} component={RouterLink} to="/" >Logout</MenuItem>
               </Menu>
             </div>

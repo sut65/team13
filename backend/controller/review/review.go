@@ -89,6 +89,58 @@ func ListReviews(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": review})
 }
 
-// DELETE /users/:id
+// DELETE /review/:id
+func DeleteReview(c *gin.Context) {
+	id := c.Param("id")
 
-// PATCH /users
+	if tx := entity.DB().Exec("DELETE FROM Reviews WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "review not found"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": id})
+}
+
+// PATCH /topgames
+
+func UpdateTopgame(c *gin.Context) {
+	var review entity.Review
+	var star entity.Star
+	var user entity.User
+	var game entity.Game
+
+	if err := c.ShouldBindJSON(&review); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	if tx := entity.DB().Where("id = ?", review.Star_ID).First(&star); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "กรุณาเลือก อันดับ"})
+		return
+	}
+
+	if tx := entity.DB().Where("id = ?", review.User_ID).First(&user); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "กรุณาเลือก Editor"})
+		return
+	}
+
+	if tx := entity.DB().Where("id = ?", review.Game_ID).First(&game); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "กรุณาเลือก Game"})
+		return
+	}
+
+	updateReview := entity.Review{
+		Comment: review.Comment,
+		Date:    review.Date,
+		Star:    star, // โยงความสัมพันธ์กับ Entity star
+		Game:    game, // โยงความสัมพันธ์กับ Entity game
+		User:    user, // โยงความสัมพันธ์กับ Entity user
+	}
+
+	if err := entity.DB().Where("id = ?", review.ID).Updates(&updateReview).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": review})
+}
