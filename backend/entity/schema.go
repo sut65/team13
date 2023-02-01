@@ -290,14 +290,14 @@ type Wish_Level struct {
 type Wishlist struct {
 	gorm.Model
 	Date time.Time
-	Note string
+	Note string `valid:"required~ไม่ได้ใส่โน๊ต"`
 
-	Game_ID *uint
-	Game    Game `gorm:"references:id"`
+	Game_ID *uint `valid:"-"`
+	Game    Game  `gorm:"references:id" valid:"-"`
 
-	User_ID *uint
-	User    User `gorm:"references:id"`
+	User_ID *uint `valid:"-"`
+	User    User  `gorm:"references:id" valid:"-"`
 
-	Wish_Level_ID *uint
-	Wish_Level    Wish_Level `gorm:"references:id"`
+	Wish_Level_ID *uint      `valid:"-"`
+	Wish_Level    Wish_Level `gorm:"references:id" valid:"-"`
 }
