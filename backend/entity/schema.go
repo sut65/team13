@@ -21,7 +21,7 @@ type User struct {
 	Password            string   `valid:"minstringlength(8)~ความยาวรหัสผ่านต้องไม่ต่ำกว่า 8 ตัวอักษร,required~กรุณากรอกรหัสผ่าน"`
 	Profile_Name        string   `valid:"maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร,required~กรุณากรอกชื่อ"`
 	Profile_Description string   `valid:"maxstringlength(200)~Profile Description ความยาวไม่เกิน 200 ตัวอักษร"`
-	Profile_Picture     string   `valid:"matches((data:image(.+);base64.+))~รูปภาพไม่ถูกต้อง"` // ยังใช้ไม่ได้
+	Profile_Picture     string   `valid:"image_valid~รูปภาพไม่ถูกต้อง"`
 	Gender_ID           *uint    `valid:"-"`
 	Gender              Gender   `gorm:"references:id" valid:"-"`
 	Favorite_Game_ID    *uint    `valid:"-"`
@@ -327,5 +327,9 @@ func init() {
 	govalidator.CustomTypeTagMap.Set("DelayNow5Min", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
 		return t.After(time.Now().Add(5 - time.Minute))
+	})
+
+	govalidator.TagMap["image_valid"] = govalidator.Validator(func(str string) bool {
+		return govalidator.Matches(str, "^(data:image(.+);base64,.+)$")
 	})
 }
