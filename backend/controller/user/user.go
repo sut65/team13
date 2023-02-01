@@ -4,11 +4,29 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 
 	"net/http"
 )
+
+type UserValid struct {
+	// Normal User
+	gorm.Model
+	Email               string `gorm:"uniqueIndex" valid:"email~รูปแบบ email ไม่ถูกต้อง,required~กรุณากรอก email"`
+	Password            string `valid:"minstringlength(8)~ความยาวรหัสผ่านต้องไม่ต่ำกว่า 8 ตัวอักษร,required~กรุณากรอกรหัสผ่าน"`
+	Profile_Name        string `valid:"maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร,required~กรุณากรอกชื่อ"`
+	Profile_Description string `valid:"maxstringlength(200)~Profile Description ความยาวไม่เกิน 200 ตัวอักษร"`
+	Profile_Picture     string `valid:"matches((data:image(.+);base64.+))~รูปภาพไม่ถูกต้อง"` // ยังใช้ไม่ได้
+	Gender_ID           *uint
+	Favorite_Game_ID    *uint
+	// Game Store User
+	Is_Seller            bool
+	Store_Description    string `valid:"maxstringlength(200)~Store Description ความยาวไม่เกิน 200 ตัวอักษร"`
+	Out_Standing_Game_ID *uint
+	Store_Contact        string `valid:"maxstringlength(100)~Store Contact ความยาวไม่เกิน 100 ตัวอักษร"`
+}
 
 // POST /users --> ใช้อยู่
 
@@ -32,29 +50,38 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	newUser := entity.User{
+	newUserValid := UserValid{
 		Email:               user.Email,
 		Password:            user.Password,
 		Profile_Name:        user.Profile_Name,
 		Profile_Description: user.Profile_Description,
 		Profile_Picture:     user.Profile_Picture,
-		Gender:              gender,
 	}
 
 	// validate user
-	if _, err := govalidator.ValidateStruct(newUser); err != nil {
+	if _, err := govalidator.ValidateStruct(newUserValid); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	// hashing after validate
-	hashPassword, err := bcrypt.GenerateFromPassword([]byte(newUser.Password), 12)
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(newUserValid.Password), 12)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
 		return
 	}
 
-	newUser.Password = string(hashPassword)
+	newUserValid.Password = string(hashPassword)
+
+	// create new object for create new record
+	newUser := entity.User{
+		Email:               newUserValid.Email,
+		Password:            newUserValid.Password,
+		Profile_Name:        newUserValid.Profile_Name,
+		Profile_Description: newUserValid.Profile_Description,
+		Profile_Picture:     newUserValid.Profile_Picture,
+		Gender:              gender,
+	}
 
 	if err := entity.DB().Create(&newUser).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -146,36 +173,47 @@ func UpdateUser(c *gin.Context) {
 		}
 	}
 
-	updateUser := entity.User{
-		Email:                user.Email,
-		Password:             user.Password,
-		Profile_Name:         user.Profile_Name,
-		Profile_Description:  user.Profile_Description,
-		Profile_Picture:      user.Profile_Picture,
-		Gender:               gender,
-		Favorite_Game_ID:     &storage.ID,
-		Is_Seller:            user.Is_Seller,
-		Store_Description:    user.Store_Description,
-		Out_Standing_Game_ID: &game.ID,
-		Store_Contact:        user.Store_Contact,
+	updateUserValid := UserValid{
+		Email:               user.Email,
+		Password:            user.Password,
+		Profile_Name:        user.Profile_Name,
+		Profile_Description: user.Profile_Description,
+		Profile_Picture:     user.Profile_Picture,
+		Is_Seller:           user.Is_Seller,
+		Store_Description:   user.Store_Description,
+		Store_Contact:       user.Store_Contact,
 	}
 
 	// validate user
-	if _, err := govalidator.ValidateStruct(updateUser); err != nil {
+	if _, err := govalidator.ValidateStruct(updateUserValid); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	if !(user.Password[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
-		hashPassword, err := bcrypt.GenerateFromPassword([]byte(updateUser.Password), 12)
+		hashPassword, err := bcrypt.GenerateFromPassword([]byte(updateUserValid.Password), 12)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
 			return
 		}
 		print("HASH!!!!")
-		updateUser.Password = string(hashPassword)
+		updateUserValid.Password = string(hashPassword)
 	} else {
 		print("NOT HASH!!!")
+	}
+
+	updateUser := entity.User{
+		Email:                updateUserValid.Email,
+		Password:             updateUserValid.Password,
+		Profile_Name:         updateUserValid.Profile_Name,
+		Profile_Description:  updateUserValid.Profile_Description,
+		Profile_Picture:      updateUserValid.Profile_Picture,
+		Gender:               gender,
+		Favorite_Game_ID:     &storage.ID,
+		Is_Seller:            updateUserValid.Is_Seller,
+		Store_Description:    updateUserValid.Store_Description,
+		Out_Standing_Game_ID: &game.ID,
+		Store_Contact:        updateUserValid.Store_Contact,
 	}
 
 	if err := entity.DB().Where("email = ?", user.Email).Updates(&updateUser).Error; err != nil {
