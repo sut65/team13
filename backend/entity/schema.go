@@ -127,7 +127,7 @@ type Friend struct {
 	Game_ID        *uint     `valid:"-"`
 	Game           Game      `gorm:"references:id" valid:"-"`
 	Is_Hide        *bool     `valid:"ToBoolean~การซ่อนผิดพลาด"`
-	Date           time.Time `valid:"required~ไม่ได้ใส่วันที่,IsnotPast~เวลาไม่ถูกต้อง"`
+	Date           time.Time `valid:"IsnotPast~เวลาไม่ถูกต้อง"`
 	Order          []Order   `gorm:"foreignKey:Friend_ID"`
 }
 
@@ -147,7 +147,7 @@ type Basket struct {
 	Payment_Status_ID *uint          `valid:"-"`
 	Payment_Status    Payment_Status `gorm:"references:id" valid:"-"`
 	Note              string         `valid:"required~คุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 200 ตัวอักษร"`
-	Date              time.Time      `valid:"required~ไม่ได้ใส่วันที่,IsnotPast~เวลาไม่ถูกต้อง"`
+	Date              time.Time      `valid:"IsnotPast~เวลาไม่ถูกต้อง"`
 	Order_ID          *uint          `valid:"-"`
 	Order             Order          `gorm:"references:id" valid:"-"`
 }
