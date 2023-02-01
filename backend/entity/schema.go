@@ -63,19 +63,19 @@ type Rating struct {
 
 type Game struct {
 	gorm.Model
-	Game_Name              string `gorm:"uniqueIndex"`
-	Game_Price             uint
-	Game_description       string
-	Publish_Date           time.Time
-	Seller_ID              *uint
-	Seller                 User `gorm:"references:id"`
-	Game_Status_ID         *uint
-	Game_Status            Game_Status `gorm:"references:id"`
-	Type_Game_ID           *uint
-	Type_Game              Type_Game `gorm:"references:id"`
-	Rating_ID              *uint
-	Rating                 Rating `gorm:"references:id"`
-	Game_file              string
+	Game_Name              string      `gorm:"uniqueIndex" valid:"maxstringlength(30)~Name must not more than 30 character,required~Please Enter your Game Name"`
+	Game_Price             uint        `valid:"range(0|100000)~ Price incorrect,required~Please enter price,int"` //` valid: InRangeInt(value, 0)`
+	Game_description       string      `valid:"maxstringlength(200)~Description must not more than 200 character,required~Please Enter your Game Description"`
+	Publish_Date           time.Time   `valid:"required~Date can be null ,IsnotPast~Date incorrect"`
+	Seller_ID              *uint       `valid:"-"`
+	Seller                 User        `gorm:"references:id" valid:"-" `
+	Game_Status_ID         *uint       `valid:"-"`
+	Game_Status            Game_Status `gorm:"references:id" valid:"-"`
+	Type_Game_ID           *uint       `valid:"-"`
+	Type_Game              Type_Game   `gorm:"references:id" valid:"-"`
+	Rating_ID              *uint       `valid:"-"`
+	Rating                 Rating      `gorm:"references:id" valid:"-"`
+	Game_file              string      `valid:"url~Link incorrect ,required~Please Upload Game file"`
 	Game_Picture           string
 	Storage                []Storage  `gorm:"foreignKey:Game_ID"`
 	User_Out_Standing_Game []User     `gorm:"foreignKey:Out_Standing_Game_ID"`

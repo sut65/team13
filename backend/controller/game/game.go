@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
 
 	"github.com/gin-gonic/gin"
@@ -60,6 +61,12 @@ func CreateGame(c *gin.Context) {
 		Game_file:        game.Game_file,
 		Game_Picture:     game.Game_Picture,
 	}
+
+	if _, err := govalidator.ValidateStruct(wv); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	if err := entity.DB().Create(&wv).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
