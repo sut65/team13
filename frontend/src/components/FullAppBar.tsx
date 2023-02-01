@@ -79,6 +79,11 @@ function FullAppBar() {
             <PriceCheckIcon/>
             <ListItemText primary="Admin Modify" sx={{paddingLeft:1}}/>
           </ListItem>
+
+          <ListItem button component={RouterLink} to="/payment_ver">
+            <PriceCheckIcon/>
+            <ListItemText primary="Payment Verification" sx={{paddingLeft:1}}/>
+          </ListItem>
         </List>
       );
     }else{ // User Drawer

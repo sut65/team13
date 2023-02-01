@@ -393,7 +393,7 @@ function Storage_UI() {
                     <DialogTitle>DELETE</DialogTitle>
                     <DialogContent>
                       <DialogContentText>
-                        Are you SURE to DELETE Friend "{item.Game.Game_Name}" ?
+                        Are you SURE to DELETE "{item.Game.Game_Name}" ?
                       </DialogContentText>
                     </DialogContent>
                     <DialogActions>

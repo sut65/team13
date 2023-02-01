@@ -1,9 +1,6 @@
 package controller
 
 import (
-	"fmt"
-	"time"
-
 	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity"
 
@@ -11,15 +8,6 @@ import (
 
 	"net/http"
 )
-
-type BasketValid struct {
-	User_ID           *uint
-	Game_ID           *uint
-	Payment_Status_ID *uint
-	Note              string `valid:"required~ตุณไม่ได้ใส่โน๊ต"`
-	Date              time.Time
-	Order_ID          *uint
-}
 
 // POST /baskets
 func CraeteBasket(c *gin.Context) {
@@ -47,7 +35,7 @@ func CraeteBasket(c *gin.Context) {
 		return
 	}
 
-	basValid := BasketValid{
+	bas := entity.Basket{
 		User_ID:           basket.User_ID,
 		Game_ID:           basket.Game_ID,
 		Payment_Status_ID: basket.Payment_Status_ID,
@@ -55,19 +43,9 @@ func CraeteBasket(c *gin.Context) {
 		Date:              basket.Date.Local(),
 	}
 
-	fmt.Printf("%#v", basValid)
-
-	if _, err := govalidator.ValidateStruct(basValid); err != nil {
+	if _, err := govalidator.ValidateStruct(bas); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}
-
-	bas := entity.Basket{
-		User_ID:           basValid.User_ID,
-		Game_ID:           basValid.Game_ID,
-		Payment_Status_ID: basValid.Payment_Status_ID,
-		Note:              basValid.Note,
-		Date:              basValid.Date.Local(),
 	}
 
 	if err := entity.DB().Create(&bas).Error; err != nil {

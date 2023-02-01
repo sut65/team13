@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/asaskevich/govalidator"
 	"gorm.io/gorm"
 )
 
@@ -16,20 +17,20 @@ type Gender struct {
 type User struct {
 	// Normal User
 	gorm.Model
-	Email               string `gorm:"uniqueIndex" valid:"email~รูปแบบ email ไม่ถูกต้อง,required~กรุณากรอก email"`
-	Password            string `valid:"minstringlength(8)~ความยาวรหัสผ่านต้องไม่ต่ำกว่า 8 ตัวอักษร,required~กรุณากรอกรหัสผ่าน"`
-	Profile_Name        string `valid:"maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร,required~กรุณากรอกชื่อ"`
-	Profile_Description string `valid:"maxstringlength(200)~Profile Description ความยาวไม่เกิน 200 ตัวอักษร"`
-	Profile_Picture     string `valid:"matches((data:image(.+);base64.+))~รูปภาพไม่ถูกต้อง"` // ยังใช้ไม่ได้
-	Gender_ID           *uint
-	Gender              Gender `gorm:"references:id"`
-	Favorite_Game_ID    *uint
-	Favorite_Game       *Storage `gorm:"references:id"` // ใช้ pointer เพื่อป้องกันไม่ให้เกิด error invalid cycle declaration , ตั้งชื่อหน้าหลังไม่เหมือนกันจะบัคไหมนะ?
+	Email               string   `gorm:"uniqueIndex" valid:"email~รูปแบบ email ไม่ถูกต้อง,required~กรุณากรอก email"`
+	Password            string   `valid:"minstringlength(8)~ความยาวรหัสผ่านต้องไม่ต่ำกว่า 8 ตัวอักษร,required~กรุณากรอกรหัสผ่าน"`
+	Profile_Name        string   `valid:"maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร,required~กรุณากรอกชื่อ"`
+	Profile_Description string   `valid:"maxstringlength(200)~Profile Description ความยาวไม่เกิน 200 ตัวอักษร"`
+	Profile_Picture     string   `valid:"matches((data:image(.+);base64.+))~รูปภาพไม่ถูกต้อง"` // ยังใช้ไม่ได้
+	Gender_ID           *uint    `valid:"-"`
+	Gender              Gender   `gorm:"references:id" valid:"-"`
+	Favorite_Game_ID    *uint    `valid:"-"`
+	Favorite_Game       *Storage `gorm:"references:id" valid:"-"` // ใช้ pointer เพื่อป้องกันไม่ให้เกิด error invalid cycle declaration , ตั้งชื่อหน้าหลังไม่เหมือนกันจะบัคไหมนะ?
 	// Game Store User
 	Is_Seller            bool
-	Store_Description    string `valid:"maxstringlength(200)~Store Description ความยาวไม่เกิน 200 ตัวอักษร"`
-	Out_Standing_Game_ID *uint
-	Out_Standing_Game    *Game        `gorm:"references:id"` // ใช้ pointer เพื่อป้องกันไม่ให้เกิด error invalid cycle declaration , ตั้งชื่อหน้าหลังไม่เหมือนกันจะบัคไหมนะ?
+	Store_Description    string       `valid:"maxstringlength(200)~Store Description ความยาวไม่เกิน 200 ตัวอักษร"`
+	Out_Standing_Game_ID *uint        `valid:"-"`
+	Out_Standing_Game    *Game        `gorm:"references:id" valid:"-"` // ใช้ pointer เพื่อป้องกันไม่ให้เกิด error invalid cycle declaration , ตั้งชื่อหน้าหลังไม่เหมือนกันจะบัคไหมนะ?
 	Store_Contact        string       `valid:"maxstringlength(100)~Store Contact ความยาวไม่เกิน 100 ตัวอักษร"`
 	Basket               []Basket     `gorm:"foreignKey:User_ID"`
 	Friend               []Friend     `gorm:"foreignKey:User_ID"`
@@ -139,16 +140,16 @@ type Payment_Status struct {
 
 type Basket struct {
 	gorm.Model
-	User_ID           *uint
-	User              User `gorm:"references:id"`
-	Game_ID           *uint
-	Game              Game `gorm:"references:id"`
+	User_ID           *uint `valid:"-"`
+	User              User  `gorm:"references:id" valid:"-"`
+	Game_ID           *uint `valid:"-"`
+	Game              Game  `gorm:"references:id" valid:"-"`
 	Payment_Status_ID *uint
 	Payment_Status    Payment_Status `gorm:"references:id"`
-	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต"`
-	Date              time.Time
-	Order_ID          *uint
-	Order             Order `gorm:"references:id"`
+	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
+	Date              time.Time      `valid:"required~ไม่ได้ใส่วันที่,IsnotPast~เวลาไม่ถูกต้อง"`
+	Order_ID          *uint          `valid:"-"`
+	Order             Order          `gorm:"references:id" valid:"-"`
 }
 
 // ---ระบบรีวิวเกม(GameReview)---
@@ -271,14 +272,14 @@ type Verification_Status struct {
 
 type Payment_Verification struct {
 	gorm.Model
-	Admin_ID               *uint
-	Admin                  Admin `gorm:"references:id"`
-	Order_ID               *uint
-	Order                  Order `gorm:"references:id"`
-	Verification_Status_ID *uint
-	Verification_Status    Verification_Status `gorm:"references:id"`
+	Admin_ID               *uint               `valid:"-"`
+	Admin                  Admin               `gorm:"references:id" valid:"-"`
+	Order_ID               *uint               `valid:"-"`
+	Order                  Order               `gorm:"references:id" valid:"-"`
+	Verification_Status_ID *uint               `valid:"-"`
+	Verification_Status    Verification_Status `gorm:"references:id" valid:"-"`
 	Date                   time.Time
-	Note                   string
+	Note                   string `valid:"required~Note cannot be blank"`
 }
 
 // ----ระบบ Wishlist---
@@ -290,14 +291,41 @@ type Wish_Level struct {
 type Wishlist struct {
 	gorm.Model
 	Date time.Time
-	Note string
+	Note string `valid:"required~ไม่ได้ใส่โน๊ต"`
 
-	Game_ID *uint
-	Game    Game `gorm:"references:id"`
+	Game_ID *uint `valid:"-"`
+	Game    Game  `gorm:"references:id" valid:"-"`
 
-	User_ID *uint
-	User    User `gorm:"references:id"`
+	User_ID *uint `valid:"-"`
+	User    User  `gorm:"references:id" valid:"-"`
 
-	Wish_Level_ID *uint
-	Wish_Level    Wish_Level `gorm:"references:id"`
+	Wish_Level_ID *uint      `valid:"-"`
+	Wish_Level    Wish_Level `gorm:"references:id" valid:"-"`
+}
+
+func init() {
+	govalidator.CustomTypeTagMap.Set("IsFuture", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now())
+	})
+
+	govalidator.CustomTypeTagMap.Set("IsPresent", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now().AddDate(0, 0, -1)) && t.Before(time.Now().AddDate(0, 0, 1))
+	})
+
+	govalidator.CustomTypeTagMap.Set("IsPast", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.Before(time.Now())
+	})
+
+	govalidator.CustomTypeTagMap.Set("IsnotPast", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now().AddDate(0, 0, -1))
+	})
+
+	govalidator.CustomTypeTagMap.Set("DelayNow5Min", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now().Add(5 - time.Minute))
+	})
 }
