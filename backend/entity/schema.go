@@ -3,6 +3,7 @@ package entity
 import (
 	"time"
 
+	"github.com/asaskevich/govalidator"
 	"gorm.io/gorm"
 )
 
@@ -146,7 +147,7 @@ type Basket struct {
 	Payment_Status_ID *uint
 	Payment_Status    Payment_Status `gorm:"references:id"`
 	Note              string         `valid:"required~ตุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
-	Date              time.Time      `valid:"required"`
+	Date              time.Time      `valid:"required~ไม่ได้ใส่วันที่,IsnotPast~เวลาไม่ถูกต้อง"`
 	Order_ID          *uint          `valid:"-"`
 	Order             Order          `gorm:"references:id" valid:"-"`
 }
@@ -300,4 +301,31 @@ type Wishlist struct {
 
 	Wish_Level_ID *uint      `valid:"-"`
 	Wish_Level    Wish_Level `gorm:"references:id" valid:"-"`
+}
+
+func init() {
+	govalidator.CustomTypeTagMap.Set("IsFuture", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now())
+	})
+
+	govalidator.CustomTypeTagMap.Set("IsPresent", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now().AddDate(0, 0, -1)) && t.Before(time.Now().AddDate(0, 0, 1))
+	})
+
+	govalidator.CustomTypeTagMap.Set("IsPast", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.Before(time.Now())
+	})
+
+	govalidator.CustomTypeTagMap.Set("IsnotPast", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now().AddDate(0, 0, -1))
+	})
+
+	govalidator.CustomTypeTagMap.Set("DelayNow5Min", func(i interface{}, context interface{}) bool {
+		t := i.(time.Time)
+		return t.After(time.Now().Add(5 - time.Minute))
+	})
 }
