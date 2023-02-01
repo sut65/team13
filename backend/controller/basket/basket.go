@@ -1,6 +1,9 @@
 package controller
 
 import (
+	"fmt"
+	"time"
+
 	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity"
 
@@ -9,9 +12,17 @@ import (
 	"net/http"
 )
 
+type BasketValid struct {
+	User_ID           *uint
+	Game_ID           *uint
+	Payment_Status_ID *uint
+	Note              string `valid:"required~ตุณไม่ได้ใส่โน๊ต"`
+	Date              time.Time
+	Order_ID          *uint
+}
+
 // POST /baskets
 func CraeteBasket(c *gin.Context) {
-
 	var basket entity.Basket
 	var game entity.Game
 	var payment_status entity.Payment_Status
@@ -36,7 +47,7 @@ func CraeteBasket(c *gin.Context) {
 		return
 	}
 
-	bas := entity.Basket{
+	basValid := BasketValid{
 		User_ID:           basket.User_ID,
 		Game_ID:           basket.Game_ID,
 		Payment_Status_ID: basket.Payment_Status_ID,
@@ -44,9 +55,19 @@ func CraeteBasket(c *gin.Context) {
 		Date:              basket.Date.Local(),
 	}
 
-	if _, err := govalidator.ValidateStruct(bas); err != nil {
+	fmt.Printf("%#v", basValid)
+
+	if _, err := govalidator.ValidateStruct(basValid); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	bas := entity.Basket{
+		User_ID:           basValid.User_ID,
+		Game_ID:           basValid.Game_ID,
+		Payment_Status_ID: basValid.Payment_Status_ID,
+		Note:              basValid.Note,
+		Date:              basValid.Date.Local(),
 	}
 
 	if err := entity.DB().Create(&bas).Error; err != nil {
@@ -135,8 +156,8 @@ func DeleteBasket(c *gin.Context) {
 	var basket entity.Basket
 
 	if err := c.ShouldBindJSON(&basket); err != nil {
-		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		//return
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	if tx := entity.DB().Exec("DELETE FROM baskets WHERE id = ?", basket.ID); tx.RowsAffected == 0 {
