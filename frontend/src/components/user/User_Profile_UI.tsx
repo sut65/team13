@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Container } from "@material-ui/core";
 import { Box, Grid, Paper, Link } from '@mui/material';
 
-import { UsersInterface } from '../../models/user/IUser';
 import { useParams } from 'react-router-dom';
+
+import { UsersInterface } from '../../models/user/IUser';
 import { StoragesInterface } from '../../models/storage/IStorage';
 
 function User_Profile(){
