@@ -55,7 +55,7 @@ func TestBasketValidate(t *testing.T) {
 		g.Expect(err.Error()).To(gomega.Equal("โน็ตความยาวไม่เกิน 200 ตัวอักษร")) // check error message
 	})
 
-	t.Run("note invalid(>200)", func(t *testing.T) {
+	t.Run("date invalid(>10 min)", func(t *testing.T) {
 		bTest := basket
 		bTest.Date = time.Now().Add(time.Second * -600) //.AddDate(0, 0, -1)
 
@@ -65,6 +65,6 @@ func TestBasketValidate(t *testing.T) {
 
 		g.Expect(err).NotTo(gomega.BeNil()) // ข้อมูลผิด error จะไม่เป็น nil
 
-		g.Expect(err.Error()).To(gomega.Equal("เวลาไม่ถูกต้อง")) // check error message
+		g.Expect(err.Error()).To(gomega.Equal("เวลาเป็นอดีต ลองโหลดหน้าเว็บอีกรอบ")) // check error message
 	})
 }
