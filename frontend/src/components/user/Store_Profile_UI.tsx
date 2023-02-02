@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Container } from "@material-ui/core";
-import { Box, Grid, Paper } from '@mui/material';
+import { Box, Grid, Paper, Link } from '@mui/material';
 
 import { UsersInterface } from '../../models/user/IUser';
 import { useParams } from 'react-router-dom';
@@ -56,7 +56,9 @@ function Store_Profile(){
         }else{
             return(
                 <Grid>
-                    {games[Number(ID)].Game_Name}
+                    <Link href={"/individual_game/"+String(games[Number(ID)].ID)} underline="none" sx={{width : "100%"}}>
+                        {games[Number(ID)].Game_Name}
+                    </Link>
                 </Grid>
             );
         }

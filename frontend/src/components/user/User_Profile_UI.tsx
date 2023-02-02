@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Container } from "@material-ui/core";
-import { Box, Grid, Paper } from '@mui/material';
+import { Box, Grid, Paper, Link } from '@mui/material';
 
 import { UsersInterface } from '../../models/user/IUser';
 import { useParams } from 'react-router-dom';
@@ -56,7 +56,9 @@ function User_Profile(){
         }else{
             return(
                 <Grid>
-                    {storages[Number(ID)].Game.Game_Name} {/** จะมีปัญหาเวลาเกมถูกลบแล้ว ใน array มี 1 ตัวแต่ id เราคือ 2 */}
+                    <Link href={"/individual_game/"+String(storages[Number(ID)].Game.ID)} underline="none" sx={{width : "100%"}}>
+                        {storages[Number(ID)].Game.Game_Name} {/** จะมีปัญหาเวลาเกมถูกลบแล้ว ใน array มี 1 ตัวแต่ id เราคือ 2 */}
+                    </Link>
                 </Grid>
             );
         }

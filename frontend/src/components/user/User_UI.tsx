@@ -14,7 +14,8 @@ import { StoragesInterface } from "../../models/storage/IStorage";
 import { GamesInterface } from "../../models/game/IGame";
 
 function User(){
-    const [dialogOpen, setDialogOpen] = React.useState(false);
+    const [dialogDelAccOpen, setDialogDelAccOpen] = React.useState(false);
+    const [dialogApplySellerOpen, setDialogApplySellerOpen] = React.useState(false);
     const [submitSuccess, setSubmitSuccess] = React.useState(false);
     const [submitError, setSubmitError] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
@@ -60,12 +61,17 @@ function User(){
         setErrorMsg("");
     };
 
-    const handleDialogClickOpen = () => {
-        setDialogOpen(true);
+    const handleDialogDelAccClickOpen = () => {
+        setDialogDelAccOpen(true);
+    };
+
+    const handleDialogApplySellerClickOpen = () => {
+        setDialogApplySellerOpen(true);
     };
 
     const handleDialogClose = () => {
-        setDialogOpen(false);
+        setDialogDelAccOpen(false);
+        setDialogApplySellerOpen(false);
     };
 
     const getGender = async () => {
@@ -312,9 +318,29 @@ function User(){
         if (!isSeller) {
             return (
                 <Grid marginTop={1} container justifyContent="center">
-                    <Button variant="contained" color="info" onClick={handleApplySeller} endIcon={<StorefrontIcon />}>
+                    <Button variant="contained" color="info" onClick={handleDialogApplySellerClickOpen} endIcon={<StorefrontIcon />}>
                         สมัครเป็นผู้ขายเกม
                     </Button>
+                    <Dialog
+                        open={dialogApplySellerOpen}
+                        onClose={handleDialogClose}
+                        aria-labelledby="alert-dialog-title"
+                        aria-describedby="alert-dialog-description"
+                        >
+                        <DialogTitle id="alert-dialog-title">
+                            {"ต้องการสมัครเป็นผู้ขายเกมใช่หรือไม่?"}
+                        </DialogTitle>
+
+                        <DialogContent>
+                            <DialogContentText id="alert-dialog-description">
+                                การกดที่ปุ่ม YES จะทำให้บัญชีของคุณเป็นผู้ขายเกมตลอดไป
+                            </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleDialogClose}>No</Button>
+                            <Button onClick={handleApplySeller} color="error" autoFocus>Yes</Button>
+                        </DialogActions>
+                    </Dialog>
                 </Grid>
             )
         }else{
@@ -527,11 +553,11 @@ function User(){
                             </Button>
                             {/* Delete Account Button */}
                             <Grid container justifyContent="right">
-                                <Button variant="contained" color="error" onClick={handleDialogClickOpen} endIcon={<DeleteForeverOutlinedIcon />}>
+                                <Button variant="contained" color="error" onClick={handleDialogDelAccClickOpen} endIcon={<DeleteForeverOutlinedIcon />}>
                                     DELETE ACCOUNT
                                 </Button>
                                 <Dialog
-                                    open={dialogOpen}
+                                    open={dialogDelAccOpen}
                                     onClose={handleDialogClose}
                                     aria-labelledby="alert-dialog-title"
                                     aria-describedby="alert-dialog-description"
