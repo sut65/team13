@@ -1,11 +1,14 @@
 import * as React from 'react';
-import { Container, Snackbar } from "@material-ui/core";
+import { Container, Snackbar, makeStyles } from "@material-ui/core";
 import { Alert, Autocomplete, Box, Button, FormHelperText, Grid, Paper, TextField } from '@mui/material';
+import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Stack } from '@mui/material';
+import { Dialog,DialogTitle,DialogContent,DialogContentText,DialogActions } from "@material-ui/core";
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import dayjs ,{ Dayjs } from "dayjs";
+import Moment from 'moment';
 
 import { GamesInterface } from '../../models/game/IGame';
 import { BannersInterface } from '../../models/banner/IBanner';
@@ -15,22 +18,27 @@ import SaveIcon from "@mui/icons-material/Save";
 import AutoModeIcon from '@mui/icons-material/AutoMode';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-import BannerTable_UI from './BannerTable_UI';
-
 function Banner_UI(){
+    Moment.locale('th');
+
     const [submitSuccess, setSubmitSuccess] = React.useState(false);
     const [submitError, setSubmitError] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
+    const [searchQuery, setSearchQuery] = React.useState("");
+    const [openDialogForCreate, setOpenDialogForCreate] = React.useState(false);
+    const [openDialogForUpdate, setOpenDialogForUpdate] = React.useState(false);
+    const [openDialogForDelete, setOpenDialogForDelete] = React.useState(false);
+
     const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
-    const [img1, setImg1] = React.useState<string | ArrayBuffer | null>(null);
-    const [img2, setImg2] = React.useState<string | ArrayBuffer | null>(null);
+    const [img, setImg] = React.useState<string | ArrayBuffer | null>(null);
 
     const [games, setGames] = React.useState<GamesInterface[]>([]);
     const [users, setUsers] = React.useState<UsersInterface[]>([]);
     const [banners, setBanners] = React.useState<Partial<BannersInterface>>({});
-    const [banners_ID, setBanners_ID] = React.useState<BannersInterface[]>([]);
+    const [bannersTable, setBannersTable] = React.useState<BannersInterface[]>([]);
+    const [bannersForUpdateDefault, setBannersForUpdateDefault] = React.useState<BannersInterface[]>([]);
 
     const handleClose = ( // AlertBar
         event?: React.SyntheticEvent | Event,
@@ -44,27 +52,37 @@ function Banner_UI(){
         setErrorMsg("");
     };
 
-    const handleImg1Change = (event: any) => {
+    const handleDialogClickOpenForCreate = () => {
+        setOpenDialogForCreate(true);
+    };
+
+    const handleDialogClickOpenForUpdate = (item : any) => {
+        setBanners(item);
+        setImg(item.Banner_Picture);
+        setOpenDialogForUpdate(true);
+    };
+
+    const handleDialogClickOpenForDelete = (item : any) => {
+        setBanners(item);
+        setOpenDialogForDelete(true);
+    };
+
+    const handleDialogClose = () => {
+        setOpenDialogForCreate(false);
+        setOpenDialogForUpdate(false);
+        setOpenDialogForDelete(false);
+    };
+
+    const handleImgChange = (event: any) => {
         const image = event.target.files[0];
 
         const reader = new FileReader();
         reader.readAsDataURL(image);
         reader.onload = () => {
             const base64Data = reader.result;
-            setImg1(base64Data)
+            setImg(base64Data)
         }
-    }
-
-    const handleImg2Change = (event: any) => {
-        const image = event.target.files[0];
-
-        const reader = new FileReader();
-        reader.readAsDataURL(image);
-        reader.onload = () => {
-            const base64Data = reader.result;
-            setImg2(base64Data)
-        }
-    }
+    };
 
     const getGame = async () => {
         const apiUrl = "http://localhost:8080/Game";
@@ -99,8 +117,7 @@ function Banner_UI(){
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setBanners(res.data);
-                    setBanners_ID(res.data);
+                    setBannersTable(res.data);
                     console.log(res.data);
                 }
             });
@@ -127,7 +144,7 @@ function Banner_UI(){
 
     const createBanner = () => {
         let createData = {
-            Banner_Picture: img1,
+            Banner_Picture: img,
             Description: banners.Description,
             Edit_at: date,
             User_ID: banners.User_ID,
@@ -151,6 +168,7 @@ function Banner_UI(){
         .then((response) => response.json())
         .then((res) => {
             if (res.data) {
+                setOpenDialogForCreate(false);
                 setSubmitSuccess(true);
             } else {
                 setSubmitError(true);
@@ -163,7 +181,7 @@ function Banner_UI(){
     const updateBanner = () => {
         let updateData = {
             ID: banners.ID,
-            Banner_Picture: img2,
+            Banner_Picture: img,
             Description: banners.Description,
             Edit_at: date,
             User_ID: banners.User_ID,
@@ -187,6 +205,7 @@ function Banner_UI(){
         .then((response) => response.json())
         .then((res) => {
             if (res.data) {
+                setOpenDialogForUpdate(false);
                 setSubmitSuccess(true);
                 console.log(res.data);
             } else {
@@ -211,6 +230,7 @@ function Banner_UI(){
         .then((response) => response.json())
         .then((res) => {
             if (res.data) {
+                setOpenDialogForDelete(false);
                 setSubmitSuccess(true);
             } else {
                 setSubmitError(true);
@@ -227,7 +247,7 @@ function Banner_UI(){
             setIsDataloaded(true);
         }
         fetchData();
-    }, []);
+    }, [submitSuccess]); // เมื่อ submit success จะทำการ reload เพื่อแสดงค่าทันทีในตาราง
 
     if(isDataLoaded) return (
         <Container maxWidth="xl">
@@ -252,46 +272,122 @@ function Banner_UI(){
                     บันทึกข้อมูลไม่สำเร็จ{errorMsg}
                 </Alert>
             </Snackbar>
+
+            {/** Create Button */}
+            <Grid container justifyContent={"center"} marginTop={2}>
+                <Button variant="contained" color="success" endIcon={<SaveIcon />} onClick={() => handleDialogClickOpenForCreate()}>Create New Banner</Button>
+            </Grid>
+
+            {/** Search Bar */}
+            <Grid container sx={{ padding: 2 }}>
+                <Grid item xs={4}/>
+                <Grid item xs={4}>
+                    <TextField
+                        id="search-bar"
+                        fullWidth
+                        onChange={(event) => (
+                            setSearchQuery(event.target.value)
+                        )}
+                        label="Search a Banner by Game Name"
+                        variant="outlined"
+                        size="small"
+                    />
+                </Grid>
+            </Grid>
+
+            {/** Table */}
+            <Grid container justifyContent={"center"}>
+                <TableContainer component={Paper} sx={{ width: "65%" }}>
+                    <Table aria-label="Banner">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="center"><h4>Banner Picture</h4></TableCell>
+                                <TableCell align="center"><h4>Description</h4></TableCell>
+                                <TableCell align="center"><h4>Owner</h4></TableCell>
+                                <TableCell align="center"><h4>Game</h4></TableCell>
+                                <TableCell align="center"><h4>Admin</h4></TableCell>
+                                <TableCell align="center"><h4>Edit at</h4></TableCell>
+                                <TableCell align="center"></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {bannersTable.filter(item => item.Game.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+                                <TableRow key={item.ID}>
+                                    <TableCell align="center"><img src={`${item.Banner_Picture}`} width="350" height="150"/></TableCell>
+                                    <TableCell align="center">{item.Description}</TableCell>
+                                    <TableCell align="center">{item.User.Profile_Name}</TableCell>
+                                    <TableCell align="center">{item.Game.Game_Name}</TableCell>
+                                    <TableCell align="center">{item.Admin.Name}</TableCell>
+                                    <TableCell align="center">{`${Moment(item.Edit_at).format('DD MMMM YYYY')}`}</TableCell>
+                                    <TableCell align="center">
+                                        <Stack direction="column" spacing={2}>
+                                            <Button variant="outlined" color="inherit" endIcon={<AutoModeIcon/>} onClick={() => handleDialogClickOpenForUpdate(item)}>
+                                                Edit
+                                            </Button>
+                                            <Button variant="contained" color="error" endIcon={<DeleteForeverOutlinedIcon/>} onClick={() => handleDialogClickOpenForDelete(item)}>
+                                                Delete
+                                            </Button>                                        
+                                        </Stack>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
             
-            <Box>
-                <Paper elevation={2} sx={{padding:2,margin:2}}>
-                    <Grid container>
-                        <Grid marginRight={2}> {/** Create Banner */}
-                            <Grid marginBottom={2}>
-                                <Grid> {/** Banner Picture */}
-                                    <img src={`${img1}`} width="350" height="150"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
+            {/** Create Banner Dialog*/}
+            <Dialog
+                open={openDialogForCreate}
+                onClose={handleDialogClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                >
+                <DialogTitle id="alert-dialog-title">
+                    {"Create New Banner"}
+                </DialogTitle>
+
+                <DialogContent>
+                    <Box> {/** Content Section */}
+                        <Paper elevation={2} sx={{padding:2,margin:2}}>
+                            <Grid container>
+                                <Grid container marginBottom={2}>
+                                    <Grid> {/** Banner Picture */}
+                                        <img src={`${img}`} width="350" height="150"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
+                                    </Grid>
+                                    <Grid container>
+                                        <FormHelperText>recommend size is 1200*300 pixels</FormHelperText>
+                                    </Grid>
+                                    <input type="file" onChange={handleImgChange} />
                                 </Grid>
-                                <input type="file" onChange={handleImg1Change} />
-                                <FormHelperText>recommend size is 1200*300 pixels</FormHelperText>
-                            </Grid>
 
-                            <Grid marginBottom={2}> {/** Game */}
-                                <Autocomplete
-                                    id="game-autocomplete"
-                                    options={games}
-                                    fullWidth
-                                    size="medium"
-                                    //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
-                                    onChange={(event: any, value) => {
-                                        setBanners({ ...banners, Game_ID: value?.ID }); // บันทึกค่าลง interface
-                                    }}
-                                    getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                                        `${option.ID} - ${option.Game_Name}`
-                                    } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                                    renderInput={(params) => <TextField {...params} label="Game ID" />}
-                                    renderOption={(props: any, option: any) => {
-                                    return (
-                                        <li
-                                        {...props}
-                                        value={`${option.ID}`}
-                                        key={`${option.ID}`}
-                                        >{`${option.ID} - ${option.Game_Name}`}</li>
-                                    ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
-                                    }}
-                                />
-                            </Grid>
+                                <Grid container marginBottom={2}> {/** Game */}
+                                    <Autocomplete
+                                        id="game-autocomplete"
+                                        options={games}
+                                        fullWidth
+                                        size="medium"
+                                        //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
+                                        onChange={(event: any, value) => {
+                                            setBanners({ ...banners, Game_ID: value?.ID }); // บันทึกค่าลง interface
+                                        }}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.ID} - ${option.Game_Name}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Game ID" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}
+                                            key={`${option.ID}`}
+                                            >{`${option.ID} - ${option.Game_Name}`}</li>
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                        }}
+                                    />
+                                </Grid>
 
-                            <Grid marginBottom={2}> {/** Owner */}
+                                <Grid container marginBottom={2}> {/** Owner */}
                                     <Autocomplete
                                         id="owner-autocomplete"
                                         options={users}
@@ -315,106 +411,198 @@ function Banner_UI(){
                                         ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
                                         }}
                                     />
-                            </Grid>
+                                </Grid>
 
-                            <Grid marginBottom={2}> {/** Editor */}
-                                <TextField
-                                    disabled
-                                    id="editor-autocomplete"
-                                    fullWidth
-                                    size="medium"
-                                    label="Editor"
-                                    defaultValue={localStorage.getItem('name')}
-                                />
-                            </Grid>
-                            
-                            <Grid marginBottom={2}> {/** Description */}
-                                <TextField
-                                    fullWidth
-                                    id="banner-description"
-                                    label="Banner Description"
-                                    variant="outlined"
-                                    onChange={(event) => setBanners({ ...banners, Description: event.target.value })}
-                                    />
-                            </Grid>
-
-                        </Grid>
-
-                        <Grid marginRight={2}> {/** Update and Delete Banner */}
-                            <Grid marginBottom={2}>
-                                <Grid marginBottom={2}> {/** Banner ID */}
-                                    <Autocomplete
-                                        id="banner-id-autocomplete"
-                                        options={banners_ID}
+                                <Grid container marginBottom={2}> {/** Editor */}
+                                    <TextField
+                                        disabled
+                                        id="editor-autocomplete"
                                         fullWidth
                                         size="medium"
-                                        //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
+                                        label="Editor"
+                                        defaultValue={localStorage.getItem('name')}
+                                    />
+                                </Grid>
+                                
+                                <Grid container marginBottom={2}> {/** Description */}
+                                    <TextField
+                                        fullWidth
+                                        id="banner-description"
+                                        label="Banner Description"
+                                        variant="outlined"
+                                        onChange={(event) => setBanners({ ...banners, Description: event.target.value })}
+                                        />
+                                </Grid>
+
+                                <Grid container marginBottom={2}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DateTimePicker
+                                            disabled
+                                            label="DateTimePicker"
+                                            value={date}
+                                            onChange={(newValue) => {
+                                                setDate(newValue);
+                                            }}
+                                            renderInput={(props) => <TextField {...props} />}
+                                        />
+                                    </LocalizationProvider>
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Box>
+                </DialogContent>
+
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>Exit</Button>
+                    <Button onClick={createBanner} color="error" autoFocus>Create</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/** Update Banner Dialog*/}
+            <Dialog
+                open={openDialogForUpdate}
+                onClose={handleDialogClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                >
+                <DialogTitle id="alert-dialog-title">
+                    {"Create New Banner"}
+                </DialogTitle>
+
+                <DialogContent>
+                    <Box> {/** Content Section */}
+                        <Paper elevation={2} sx={{padding:2,margin:2}}>
+                            <Grid container>
+                                <Grid container marginBottom={2}>
+                                    <Grid> {/** Banner Picture */}
+                                        <img src={`${img}`} width="350" height="150"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
+                                    </Grid>
+                                    <Grid container>
+                                        <FormHelperText>recommend size is 1200*300 pixels</FormHelperText>
+                                    </Grid>
+                                    <input type="file" onChange={handleImgChange} />
+                                </Grid>
+
+                                <Grid container marginBottom={2}> {/** Game */}
+                                    <Autocomplete
+                                        id="game-autocomplete"
+                                        options={games}
+                                        fullWidth
+                                        size="medium"
+                                        defaultValue={banners.Game}
                                         onChange={(event: any, value) => {
-                                            setBanners({ ...banners, ID: value?.ID }); // บันทึกค่าลง interface
-                                            setImg2(value?.Banner_Picture || ""); // value? หมายถึงว่าหาก value ไม่เป็น null ถึงจะเรียก .Banner_Picture
+                                            setBanners({ ...banners, Game_ID: value?.ID }); // บันทึกค่าลง interface
                                         }}
                                         getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                                            `${option.ID}`
+                                            `${option.ID} - ${option.Game_Name}`
                                         } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                                        renderInput={(params) => <TextField {...params} label="Banner ID" />}
+                                        renderInput={(params) => <TextField {...params} label="Game ID" />}
                                         renderOption={(props: any, option: any) => {
                                         return (
                                             <li
                                             {...props}
                                             value={`${option.ID}`}
                                             key={`${option.ID}`}
-                                            >{`${option.ID}`}</li>
+                                            >{`${option.ID} - ${option.Game_Name}`}</li>
                                         ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
                                         }}
                                     />
                                 </Grid>
-                                <Grid> {/** Banner Picture */}
-                                    <img src={`${img2}`} width="350" height="150"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
-                                </Grid>
-                                <input type="file" onChange={handleImg2Change} />
-                                <FormHelperText>recommend size is 1200*300 pixels</FormHelperText>
-                            </Grid>
 
-                            <Grid marginBottom={2}>
-                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DateTimePicker
-                                        disabled
-                                        label="DateTimePicker"
-                                        value={date}
-                                        onChange={(newValue) => {
-                                            setDate(newValue);
+                                <Grid container marginBottom={2}> {/** Owner */}
+                                    <Autocomplete
+                                        id="owner-autocomplete"
+                                        options={users}
+                                        fullWidth
+                                        size="medium"
+                                        defaultValue={banners.User}
+                                        onChange={(event: any, value) => {
+                                            setBanners({ ...banners, User_ID: value?.ID }); // บันทึกค่าลง interface
                                         }}
-                                        renderInput={(props) => <TextField {...props} />}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.ID} - ${option.Profile_Name}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Owner ID" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}
+                                            key={`${option.ID}`}
+                                            >{`${option.ID} - ${option.Profile_Name}`}</li>
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                        }}
                                     />
-                                </LocalizationProvider>
-                            </Grid>
+                                </Grid>
 
-                            {/** Button List */}
-                            <Grid marginBottom={2}>
-                                <Button variant="contained" color="success" onClick={createBanner} endIcon={<SaveIcon />}>
-                                    Add new Banner
-                                </Button>
-                            </Grid>
-                            
-                            <Grid marginBottom={2}>
-                                <Button variant="contained" color="success" onClick={updateBanner} endIcon={<AutoModeIcon />}>
-                                    Update Banner
-                                </Button>
-                            </Grid>
+                                <Grid container marginBottom={2}> {/** Editor */}
+                                    <TextField
+                                        disabled
+                                        id="editor-autocomplete"
+                                        fullWidth
+                                        size="medium"
+                                        label="Editor"
+                                        defaultValue={localStorage.getItem('name')}
+                                    />
+                                </Grid>
+                                
+                                <Grid container marginBottom={2}> {/** Description */}
+                                    <TextField
+                                        fullWidth
+                                        id="banner-description"
+                                        label="Banner Description"
+                                        variant="outlined"
+                                        defaultValue={banners.Description}
+                                        onChange={(event) => setBanners({ ...banners, Description: event.target.value })}
+                                        />
+                                </Grid>
 
-                            <Grid marginBottom={2}>
-                                <Button variant="contained" color="error" onClick={deleteBanner} endIcon={<DeleteForeverOutlinedIcon />}>
-                                    Delete Banner
-                                </Button>
+                                <Grid container marginBottom={2}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DateTimePicker
+                                            disabled
+                                            label="DateTimePicker"
+                                            value={date}
+                                            onChange={(newValue) => {
+                                                setDate(newValue);
+                                            }}
+                                            renderInput={(props) => <TextField {...props} />}
+                                        />
+                                    </LocalizationProvider>
+                                </Grid>
                             </Grid>
-                        </Grid>
+                        </Paper>
+                    </Box>
+                </DialogContent>
 
-                        <Grid item xs={7}> {/** Show Banner list */}
-                            <BannerTable_UI/>
-                        </Grid>
-                    </Grid>
-                </Paper>
-            </Box>
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>Exit</Button>
+                    <Button onClick={updateBanner} color="error" autoFocus>Update</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/** Delete Banner Dialog*/}
+            <Dialog
+                open={openDialogForDelete}
+                onClose={handleDialogClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                >
+                <DialogTitle id="alert-dialog-title">
+                    {"Are you sure to delete Banner?"}
+                </DialogTitle>
+
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        การกดที่ปุ่ม YES จะทำให้แบนเนอร์หายไปตลอดกาล
+                    </DialogContentText>
+                </DialogContent>
+
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>NO</Button>
+                    <Button onClick={deleteBanner} color="error" autoFocus>YES</Button>
+                </DialogActions>
+            </Dialog>
         </Container>
     );
     else return(

@@ -12,6 +12,7 @@ import Alert from "@mui/material/Alert";
 import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField } from '@material-ui/core';
 import Stack from '@mui/material/Stack';
 import { Container, Dialog, Grid, Paper, TableContainer } from '@mui/material';
+import Moment from 'moment';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -21,6 +22,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Basket_List() {
     const classes = useStyles();
+    Moment.locale('th');
 
     const [basket, setBasket] = useState<BasketInterface[]>([]);
     const [editBasket, setEditBasket] = useState<BasketInterface>();
@@ -197,6 +199,7 @@ function Basket_List() {
                             <TableCell align="center"><h4>Price</h4></TableCell>
                             <TableCell align="center"><h4>Note</h4></TableCell>
                             <TableCell align="center"><h4>Status</h4></TableCell>
+                            <TableCell align="center"><h4>Since</h4></TableCell>
                             <TableCell align="center"><h4>Order</h4></TableCell>
                             <TableCell align="center"><h4>Action</h4></TableCell>
                         </TableRow>
@@ -209,6 +212,7 @@ function Basket_List() {
                                 <TableCell align="center">{item.Game.Game_Price}</TableCell>                         
                                 <TableCell align="center">{item.Note}</TableCell>
                                 <TableCell align="center">{item.Payment_Status.Status}</TableCell>
+                                <TableCell align="center">{`${Moment(item.Date).format('DD MMMM YYYY')}`}</TableCell>
                                 <TableCell align="center">{item.Order_ID}</TableCell>
                                 <TableCell align="center">
                                     <Stack direction="column" spacing={2}>
