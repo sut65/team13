@@ -127,7 +127,7 @@ type Friend struct {
 	Game_ID        *uint     `valid:"-"`
 	Game           Game      `gorm:"references:id" valid:"-"`
 	Is_Hide        *bool     `valid:"ToBoolean~การซ่อนผิดพลาด"`
-	Date           time.Time `valid:"IsnotPast~เวลาไม่ถูกต้อง"`
+	Date           time.Time `valid:"DelayNow10Min~เวลาไม่ถูกต้อง"`
 	Order          []Order   `gorm:"foreignKey:Friend_ID"`
 }
 
@@ -147,7 +147,7 @@ type Basket struct {
 	Payment_Status_ID *uint          `valid:"-"`
 	Payment_Status    Payment_Status `gorm:"references:id" valid:"-"`
 	Note              string         `valid:"required~คุณไม่ได้ใส่โน๊ต,maxstringlength(200)~โน็ตความยาวไม่เกิน 200 ตัวอักษร"`
-	Date              time.Time      `valid:"IsnotPast~เวลาไม่ถูกต้อง"`
+	Date              time.Time      `valid:"DelayNow10Min~เวลาไม่ถูกต้อง"`
 	Order_ID          *uint          `valid:"-"`
 	Order             Order          `gorm:"references:id" valid:"-"`
 }
@@ -324,9 +324,9 @@ func init() {
 		return t.After(time.Now().AddDate(0, 0, -1))
 	})
 
-	govalidator.CustomTypeTagMap.Set("DelayNow5Min", func(i interface{}, context interface{}) bool {
+	govalidator.CustomTypeTagMap.Set("DelayNow10Min", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
-		return t.After(time.Now().Add(5 - time.Minute))
+		return t.After(time.Now().Add(time.Minute * -10))
 	})
 
 	govalidator.TagMap["image_valid"] = govalidator.Validator(func(str string) bool {
