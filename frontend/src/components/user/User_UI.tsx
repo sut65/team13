@@ -358,7 +358,7 @@ function User(){
                                 options={OWNgames}
                                 fullWidth
                                 size="medium"
-                                defaultValue={ALLgames[Number(user.Out_Standing_Game_ID) - 1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมที่ขายแค่เกมเดียวงี้
+                                defaultValue={ALLgames[Number(user.Out_Standing_Game_ID) - 1]}
                                 onChange={(event: any, value) => {
                                     setUser({ ...user, Out_Standing_Game_ID: value?.ID }); // บันทึกค่าลง interface
                                 }}
