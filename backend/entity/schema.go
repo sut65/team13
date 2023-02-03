@@ -291,7 +291,7 @@ type Wish_Level struct {
 type Wishlist struct {
 	gorm.Model
 	Date time.Time
-	Note string `valid:"required~ไม่ได้ใส่โน๊ต"`
+	Note string `valid:"required~ไม่ได้ใส่โน๊ต,maxstringlength(50)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
 
 	Game_ID *uint `valid:"-"`
 	Game    Game  `gorm:"references:id" valid:"-"`

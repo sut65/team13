@@ -60,7 +60,7 @@ function Individual_game() {
                     // เป็นการทำให้ state ของ games ถูกเปลี่ยนทันที เพราะหากไม่ทำแบบนี้ games จะไม่ถูก set โดยทันทีแล้วค่าจะไม่ออก
                     // แต่จริงๆแล้วมันน่าจะเป็นการเติม array เข้าไปมากกว่า แต่ด้วยเหตุผลทางเทคนิคมันทำให้ใช้ได้
                     setgames(prevgames => ([...prevgames, ...res.data]));
-                    if(res.data[0].DeletedAt == null){
+                    if (res.data[0].DeletedAt == null) {
                         setIsGameOnStore(true);
                     }
                 }
@@ -173,7 +173,8 @@ function Individual_game() {
                 if (res.data) {
                     setSuccess(true);
                     setOpenAddWishlist(false);
-                    
+                    setAlertWihsMessage("บันทึกข้อมูลสำเร็จ");
+
                 } else {
                     setErrorWishlist(true);
                     setAlertWihsMessage(res.error);
@@ -280,7 +281,8 @@ function Individual_game() {
                 </Paper>
             </Box>
             <Box> {/** Popup ต่างๆ */}
-                <Snackbar                                                                                 //ป้ายบันทึกสำเร็จ
+                <Snackbar
+                    id="success"                                                                                 //ป้ายบันทึกสำเร็จ
                     open={success}
                     autoHideDuration={6000}
                     onClose={handleClose}
@@ -291,7 +293,8 @@ function Individual_game() {
                     </Alert>
                 </Snackbar>
 
-                <Snackbar                                                                                 //ป้ายบันทึกไม่สำเร็จ
+                <Snackbar
+                    id="error"                                                                           //ป้ายบันทึกไม่สำเร็จ
                     open={error}
                     autoHideDuration={6000}
                     onClose={handleClose}
@@ -344,14 +347,15 @@ function Individual_game() {
 
 
             <Box> {/** Popup ต่างๆ ระบบ Wishlist */}
-                <Snackbar                                                                                 //ป้ายบันทึกไม่สำเร็จ
+                <Snackbar
+                    id="error"                                                                                  //ป้ายบันทึกไม่สำเร็จ
                     open={errorwishlist}
                     autoHideDuration={6000}
                     onClose={handleClose}
                     anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
                 >
                     <Alert onClose={handleClose} severity="error">
-                        บันทึกข้อมูลไม่สำเร็จ {wishMessage}
+                        {wishMessage}
                     </Alert>
                 </Snackbar>
                 <Dialog fullWidth maxWidth="md" open={openAddWishlist} onClose={handleCloseForAddWishlist} >
@@ -396,8 +400,8 @@ function Individual_game() {
                                         ); //display value
                                     }}
                                 />
-                                </Grid>
-                                <Grid marginTop={2}>
+                            </Grid>
+                            <Grid marginTop={2}>
                                 <TextField
                                     id="outlined-basic"
                                     placeholder="Insert details"
@@ -409,8 +413,8 @@ function Individual_game() {
                                     fullWidth={true}
                                     onChange={(event) => setNoteWishlist(event.target.value)}
                                 />
-                                </Grid>
-                                <Grid>
+                            </Grid>
+                            <Grid>
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DateTimePicker
                                         label="disabled"
@@ -433,7 +437,7 @@ function Individual_game() {
             </Box>
         </Container>
     );
-    else if(!isGameOnStore) return (
+    else if (!isGameOnStore) return (
         <Container>
             <Box>
                 <Grid container justifyContent={"center"} marginTop={50}>
@@ -442,7 +446,7 @@ function Individual_game() {
             </Box>
         </Container>
     );
-    else return(
+    else return (
         <Container>
             <Box>
                 <Grid container justifyContent={"center"} marginTop={50}>
