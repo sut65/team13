@@ -66,9 +66,9 @@ type Rating struct {
 type Game struct {
 	gorm.Model
 	Game_Name              string      `gorm:"uniqueIndex" valid:"maxstringlength(30)~Name must not more than 30 character,required~Please Enter your Game Name"`
-	Game_Price             uint        `valid:"range(0|100000)~ Price incorrect,required~Please enter price,int"` //` valid: InRangeInt(value, 0)`
-	Game_description       string      `valid:"maxstringlength(200)~Description must not more than 200 character,required~Please Enter your Game Description"`
-	Publish_Date           time.Time   `valid:"required~Date can be null ,IsnotPast~Date incorrect"`
+	Game_Price             uint        `valid:"range(0|100000)~Price incorrect"` //` valid: InRangeInt(value, 0) ,required~Please enter price,int`
+	Game_description       string      `valid:"maxstringlength(200)~Description must be less than 200 character,required~Please Enter your Game Description"`
+	Publish_Date           time.Time   `valid:"required~Date can be null "` //,DelayNow10Min~Date incorrect
 	Seller_ID              *uint       `valid:"-"`
 	Seller                 User        `gorm:"references:id" valid:"-" `
 	Game_Status_ID         *uint       `valid:"-"`
@@ -77,35 +77,35 @@ type Game struct {
 	Type_Game              Type_Game   `gorm:"references:id" valid:"-"`
 	Rating_ID              *uint       `valid:"-"`
 	Rating                 Rating      `gorm:"references:id" valid:"-"`
-	Game_file              string      `valid:"url~Link incorrect ,required~Please Upload Game file"`
-	Game_Picture           string
-	Storage                []Storage  `gorm:"foreignKey:Game_ID"`
-	User_Out_Standing_Game []User     `gorm:"foreignKey:Out_Standing_Game_ID"`
-	Basket                 []Basket   `gorm:"foreignKey:Game_ID"`
-	Friend                 []Friend   `gorm:"foreignKey:Game_ID"`
-	Banner                 []Banner   `gorm:"foreignKey:Game_ID"`
-	Wishlist               []Wishlist `gorm:"foreignKey:Game_ID"`
+	Game_file              string      `valid:"url~Link incorrect,required~Please Upload Game file"`
+	Game_Picture           string      `valid:"image_valid~Game Image incorrect,required~Please upload image"`
+	Storage                []Storage   `gorm:"foreignKey:Game_ID"`
+	User_Out_Standing_Game []User      `gorm:"foreignKey:Out_Standing_Game_ID"`
+	Basket                 []Basket    `gorm:"foreignKey:Game_ID"`
+	Friend                 []Friend    `gorm:"foreignKey:Game_ID"`
+	Banner                 []Banner    `gorm:"foreignKey:Game_ID"`
+	Wishlist               []Wishlist  `gorm:"foreignKey:Game_ID"`
 }
 
 // ---ระบบคลังเกม(Storage)---
 type Collection struct {
 	gorm.Model
-	Name    string
+	Name    string `valid:"required~คุณไม่ได้ใส่ชื่อ,maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร"`
 	Note    string
-	Date    time.Time
-	User_ID *uint
-	User    User      `gorm:"references:id"`
+	Date    time.Time `valid:"DelayNow10Min~เวลาเป็นอดีต รีเฟชหน้าเว็บใหม่"`
+	User_ID *uint     `valid:"-"`
+	User    User      `gorm:"references:id" valid:"-"`
 	Storage []Storage `gorm:"foreignKey:Collection_ID"`
 }
 
 type Storage struct {
 	gorm.Model
-	Game_ID            *uint
-	Game               Game `gorm:"references:id"`
-	User_ID            *uint
-	User               User `gorm:"references:id"`
-	Collection_ID      *uint
-	Collection         Collection `gorm:"references:id"`
+	Game_ID            *uint      `valid:"-"`
+	Game               Game       `gorm:"references:id" valid:"-"`
+	User_ID            *uint      `valid:"-"`
+	User               User       `gorm:"references:id" valid:"-"`
+	Collection_ID      *uint      `valid:"-"`
+	Collection         Collection `gorm:"references:id" valid:"-"`
 	User_Favorite_Game []User     `gorm:"foreignKey:Favorite_Game_ID"`
 }
 
@@ -291,8 +291,8 @@ type Wish_Level struct {
 }
 type Wishlist struct {
 	gorm.Model
-	Date time.Time
-	Note string `valid:"required~ไม่ได้ใส่โน๊ต,maxstringlength(50)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
+	Date time.Time `valid:"DelayNow10Min~เวลาเป็นอดีต รีเฟชหน้าเว็บใหม่"`
+	Note string    `valid:"required~คุณไม่ได้ใส่โน็ต,maxstringlength(50)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
 
 	Game_ID *uint `valid:"-"`
 	Game    Game  `gorm:"references:id" valid:"-"`

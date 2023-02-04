@@ -45,6 +45,7 @@ function Collection_UI() {
   const [openForAdd, setOpenForAdd] = useState(false);
   const [openForEdit, setOpenForEdit] = useState(false);
   const [openForDelete, setOpenForDelete] = useState(false);
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
   const handleRowClick: GridEventListener<'rowClick'> = (params) => {
     setNameEdit(params.row.Name);
@@ -147,6 +148,7 @@ function Collection_UI() {
 
         } else {
           setError(true);
+          setErrorMsg(res.error)
         }
       });
 
@@ -271,7 +273,7 @@ function Collection_UI() {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="error">
-          บันทึกข้อมูลไม่สำเร็จ
+          {errorMsg}
         </Alert>
       </Snackbar>
       <Box

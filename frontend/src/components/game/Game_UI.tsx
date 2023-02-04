@@ -24,14 +24,15 @@ import {
   GetGame_Status,
   CreateGame,
   GetGame_Rating,
-  GetUser
 } from "../../components/game/GameService";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@mui/material/Alert";
 import Autocomplete from "@mui/material/Autocomplete";
-
+function timeout(delay: number) {
+  return new Promise(res => setTimeout(res, delay));
+}
 
 function Game_UI() {
   const [user, setUser] = React.useState<Partial<UsersInterface>>({});
@@ -40,7 +41,7 @@ function Game_UI() {
   const [game_status, setGame_status] = useState<Game_StatusInterface[]>([]);
   const [game, setGame] = React.useState<Partial<GamesInterface>>({ Publish_Date: new Date(), });
   const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null); // สร้างตัวแปรแยกเนื่องจาก render.result มันต้องการ ArrayBuffer ด้วย
-
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
 
@@ -154,18 +155,31 @@ function Game_UI() {
 
 
     };
-
-
     console.log(data);
-    let res = await CreateGame(data);
+    const apiUrl = "http://localhost:8080/Game";
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then(async (res) => {
+        if (res.data) {          
+          setSuccess(true);
+          await timeout(500); 
+          window.location.reload();
+        } else {
+          setError(true);
+          setErrorMsg(" - "+res.error);
+        }
+      });
 
-    console.log(res)
-    if (res) {
-      setSuccess(true);
-    } else {
-      setError(true);
-    }
 
+  
   }
   if (user.Is_Seller)
     return (
@@ -185,7 +199,7 @@ function Game_UI() {
       }} >
         <Snackbar
           open={success}
-          autoHideDuration={3000}
+          autoHideDuration={1500}
           onClose={handleClose}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
@@ -195,12 +209,12 @@ function Game_UI() {
         </Snackbar>
         <Snackbar
           open={error}
-          autoHideDuration={6000}
+          autoHideDuration={1500}
           onClose={handleClose}
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <Alert onClose={handleClose} severity="error">
-            Failed to Upload
+            Failed to Upload {errorMsg}
           </Alert>
         </Snackbar>
         <Box >
@@ -317,7 +331,7 @@ function Game_UI() {
 
               <Grid item xs={4} >
               <Autocomplete sx={{ mt: 5 }}
-                          id="storages-autocomplete"
+                          id="Type_Game-autocomplete"
                           options={game_type}
                           fullWidth
                           size="medium"
@@ -340,7 +354,7 @@ function Game_UI() {
                           }}
                         />
                 <Autocomplete sx={{ mt: 5 }}
-                          id="storages-autocomplete"
+                          id="Game_Status-autocomplete"
                           options={game_status} //ตัวที่เราจะเลือกมีอะไรบ้าง
                           fullWidth
                           size="medium"
@@ -363,7 +377,7 @@ function Game_UI() {
                           }}
                         />
                 <Autocomplete sx={{ mt: 5 }}
-                          id="storages-autocomplete"
+                          id="Rating-autocomplete"
                           options={game_rating} //ตัวที่เราจะเลือกมีอะไรบ้าง
                           fullWidth
                           size="medium"

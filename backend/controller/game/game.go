@@ -186,7 +186,7 @@ func UpdateGame(c *gin.Context) {
 	}
 
 	updateGame := entity.Game{
-		Game_Name:        game.Game_Name,
+		Game_Name:        game.Game_Name, //valid need value
 		Game_Price:       game.Game_Price,
 		Game_description: game.Game_description,
 		Rating:           rating,
@@ -194,8 +194,13 @@ func UpdateGame(c *gin.Context) {
 		Type_Game:        type_game,
 		Game_file:        game.Game_file,
 		Game_Picture:     game.Game_Picture,
+		Publish_Date:     game.Publish_Date, //valid need value
 	}
 
+	if _, err := govalidator.ValidateStruct(updateGame); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	if err := entity.DB().Where("id = ?", game.ID).Updates(&updateGame).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
