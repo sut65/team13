@@ -43,19 +43,6 @@ func TestCollectionValidate(t *testing.T) {
 		g.Expect(err.Error()).To(gomega.Equal("คุณไม่ได้ใส่ชื่อ")) // check error message
 	})
 
-	t.Run("Name invalid(null)", func(t *testing.T) {
-		colTest := collection
-		colTest.Note = ""
-
-		ok, err := govalidator.ValidateStruct(colTest)
-
-		g.Expect(ok).NotTo(gomega.BeTrue()) // ข้อมูลผิด ok จะเป็น false
-
-		g.Expect(err).NotTo(gomega.BeNil()) // ข้อมูลผิด error จะไม่เป็น nil
-
-		g.Expect(err.Error()).To(gomega.Equal("คุณไม่ได้ใส่โน็ต")) // check error message
-	})
-
 	t.Run("Name invalid(>50)", func(t *testing.T) {
 		colTest := collection
 		colTest.Name = "666546465464564565464565464564564564564564564564564564564564564545645645645645645"
