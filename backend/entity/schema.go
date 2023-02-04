@@ -89,8 +89,8 @@ type Game struct {
 // ---ระบบคลังเกม(Storage)---
 type Collection struct {
 	gorm.Model
-	Name    string    `valid:"required~คุณไม่ได้ใส่ชื่อ,maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร"`
-	Note    string    `valid:"required~คุณไม่ได้ใส่โน็ต"`
+	Name    string `valid:"required~คุณไม่ได้ใส่ชื่อ,maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร"`
+	Note    string
 	Date    time.Time `valid:"DelayNow10Min~เวลาเป็นอดีต รีเฟชหน้าเว็บใหม่"`
 	User_ID *uint     `valid:"-"`
 	User    User      `gorm:"references:id" valid:"-"`
