@@ -12,35 +12,44 @@ import (
 
 func CreateStroage(c *gin.Context) {
 
-	var storage entity.Storage
+	// var storage entity.Storage
 	var user entity.User
 	var game entity.Game
+	var basket entity.Basket
+	var pv entity.Payment_Verification
 
-	if err := c.ShouldBindJSON(&storage); err != nil {
+	if err := c.ShouldBindJSON(&pv); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	if err := entity.DB().Raw("SELECT * FROM baskets WHERE Order_ID = ?", pv.Order_ID).Find(&basket).Error; err != nil {
 
-	if tx := entity.DB().Where("id = ?", storage.User_ID).First(&user); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
 		return
-	}
-	if tx := entity.DB().Where("id = ?", storage.Game_ID).First(&game); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "video not found"})
-		return
+
 	}
 
-	bk := entity.Storage{
-		User: user, // โยงความสัมพันธ์กับ Entity Room
-		Game: game,
+	if tx := entity.DB().Where("id = ?", basket.User_ID).First(&user); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+		return
+	}
+	if tx := entity.DB().Where("id = ?", basket.Game_ID).First(&game); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Game not found"})
+		return
+	}
+
+	st := entity.Storage{
+		User_ID: basket.User_ID, // โยงความสัมพันธ์กับ Entity Room
+		Game_ID: basket.Game_ID,
 	}
 
 	// 13: บันทึก
-	if err := entity.DB().Create(&bk).Error; err != nil {
+	if err := entity.DB().Create(&st).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	c.JSON(http.StatusCreated, gin.H{"data": bk})
+	c.JSON(http.StatusCreated, gin.H{"data": st})
 
 }
 
@@ -108,7 +117,7 @@ func ListStoragesUser(c *gin.Context) {
 	id := c.Param("id")
 
 	// มี prelaod เพื่อใช้โหลดให้ระบบ Storages
-	if err := entity.DB().Preload("Game").Preload("User").Preload("Collection").Raw("SELECT * FROM storages WHERE user_id = ?", id).Find(&storages).Error; err != nil {
+	if err := entity.DB().Preload("Game").Preload("User").Preload("Collection").Raw("SELECT * FROM storages WHERE user_id = ? AND deleted_at IS NULL ", id).Find(&storages).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 

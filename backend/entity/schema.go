@@ -205,15 +205,15 @@ type Admin struct {
 type Banner struct {
 	// Normal User
 	gorm.Model
-	Banner_Picture string
-	Description    string `valid:"maxstringlength(200)~Banner Description ความยาวไม่เกิน 200 ตัวอักษร"`
-	Edit_at        time.Time
-	User_ID        *uint `valid:"-"`
-	User           User  `gorm:"references:id" valid:"-"`
-	Admin_ID       *uint `valid:"-"`
-	Admin          Admin `gorm:"references:id" valid:"-"`
-	Game_ID        *uint `valid:"-"`
-	Game           Game  `gorm:"references:id" valid:"-"`
+	Banner_Picture string    `valid:"image_valid~รูปภาพไม่ถูกต้อง,required~กรุณาอัปโหลดรูปภาพ"`
+	Description    string    `valid:"maxstringlength(50)~Banner Description ความยาวไม่เกิน 50 ตัวอักษร"`
+	Edit_at        time.Time `valid:"DelayNow10Min~เวลาห้ามเป็นอดีต"` // สามารถเป็นอดีตได้ไม่เกิน 9 นาที 59 วิ ถ้า 10 นาทีแล้วจะตรวจจับว่าผิด
+	User_ID        *uint     `valid:"-"`
+	User           User      `gorm:"references:id" valid:"-"`
+	Admin_ID       *uint     `valid:"-"`
+	Admin          Admin     `gorm:"references:id" valid:"-"`
+	Game_ID        *uint     `valid:"-"`
+	Game           Game      `gorm:"references:id" valid:"-"`
 }
 
 // ---ระบบจัดอันดับเกม(TopGame)---
