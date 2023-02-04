@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import BuildIcon from '@mui/icons-material/Build';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { GamesInterface } from "../../models/game/IGame";
-import { UsersInterface } from "../../models/user/IUser";
 import { RatingsInterface } from "../../models/game/IRating";
 import { Type_GamesInterface } from "../../models/game/IType_Game";
 import { Game_StatusInterface } from "../../models/game/IGame_Status";
@@ -24,11 +22,9 @@ import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Grid from "@mui/material/Grid";
 import Alert from "@mui/material/Alert";
-import Select, { SelectChangeEvent } from "@mui/material/Select";
 import Autocomplete from "@mui/material/Autocomplete";
 import Moment from 'moment';
 import AddIcon from '@mui/icons-material/Add';
-
 import Game_UI from "./Game_UI";
 //import id from "date-fns/esm/locale/id/index.js";
 
@@ -47,8 +43,10 @@ function Game() {
   const [game_type, setGame_type] = useState<Type_GamesInterface[]>([]);
   const [game_status, setGame_status] = useState<Game_StatusInterface[]>([]);
   const [game1, setGame1] = React.useState<Partial<GamesInterface>>({});
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
+  const [UpdateSuccess, setUpdateSuccess] = useState(false);
+  const [UpdateError, setUpdateError] = useState(false);
+  const [DeleteSuccess, setDeleteSuccess] = useState(false);
+  const [DeleteError, setDeleteError] = useState(false);
   const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
   const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
   function timeout(delay: number) {
@@ -63,15 +61,12 @@ function Game() {
     let UpdateData = {
       ID: game1.ID,
       Game_Price: convertType(game1.Game_Price),
-
       Game_description: game1.Game_description,
-
       Game_Status_ID: convertType(game1.Game_Status_ID),
       Type_Game_ID: convertType(game1.Type_Game_ID),
       Rating_ID: convertType(game1.Rating_ID),
       Game_file: game1.Game_file,
       Game_Picture: imageString
-
     };
     const apiUrl = "http://localhost:8080/Game";
     const requestOptions = {
@@ -82,15 +77,15 @@ function Game() {
       },
       body: JSON.stringify(UpdateData),
     };
-
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
-      .then((res) => {
-        if (res.data) {
-          setSuccess(true);
+      .then(async (res) => {
+        if (res.data) {          
+          setUpdateSuccess(true);
+          await timeout(500); 
+          window.location.reload();
         } else {
-          setError(true);
-
+          setUpdateError(true);
         }
       });
 
@@ -111,12 +106,11 @@ function Game() {
       .then((response) => response.json())
       .then(async (res) => {
         if (res.data) {
-          setSuccess(true);
-          await timeout(1000); //for 1 sec delay
+          setDeleteSuccess(true);
+          await timeout(500); 
           window.location.reload();
-
         } else {
-          setError(true);
+          setDeleteError(true);
         }
       });
   }
@@ -131,15 +125,17 @@ function Game() {
       setImageString(base64Data)
     }
   }
-  const handleClose = (
+  const handleCloseSnackbar = (
     event?: React.SyntheticEvent | Event,
     reason?: string
   ) => {
     if (reason === "clickaway") {
       return;
     }
-    setSuccess(false);
-    setError(false);
+    setUpdateSuccess(false);
+    setUpdateError(false);
+    setDeleteSuccess(false);
+    setDeleteError(false);
   };
   // TextField
   const handleInputChange = (
@@ -149,16 +145,7 @@ function Game() {
     const { value } = event.target;
     setGame1({ ...game1, [id]: value });
   };
-  //Select
-  const handleChange = (event: SelectChangeEvent) => {
-    const name = event.target.name as keyof typeof Game;
-    setGame1({
-      ...game1,
-      [name]: event.target.value,
-    });
 
-
-  };
   useEffect(() => {
     const fetchData = async () => {
       await Game();
@@ -188,18 +175,15 @@ function Game() {
   };
   const handleClickOpenForDelete = () => {
     setOpenForDelete(true);
-
   };
   const handleCloseForDelete = () => {
     setOpenForDelete(false);
   };
-
   const Game = async () => {
     let res = await GetGame();
     if (res) {
       // setImageString(rese)// เพื่อให้ มันมีภาพ ตอนแรกไม่มีภาพ defaultvaule
       setGame(res);
-
       console.log(res)
     }
   };
@@ -209,14 +193,12 @@ function Game() {
       setGame_type(res);
     }
   };
-
   const getGame_status = async () => {
     let res = await GetGame_Status();
     if (res) {
       setGame_status(res);
     }
   };
-
   const getGame_rating = async () => {
     let res = await GetGame_Rating();
     if (res) {
@@ -234,9 +216,8 @@ function Game() {
     }}>
 
       <Container maxWidth="xl" sx={{ p: 20 }}  >
-        <Grid container> {/** Search direction={"column-reverse"} */}
+        <Grid container sx = {{mb : 4}} > {/** Search direction={"column-reverse"} */ }
           <Grid container>
-
             <Grid item xs={11}>
               <TextField
                 id="search-bar"
@@ -248,7 +229,7 @@ function Game() {
                 placeholder="Searching..."
                 size="medium"
               />
-              </Grid>
+            </Grid>
             <Grid item xs={1} display="flex"
               justifyContent="flex-end"
               alignItems="flex-end">
@@ -258,16 +239,13 @@ function Game() {
             </Grid>
           </Grid>
         </Grid>
+        <Paper elevation={5}>
         <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}>
-
+        
           {game.filter(item => item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
-
             <Grid item xs={3} key={item.ID} >
-
               <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
-
                 <CardActionArea onClick={() => handleClickOpenForEdit(item)}>
-
                   <CardMedia
                     component="img"
                     height="140"
@@ -277,17 +255,13 @@ function Game() {
                     {item.Game_Name}
                   </CardContent>
                 </CardActionArea>
-
               </Card>
             </Grid>
-
-
           ))}
-
+          
         </Grid>
-
-
-
+        </Paper>
+        
         <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} sx={{
           // bgcolor: "#e3f2fd",
           //ml: 10,
@@ -298,11 +272,9 @@ function Game() {
           // , width: "1500px"
           // , height: "1200px"
           // , opacity: 1
-
         }}>
           <DialogTitle sx={{
             bgcolor: "#E3E3E3"
-
           }}>{gameEdit?.Game_Name}</DialogTitle >
           <DialogContent sx={{
             // bgcolor: "#e3f2fd",
@@ -314,7 +286,6 @@ function Game() {
             // , width: "1500px"
             // , height: "1200px"
             // , opacity: 1
-
           }}>
             {/* <DialogContentText>
               {gameArray[Number(gametest) - 1]}
@@ -324,7 +295,6 @@ function Game() {
               //  backgroundImage: `url("https://images6.alphacoders.com/655/655993.jpg")`
               //https://images6.alphacoders.com/112/1126233.jpg
             }}>
-
               <Container maxWidth="xl" sx={{
                 //backgroundColor: '#E3E3E3',
                 // boxShadow: 15,
@@ -333,24 +303,47 @@ function Game() {
                 // border: 2,
                 //  p: 15
               }} >
+                {/*snackbar update*/}
                 <Snackbar
-                  open={success}
+                  open={UpdateSuccess}
                   autoHideDuration={3000}
-                  onClose={handleClose}
+                  onClose={handleCloseSnackbar}
                   anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 >
-                  <Alert onClose={handleClose} severity="success">
-                    Upload complete
+                  <Alert onClose={handleCloseSnackbar} severity="success">
+                    Update complete
                   </Alert>
                 </Snackbar>
                 <Snackbar
-                  open={error}
-                  autoHideDuration={6000}
-                  onClose={handleClose}
+                  open={UpdateError}
+                  autoHideDuration={3000}
+                  onClose={handleCloseSnackbar}
                   anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 >
-                  <Alert onClose={handleClose} severity="error">
-                    Failed to Upload
+                  <Alert onClose={handleCloseSnackbar} severity="error">
+                    Failed to Update
+                  </Alert>
+                </Snackbar>
+
+                {/*snackbar delete*/}
+                <Snackbar
+                  open={DeleteSuccess}
+                  autoHideDuration={3000}
+                  onClose={handleCloseSnackbar}
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                  <Alert onClose={handleCloseSnackbar} severity="success">
+                    Delete complete
+                  </Alert>
+                </Snackbar>
+                <Snackbar
+                  open={DeleteError}
+                  autoHideDuration={3000}
+                  onClose={handleCloseSnackbar}
+                  anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                >
+                  <Alert onClose={handleCloseSnackbar} severity="error">
+                    Failed to Delete
                   </Alert>
                 </Snackbar>
 
@@ -360,25 +353,17 @@ function Game() {
 
                     mt: 5,
                   }}>
-
-
-
                     <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
                       <Grid item xs={3}>
                         <h2 style={{
                           color: "black"
-
                         }}>Game Title</h2>
-
                         <FormControl fullWidth variant="outlined"  >
                           <TextField disabled
                             id="Game_Name"
                             variant="outlined"
                             type="string"
                             size="medium"
-
-
-
                             defaultValue={gameEdit?.Game_Name}
                           />
                         </FormControl>
@@ -408,18 +393,13 @@ function Game() {
                             size="medium"
                             placeholder="------------------------------------"
                             defaultValue={localStorage.getItem("email")}
-
                           />
                         </FormControl>
                       </Grid>
-
                       <Grid item xs={7} >
                       </Grid >
-
-
                     </Grid>
                     <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
-
                       <Grid item xs={4} >
                         <Autocomplete sx={{ mt: 5 }}
                           id="storages-autocomplete"
@@ -508,21 +488,15 @@ function Game() {
                           style={{ float: "right" }}
                           variant="contained"
                           color="error"
-                          startIcon={< CloudUploadIcon />}
+                          startIcon={< DeleteIcon />}
                           onClick={() => handleClickOpenForDelete()}
-
-
                         >
                           Delete
                         </Button>
                       </Grid>
-
-
                       <Grid item xs={4}  >
-
                         <h2>Game Description </h2>
                         <FormControl fullWidth variant="outlined">
-
                           <TextField
                             id="Game_description"
                             variant="outlined"
@@ -535,25 +509,19 @@ function Game() {
                             defaultValue={gameEdit?.Game_description}
                           />
                         </FormControl>
-
                       </Grid>
                       <Grid item xs={4}  >
-
                         <h2>Upload file </h2>
                         <FormControl fullWidth variant="outlined">
-
                           <TextField
                             id="Name"
                             variant="outlined"
                             type="string"
                             size="medium"
                             placeholder="------"
-
-
                             defaultValue={gameEdit?.Game_file}
                             onChange={handleInputChange}
                           />
-
                         </FormControl>
                         <FormControl fullWidth variant="outlined"  >
                           <h2>Publish Date</h2>
@@ -563,10 +531,7 @@ function Game() {
                             type="string"
                             size="medium"
                             placeholder="------"
-
-
                             defaultValue={`${Moment(gameEdit?.Publish_Date).format('DD MMMM YYYY')}`}
-
                           />
                         </FormControl>
                         <Grid item xs={8}>
@@ -580,16 +545,11 @@ function Game() {
                       </Grid>
                     </Grid>
                   </Paper>
-
                 </Box>
-
-
-
               </Container>
             </div>
           </DialogContent>
           {/* <DialogActions>
-
           </DialogActions> */}
         </Dialog>
         <Dialog fullWidth maxWidth="xl" open={openForCreate} onClose={handleCloseForCreate}>
@@ -601,42 +561,32 @@ function Game() {
         <Dialog fullWidth maxWidth="sm" open={openForDelete} onClose={handleCloseForDelete} >
           <DialogTitle>Are you sure to DELETE  this game</DialogTitle>
           <DialogContent>
-
           </DialogContent>
           <DialogActions>
-
             <Button color="error" onClick={DeleteGame}> Yes </Button>
-
           </DialogActions>
         </Dialog>
-
-
-        <Box>
-
+         {/* <Box>
           <Paper elevation={10} sx={{
             //backgroundImage: `url("https://img5.goodfon.com/wallpaper/nbig/b/3c/reze-chainsaw-man-devushka-tsvety-nebo.jpg")`,
+            bgcolor : "Black",
             op: 1
+            
           }}>
-            <Box>
+            asd
+             <Box>
               <Button
                 component={RouterLink}
                 to="/sell_game"
                 variant="contained"
                 color="inherit"
-
               >
                 Back to Upload game
               </Button>
-
-            </Box>
+            </Box> 
           </Paper>
-
-          {/* // <dialog><Game_UI/></dialog> */}
-
-
-        </Box>
-
-
+            // <dialog><Game_UI/></dialog>  
+        </Box>  */}
       </Container>
     </div>
   );
