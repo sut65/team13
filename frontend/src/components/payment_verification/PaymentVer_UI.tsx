@@ -6,7 +6,7 @@ import Alert from "@mui/material/Alert";
 import dayjs, { Dayjs } from "dayjs";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
-import { Box,Dialog, Grid, Paper, TableContainer, Autocomplete, Container, DialogTitle, DialogContent, DialogContentText, DialogActions} from '@mui/material';
+import { Box, Dialog, Grid, Paper, TableContainer, Autocomplete, Container, DialogTitle, DialogContent, DialogContentText, DialogActions } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -41,7 +41,7 @@ function PaymentVer_UI() {
     const [order, setOrder] = React.useState<OrderInterface[]>([]);
     const [ver_status, setVerStatus] = React.useState<VerificationStatusInterface[]>([]);
     const [admin, setAdmin] = React.useState<AdminsInterface[]>([]);
-    
+
     const [note, setNote] = React.useState<string>("");
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
 
@@ -63,7 +63,7 @@ function PaymentVer_UI() {
     }
     const handleCloseForNew = () => {
         setOpenForNew(false);
-        
+
     }
 
 
@@ -76,7 +76,7 @@ function PaymentVer_UI() {
                 "Content-Type": "application/json",
             },
         };
-       
+
         await fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -95,7 +95,7 @@ function PaymentVer_UI() {
                 "Content-Type": "application/json",
             },
         };
-       
+
         await fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -115,7 +115,7 @@ function PaymentVer_UI() {
                 "Content-Type": "application/json",
             },
         };
-       
+
         await fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -138,20 +138,20 @@ function PaymentVer_UI() {
         console.log(data)
 
         const apiUrl = "http://localhost:8080/payment_ver";           //ส่งขอบันทึก
-  
+
         const requestOptions = {
-  
-          method: "POST",
-  
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-        },
-  
-          body: JSON.stringify(data),
-  
-      };
-      fetch(apiUrl, requestOptions)
+
+            method: "POST",
+
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify(data),
+
+        };
+        fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
@@ -159,7 +159,32 @@ function PaymentVer_UI() {
                     window.location.reload();
                 } else {
                     setSubmitError(true);
-                    setErrorMsg(" - "+res.error);
+                    setErrorMsg(" - " + res.error);
+                }
+            });
+        const apiUrlAddStorage = "http://localhost:8080/storages";           //ส่งขอบันทึก
+
+        const requestAddStorage = {
+
+            method: "POST",
+
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify(data),
+
+        };
+        fetch(apiUrlAddStorage,requestAddStorage)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setSubmitSuccess(true);
+                    window.location.reload();
+                } else {
+                    setSubmitError(true);
+                    setErrorMsg(" - " + res.error);
                 }
             });
     }
@@ -180,22 +205,22 @@ function PaymentVer_UI() {
                 autoHideDuration={3000}
                 onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
-                <Alert onClose={handleClose} severity="success">              
+                <Alert onClose={handleClose} severity="success">
                     การตรวจสอบสำเร็จ
                 </Alert>
             </Snackbar>
 
             <Snackbar // บันทึกไม่สำเร็จ
-                open={submitError} 
-                autoHideDuration={3000} 
-                onClose={handleClose} 
+                open={submitError}
+                autoHideDuration={3000}
+                onClose={handleClose}
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
                 <Alert onClose={handleClose} severity="error">
                     การตรวจสอบไม่สำเร็จ{errorMsg}
                 </Alert>
             </Snackbar>
 
-            <Grid container sx={{ padding: 2}} direction='row-reverse'>
+            <Grid container sx={{ padding: 2 }} direction='row-reverse'>
                 <Grid container item xs={4} direction='row-reverse'>
                     <Stack direction="row" spacing={2}>
                         <Button component={RouterLink} to="/payment_ver_table" variant="contained" color="inherit">
@@ -216,105 +241,105 @@ function PaymentVer_UI() {
                                     <TableCell align="center"><h4>Slip</h4></TableCell>
                                 </TableRow>
                             </TableHead>
-                                <TableBody>
-                                    {order.map((item) => (
-                                        <TableRow key={item.ID}>
-                                            <TableCell align="center">{item.ID}</TableCell> 
-                                            {/* <TableCell align="center">{item.Verification_Status.Status_type}</TableCell>       */}
-                                            <TableCell align="center"><img src={`${item.Slip}`} width="250" height="250"/></TableCell>                 
-                                                <Stack direction="column" spacing={3}>
-                                                <Button variant="contained" color="primary" onClick={() => handleClickOpenForNew(item.ID)}>
-                                                        Verify
-                                                    </Button>
-                                                </Stack> 
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
+                            <TableBody>
+                                {order.map((item) => (
+                                    <TableRow key={item.ID}>
+                                        <TableCell align="center">{item.ID}</TableCell>
+                                        {/* <TableCell align="center">{item.Verification_Status.Status_type}</TableCell>       */}
+                                        <TableCell align="center"><img src={`${item.Slip}`} width="250" height="250" /></TableCell>
+                                        <Stack direction="column" spacing={3}>
+                                            <Button variant="contained" color="primary" onClick={() => handleClickOpenForNew(item.ID)}>
+                                                Verify
+                                            </Button>
+                                        </Stack>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
                         </Table>
                     </TableContainer>
 
                     <Dialog fullWidth maxWidth="xl" open={openForNew} onClose={handleCloseForNew} >
-                <DialogTitle>Payment Verification</DialogTitle>
-                <DialogContent>
+                        <DialogTitle>Payment Verification</DialogTitle>
+                        <DialogContent>
 
-                        <Grid container spacing={2}>
-                            <Grid container justifyContent={"center"} sx={{paddingY: 2,}}>
-                                <Grid item xs={2}><p>Status:</p></Grid>
-                                <Grid item xs={6}>
-                                    <Autocomplete
-                                        id="verstatus-autocomplete"
-                                        options={ver_status}
-                                        fullWidth
-                                        size="medium"
-                                        onChange={(event: any, value) => {
-                                            setPaymentVer({ ...payment_ver, Verification_Status_ID: value?.ID }); // บันทึกค่าลง interface
-                                        }}
-                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                                            `${option.ID} - ${option.Status_type}`
-                                        } 
-                                        renderInput={(params) => <TextField {...params} label="Status" />}
-                                        renderOption={(props: any, option: any) => {
-                                        return (
-                                            <li
-                                            {...props}
-                                            value={`${option.ID}`}
-                                            key={`${option.ID}`}
-                                            >{`${option.ID} - ${option.Status_type}`}</li>
-                                        );
-                                        }}
-                                    />
+                            <Grid container spacing={2}>
+                                <Grid container justifyContent={"center"} sx={{ paddingY: 2, }}>
+                                    <Grid item xs={2}><p>Status:</p></Grid>
+                                    <Grid item xs={6}>
+                                        <Autocomplete
+                                            id="verstatus-autocomplete"
+                                            options={ver_status}
+                                            fullWidth
+                                            size="medium"
+                                            onChange={(event: any, value) => {
+                                                setPaymentVer({ ...payment_ver, Verification_Status_ID: value?.ID }); // บันทึกค่าลง interface
+                                            }}
+                                            getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                                `${option.ID} - ${option.Status_type}`
+                                            }
+                                            renderInput={(params) => <TextField {...params} label="Status" />}
+                                            renderOption={(props: any, option: any) => {
+                                                return (
+                                                    <li
+                                                        {...props}
+                                                        value={`${option.ID}`}
+                                                        key={`${option.ID}`}
+                                                    >{`${option.ID} - ${option.Status_type}`}</li>
+                                                );
+                                            }}
+                                        />
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
 
-                        <Grid container spacing={2}>
-                            <Grid container justifyContent={"center"} sx={{paddingY: 2,}}>
-                                <Grid item xs={2}><p>Note:</p></Grid>
-                                <Grid item xs={6}>
-                                    <TextField
-                                        id="outlined-basic"
-                                        placeholder="Insert details"
-                                        variant="outlined"
-                                        size="medium"
-                                        multiline={true}
-                                        minRows={9}
-                                        maxRows={2}
-                                        fullWidth={true}
-                                        onChange={(event) => setNote(event.target.value)}
-                                    />
+                            <Grid container spacing={2}>
+                                <Grid container justifyContent={"center"} sx={{ paddingY: 2, }}>
+                                    <Grid item xs={2}><p>Note:</p></Grid>
+                                    <Grid item xs={6}>
+                                        <TextField
+                                            id="outlined-basic"
+                                            placeholder="Insert details"
+                                            variant="outlined"
+                                            size="medium"
+                                            multiline={true}
+                                            minRows={9}
+                                            maxRows={2}
+                                            fullWidth={true}
+                                            onChange={(event) => setNote(event.target.value)}
+                                        />
+                                    </Grid>
                                 </Grid>
                             </Grid>
-                        </Grid>
 
-                    {/* Date */}
-                    <Grid container justifyContent={"center"} sx={{ paddingY: 2,}}>
-                        <Grid item xs={1}>
-                            <h4>Date:</h4>
-                        </Grid>
-                        <Grid margin={1} item xs={6} md={4}>
-                            <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                <DateTimePicker   
-                                    label="disabled"
-                                    disabled
-                                    value={date}
-                                    onChange={(newValue) => {
-                                        setDate(newValue);
-                                    }}
-                                    renderInput={(params) => <TextField sx={{ marginY: 2 }} {...params} />}
-                                />
-                            </LocalizationProvider>
-                        </Grid>
-                    </Grid>    
-                </DialogContent>
-                <DialogActions>
-                    <Button color="secondary" onClick={handleCloseForNew}>Cancel</Button>
-                    <Button color="primary" onClick={createPaymentVer}>Save</Button>
-                </DialogActions>
-            </Dialog>
+                            {/* Date */}
+                            <Grid container justifyContent={"center"} sx={{ paddingY: 2, }}>
+                                <Grid item xs={1}>
+                                    <h4>Date:</h4>
+                                </Grid>
+                                <Grid margin={1} item xs={6} md={4}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DateTimePicker
+                                            label="disabled"
+                                            disabled
+                                            value={date}
+                                            onChange={(newValue) => {
+                                                setDate(newValue);
+                                            }}
+                                            renderInput={(params) => <TextField sx={{ marginY: 2 }} {...params} />}
+                                        />
+                                    </LocalizationProvider>
+                                </Grid>
+                            </Grid>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button color="secondary" onClick={handleCloseForNew}>Cancel</Button>
+                            <Button color="primary" onClick={createPaymentVer}>Save</Button>
+                        </DialogActions>
+                    </Dialog>
                 </Paper>
             </Container>
 
         </Container>
-    )     
+    )
 }
 export default PaymentVer_UI

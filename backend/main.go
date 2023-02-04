@@ -91,6 +91,7 @@ func main() {
 			protected.GET("/Game_Type/:id", game_controller.GetGame_type)
 
 			// Storage Routes
+			protected.POST("/storages", storage_controller.CreateStroage)
 			protected.GET("/storages", storage_controller.ListStorages)
 			protected.GET("/storages/:id", storage_controller.ListStoragesUser)
 			protected.PATCH("/storages", storage_controller.UpdateStorage)
