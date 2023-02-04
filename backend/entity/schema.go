@@ -89,22 +89,22 @@ type Game struct {
 // ---ระบบคลังเกม(Storage)---
 type Collection struct {
 	gorm.Model
-	Name    string
-	Note    string
-	Date    time.Time
-	User_ID *uint
-	User    User      `gorm:"references:id"`
+	Name    string    `valid:"required~คุณไม่ได้ใส่ชื่อ,maxstringlength(50)~ชื่อความยาวไม่เกิน 50 ตัวอักษร"`
+	Note    string    `valid:"required~คุณไม่ได้ใส่โน็ต"`
+	Date    time.Time `valid:"DelayNow10Min~เวลาเป็นอดีต รีเฟชหน้าเว็บใหม่"`
+	User_ID *uint     `valid:"-"`
+	User    User      `gorm:"references:id" valid:"-"`
 	Storage []Storage `gorm:"foreignKey:Collection_ID"`
 }
 
 type Storage struct {
 	gorm.Model
-	Game_ID            *uint
-	Game               Game `gorm:"references:id"`
-	User_ID            *uint
-	User               User `gorm:"references:id"`
-	Collection_ID      *uint
-	Collection         Collection `gorm:"references:id"`
+	Game_ID            *uint      `valid:"-"`
+	Game               Game       `gorm:"references:id" valid:"-"`
+	User_ID            *uint      `valid:"-"`
+	User               User       `gorm:"references:id" valid:"-"`
+	Collection_ID      *uint      `valid:"-"`
+	Collection         Collection `gorm:"references:id" valid:"-"`
 	User_Favorite_Game []User     `gorm:"foreignKey:Favorite_Game_ID"`
 }
 
@@ -290,8 +290,8 @@ type Wish_Level struct {
 }
 type Wishlist struct {
 	gorm.Model
-	Date time.Time
-	Note string `valid:"required~ไม่ได้ใส่โน๊ต,maxstringlength(50)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
+	Date time.Time `valid:"DelayNow10Min~เวลาเป็นอดีต รีเฟชหน้าเว็บใหม่"`
+	Note string    `valid:"required~คุณไม่ได้ใส่โน็ต,maxstringlength(50)~โน็ตความยาวไม่เกิน 50 ตัวอักษร"`
 
 	Game_ID *uint `valid:"-"`
 	Game    Game  `gorm:"references:id" valid:"-"`
