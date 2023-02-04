@@ -11,6 +11,7 @@ import SearchIcon from "@mui/icons-material/Search";
 
 import { GamesInterface } from '../models/game/IGame';
 import { BannersInterface } from '../models/banner/IBanner';
+import { strictEqual } from 'assert';
 
 function Dashboard(){
     const [games, setGames] = React.useState<GamesInterface[]>([]);
@@ -102,7 +103,7 @@ function Dashboard(){
                     </Grid>
                     <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}> {/** Card */}
                 
-                        {games.filter(item => item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+                        {games.filter(item => item.Game_Status.Status_Type == "Available" && item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
                         
                         <Grid item xs={3} key={item.ID} >
                         <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>

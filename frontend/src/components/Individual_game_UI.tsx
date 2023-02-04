@@ -23,6 +23,7 @@ function Individual_game() {
     const { id } = useParams(); // ดึง parameter จาก url-parameter
     const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
     const [isGameOnStore, setIsGameOnStore] = React.useState<boolean | null>(false);
+    const [isGameOnAvailable, setIsGameOnAvailable] = React.useState<boolean | null>(false);
     const [games, setgames] = React.useState<GamesInterface[]>([]);
 
     const [wish_levels, setWish_Levels] = React.useState<Wish_levelInterface[]>([]);
@@ -60,10 +61,14 @@ function Individual_game() {
                     // เป็นการทำให้ state ของ games ถูกเปลี่ยนทันที เพราะหากไม่ทำแบบนี้ games จะไม่ถูก set โดยทันทีแล้วค่าจะไม่ออก
                     // แต่จริงๆแล้วมันน่าจะเป็นการเติม array เข้าไปมากกว่า แต่ด้วยเหตุผลทางเทคนิคมันทำให้ใช้ได้
                     setgames(prevgames => ([...prevgames, ...res.data]));
-                    if (res.data[0].DeletedAt == null) {
+                    if (res.data[0].DeletedAt == null) {                    
                         setIsGameOnStore(true);
-                    }
-                }
+                    }     
+                    if (res.data[0].Game_Status_ID == 1) {                    
+                        setIsGameOnAvailable(true);
+                        console.log(res.data[0].DeletedAt)
+                    }  
+                }   
             });
     };
 
@@ -193,7 +198,7 @@ function Individual_game() {
 
     }, []);
 
-    if (isDataLoaded && isGameOnStore) return (
+    if (isDataLoaded && isGameOnStore && isGameOnAvailable) return (
         <Container>
             <Box>
                 <Paper elevation={2} sx={{ padding: 2, margin: 2 }}>
@@ -224,6 +229,7 @@ function Individual_game() {
                                     borderRadius: 2,
                                     fontSize: '0.875rem',
                                     fontWeight: '700',
+                                    
                                 }}
                             >{/** กำหนดให้เว้นบรรทัด auto จาก white space */}
                                 {games[0].Game_description}
@@ -442,6 +448,15 @@ function Individual_game() {
             <Box>
                 <Grid container justifyContent={"center"} marginTop={50}>
                     <h1>ไม่มีเกมนี้อยู่หรือถูกถอดออกจากหน้าร้านค้าไปแล้ว</h1>
+                </Grid>
+            </Box>
+        </Container>
+    );
+    else if (!isGameOnAvailable) return (
+        <Container>
+            <Box>
+                <Grid container justifyContent={"center"} marginTop={50}>
+                    <h1>Game is not Available</h1>
                 </Grid>
             </Box>
         </Container>
