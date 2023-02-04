@@ -66,9 +66,9 @@ type Rating struct {
 type Game struct {
 	gorm.Model
 	Game_Name              string      `gorm:"uniqueIndex" valid:"maxstringlength(30)~Name must not more than 30 character,required~Please Enter your Game Name"`
-	Game_Price             uint        `valid:"range(0|100000)~ Price incorrect,required~Please enter price,int"` //` valid: InRangeInt(value, 0)`
-	Game_description       string      `valid:"maxstringlength(200)~Description must not more than 200 character,required~Please Enter your Game Description"`
-	Publish_Date           time.Time   `valid:"required~Date can be null ,IsnotPast~Date incorrect"`
+	Game_Price             uint        `valid:"range(0|100000)~Price incorrect"` //` valid: InRangeInt(value, 0) ,required~Please enter price,int`
+	Game_description       string      `valid:"maxstringlength(200)~Description must be less than 200 character,required~Please Enter your Game Description"`
+	Publish_Date           time.Time   `valid:"required~Date can be null "` //,DelayNow10Min~Date incorrect
 	Seller_ID              *uint       `valid:"-"`
 	Seller                 User        `gorm:"references:id" valid:"-" `
 	Game_Status_ID         *uint       `valid:"-"`
@@ -77,14 +77,14 @@ type Game struct {
 	Type_Game              Type_Game   `gorm:"references:id" valid:"-"`
 	Rating_ID              *uint       `valid:"-"`
 	Rating                 Rating      `gorm:"references:id" valid:"-"`
-	Game_file              string      `valid:"url~Link incorrect ,required~Please Upload Game file"`
-	Game_Picture           string
-	Storage                []Storage  `gorm:"foreignKey:Game_ID"`
-	User_Out_Standing_Game []User     `gorm:"foreignKey:Out_Standing_Game_ID"`
-	Basket                 []Basket   `gorm:"foreignKey:Game_ID"`
-	Friend                 []Friend   `gorm:"foreignKey:Game_ID"`
-	Banner                 []Banner   `gorm:"foreignKey:Game_ID"`
-	Wishlist               []Wishlist `gorm:"foreignKey:Game_ID"`
+	Game_file              string      `valid:"url~Link incorrect,required~Please Upload Game file"`
+	Game_Picture           string      `valid:"image_valid~Game Image incorrect,required~Please upload image"`
+	Storage                []Storage   `gorm:"foreignKey:Game_ID"`
+	User_Out_Standing_Game []User      `gorm:"foreignKey:Out_Standing_Game_ID"`
+	Basket                 []Basket    `gorm:"foreignKey:Game_ID"`
+	Friend                 []Friend    `gorm:"foreignKey:Game_ID"`
+	Banner                 []Banner    `gorm:"foreignKey:Game_ID"`
+	Wishlist               []Wishlist  `gorm:"foreignKey:Game_ID"`
 }
 
 // ---ระบบคลังเกม(Storage)---

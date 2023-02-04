@@ -47,6 +47,7 @@ function Game() {
   const [UpdateError, setUpdateError] = useState(false);
   const [DeleteSuccess, setDeleteSuccess] = useState(false);
   const [DeleteError, setDeleteError] = useState(false);
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
   const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
   function timeout(delay: number) {
@@ -60,13 +61,16 @@ function Game() {
 
     let UpdateData = {
       ID: game1.ID,
+      Game_Name: game1.Game_Name,
       Game_Price: convertType(game1.Game_Price),
       Game_description: game1.Game_description,
+      Publish_Date : game1.Publish_Date,
       Game_Status_ID: convertType(game1.Game_Status_ID),
       Type_Game_ID: convertType(game1.Type_Game_ID),
       Rating_ID: convertType(game1.Rating_ID),
       Game_file: game1.Game_file,
       Game_Picture: imageString
+      
     };
     const apiUrl = "http://localhost:8080/Game";
     const requestOptions = {
@@ -86,6 +90,7 @@ function Game() {
           window.location.reload();
         } else {
           setUpdateError(true);
+          setErrorMsg(" - "+res.error);
         }
       });
 
@@ -111,6 +116,7 @@ function Game() {
           window.location.reload();
         } else {
           setDeleteError(true);
+          setErrorMsg(" - "+res.error);
         }
       });
   }
@@ -306,7 +312,7 @@ function Game() {
                 {/*snackbar update*/}
                 <Snackbar
                   open={UpdateSuccess}
-                  autoHideDuration={3000}
+                  autoHideDuration={1500}
                   onClose={handleCloseSnackbar}
                   anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 >
@@ -316,19 +322,19 @@ function Game() {
                 </Snackbar>
                 <Snackbar
                   open={UpdateError}
-                  autoHideDuration={3000}
+                  autoHideDuration={1500}
                   onClose={handleCloseSnackbar}
                   anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 >
                   <Alert onClose={handleCloseSnackbar} severity="error">
-                    Failed to Update
+                    Failed to Update {errorMsg}
                   </Alert>
                 </Snackbar>
 
                 {/*snackbar delete*/}
                 <Snackbar
                   open={DeleteSuccess}
-                  autoHideDuration={3000}
+                  autoHideDuration={1500}
                   onClose={handleCloseSnackbar}
                   anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 >
@@ -338,12 +344,12 @@ function Game() {
                 </Snackbar>
                 <Snackbar
                   open={DeleteError}
-                  autoHideDuration={3000}
+                  autoHideDuration={1500}
                   onClose={handleCloseSnackbar}
                   anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 >
                   <Alert onClose={handleCloseSnackbar} severity="error">
-                    Failed to Delete
+                    Failed to Delete {errorMsg}
                   </Alert>
                 </Snackbar>
 
@@ -365,6 +371,7 @@ function Game() {
                             type="string"
                             size="medium"
                             defaultValue={gameEdit?.Game_Name}
+                            onChange={handleInputChange}
                           />
                         </FormControl>
                       </Grid>
@@ -377,8 +384,9 @@ function Game() {
                             size="medium"
                             placeholder="------------------------------------"
                             // onWheel={event => { event.preventDefault();  }}
-                            onChange={handleInputChange}
                             defaultValue={gameEdit?.Game_Price}
+                            onChange={handleInputChange}
+                            
                             inputProps={{ type: "number" }}
                           />
                         </FormControl>
@@ -402,7 +410,7 @@ function Game() {
                     <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
                       <Grid item xs={4} >
                         <Autocomplete sx={{ mt: 5 }}
-                          id="storages-autocomplete"
+                          id="Type_Game-autocomplete"
                           options={game_type}
                           fullWidth
                           size="medium"
@@ -425,7 +433,7 @@ function Game() {
                           }}
                         />
                         <Autocomplete sx={{ mt: 5 }}
-                          id="storages-autocomplete"
+                          id="Game_Status-autocomplete"
                           options={game_status} //ตัวที่เราจะเลือกมีอะไรบ้าง
                           fullWidth
                           size="medium"
@@ -448,7 +456,7 @@ function Game() {
                           }}
                         />
                         <Autocomplete sx={{ mt: 5 }}
-                          id="storages-autocomplete"
+                          id="Rating-autocomplete"
                           options={game_rating} //ตัวที่เราจะเลือกมีอะไรบ้าง
                           fullWidth
                           size="medium"
@@ -514,24 +522,26 @@ function Game() {
                         <h2>Upload file </h2>
                         <FormControl fullWidth variant="outlined">
                           <TextField
-                            id="Name"
+                            id="Game_file"
                             variant="outlined"
                             type="string"
                             size="medium"
                             placeholder="------"
-                            defaultValue={gameEdit?.Game_file}
                             onChange={handleInputChange}
+                            defaultValue={gameEdit?.Game_file}
+                            
                           />
                         </FormControl>
                         <FormControl fullWidth variant="outlined"  >
                           <h2>Publish Date</h2>
                           <TextField disabled
-                            id="Name"
+                            id="Publish_Date"
                             variant="outlined"
                             type="string"
                             size="medium"
                             placeholder="------"
-                            defaultValue={`${Moment(gameEdit?.Publish_Date).format('DD MMMM YYYY')}`}
+                            defaultValue={`${Moment(gameEdit?.Publish_Date).format('DD MMMM YYYY')}`} //`${Moment(gameEdit?.Publish_Date).format('DD MMMM YYYY')}`
+                            onChange = {handleInputChange}
                           />
                         </FormControl>
                         <Grid item xs={8}>

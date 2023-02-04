@@ -89,32 +89,6 @@ async function GetGame_Rating() {
 
   return res;
 }
-async function GetUser() {
-  const requestOptions = {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
-    },
-  };
-
-  let res = await fetch(`${apiUrl}/users`, requestOptions)
-    .then((response) => response.json())
-    .then((res) => {
-      if (res.data) {
-        return res.data;
-      } else {
-        return false;
-      }
-    });
-
-  return res;
-}
-
-
-
-
-
 async function CreateGame(data: any) {
   console.log(data)
   const requestOptions = {
@@ -141,39 +115,15 @@ async function CreateGame(data: any) {
 
 }
 
-async function UpdateGame(data: any) {
-  const requestOptions = {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  };
 
-  let res = await fetch(`${apiUrl}/Game`, requestOptions)
-    .then((response) => response.json())
-    .then((res) => {
-      if (res.data) {
-        return res.data;
-      } else {
-        return false;
-      }
-    });
-
-  return res;
-  
-
-}
 
 export {
 
-  UpdateGame,
+  
   GetGame,
   GetGame_Rating,
   GetGame_Status,
   GetGame_Type,
-  GetUser,
   CreateGame
 
 

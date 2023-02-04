@@ -127,7 +127,7 @@ func SetupDatabase() {
 		Game_Name:        "Elden Ring",
 		Game_Price:       1500,
 		Game_description: "Game of the year",
-		Publish_Date:     time.Now(),
+		Publish_Date:     time.Date(2009, 11, 17, 20, 34, 58, 651387237, time.UTC),
 		Seller:           User1,
 		Game_Status:      Game_Status1,
 		Type_Game:        Type_Game1,
