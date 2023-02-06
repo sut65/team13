@@ -30,13 +30,10 @@ function Topgame_UI(){
     const [openDialogForUpdate, setOpenDialogForUpdate] = React.useState(false);
     const [openDialogForDelete, setOpenDialogForDelete] = React.useState(false);
 
-    const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
-    const [img, setImg] = React.useState<string | ArrayBuffer | null>(null);
 
     const [games, setGames] = React.useState<GamesInterface[]>([]);
     const [rankings, setRankings] = React.useState<UsersInterface[]>([]);
-    const [users, setUsers] = React.useState<UsersInterface[]>([]);
     const [topgames, setTopgames] = React.useState<Partial<TopgameInterface>>({});
     const [topgamesTable, setTopgamesTable] = React.useState<TopgameInterface[]>([]);
     const [topgamesForUpdateDefault, setTopgamesForUpdateDefault] = React.useState<TopgameInterface[]>([]);
@@ -59,7 +56,6 @@ function Topgame_UI(){
 
     const handleDialogClickOpenForUpdate = (item : any) => {
         setTopgames(item);
-        setImg(item.Banner_Picture);
         setOpenDialogForUpdate(true);
     };
 
@@ -74,19 +70,8 @@ function Topgame_UI(){
         setOpenDialogForDelete(false);
     };
 
-    const handleImgChange = (event: any) => {
-        const image = event.target.files[0];
-
-        const reader = new FileReader();
-        reader.readAsDataURL(image);
-        reader.onload = () => {
-            const base64Data = reader.result;
-            setImg(base64Data)
-        }
-    };
-
     const getRanking = async () => {
-        const apiUrl = "http://localhost:8080/ranking/"+localStorage.getItem("email");
+        const apiUrl = "http://localhost:8080/rankings";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -143,24 +128,7 @@ function Topgame_UI(){
             });
     };
 
-    const getUser = async () => {
-        const apiUrl = "http://localhost:8080/sellers";
-        const requestOptions = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-        };
-       
-        await fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then((res) => {
-                if (res.data) {
-                    setUsers(res.data);
-                }
-            });
-    };
+   
 
     const createTopgame = () => {
         let createData = {
@@ -262,13 +230,11 @@ function Topgame_UI(){
             await getRanking();
             await getGame();
             await getTopgame();
-            await getUser();
-            setIsDataloaded(true);
         }
         fetchData();
     }, [submitSuccess]); // เมื่อ submit success จะทำการ reload เพื่อแสดงค่าทันทีในตาราง
 
-    if(isDataLoaded) return (
+    return (
         <Container maxWidth="xl">
             <Snackbar // บันทึกสำเร็จ
                 id="success"
@@ -317,7 +283,7 @@ function Topgame_UI(){
             {/** Table */}
             <Grid container justifyContent={"center"}>
                 <TableContainer component={Paper} sx={{ width: "65%" }}>
-                    <Table aria-label="Banner">
+                    <Table aria-label="Topgame">
                         <TableHead>
                             <TableRow>
                                 <TableCell align="center"><h4>Comment</h4></TableCell>
@@ -368,16 +334,6 @@ function Topgame_UI(){
                     <Box> {/** Content Section */}
                         <Paper elevation={2} sx={{padding:2,margin:2}}>
                             <Grid container>
-                                <Grid container marginBottom={2}>
-                                    <Grid> {/** Banner Picture */}
-                                        <img src={`${img}`} width="350" height="150"/> {/** show base64 picture from string variable (that contain base64 picture data) */}
-                                    </Grid>
-                                    <Grid container>
-                                        <FormHelperText>recommend size is 1200*300 pixels</FormHelperText>
-                                    </Grid>
-                                    <input type="file" onChange={handleImgChange} />
-                                </Grid>
-
                                 <Grid container marginBottom={2}> {/** Game */}
                                     <Autocomplete
                                         id="game-autocomplete"
@@ -407,7 +363,7 @@ function Topgame_UI(){
                                 <Grid container marginBottom={2}> {/** Ranking */}
                                     <Autocomplete
                                         id="Ranking-autocomplete"
-                                        options={users}
+                                        options={rankings}
                                         fullWidth
                                         size="medium"
                                         //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
@@ -516,13 +472,13 @@ function Topgame_UI(){
                                     />
                                 </Grid>
 
-                                <Grid container marginBottom={2}> {/** rankings */}
-                                    {/* <Autocomplete
-                                        id="ranking-autocomplete"
+                                <Grid container marginBottom={2}> {/** Ranking */}
+                                    <Autocomplete
+                                        id="Ranking-autocomplete"
                                         options={rankings}
                                         fullWidth
                                         size="medium"
-                                        defaultValue={topgames.Ranking}
+                                        //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
                                         onChange={(event: any, value) => {
                                             setTopgames({ ...topgames, Ranking_ID: value?.ID }); // บันทึกค่าลง interface
                                         }}
@@ -537,9 +493,9 @@ function Topgame_UI(){
                                             value={`${option.ID}`}
                                             key={`${option.ID}`}
                                             >{`${option.ID} - ${option.Detail}`}</li>
-                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ Ranking id แต่คืนค่าค่าเป็น id 
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ Detail แต่คืนค่าค่าเป็น id 
                                         }}
-                                    /> */}
+                                    />
                                 </Grid>
 
                                 <Grid container marginBottom={2}> {/** Editor */}
@@ -611,11 +567,6 @@ function Topgame_UI(){
                 </DialogActions>
             </Dialog>
         </Container>
-    );
-    else return(
-        <Box>
-            Loading
-        </Box>
     );
 }
 
