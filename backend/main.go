@@ -9,6 +9,7 @@ import (
 	login_controller "github.com/sut65/team13/controller/login"
 	order_controller "github.com/sut65/team13/controller/order"
 	payment_ver_controller "github.com/sut65/team13/controller/payment_ver"
+	review_controller "github.com/sut65/team13/controller/review"
 	storage_controller "github.com/sut65/team13/controller/storage"
 	user_controller "github.com/sut65/team13/controller/user"
 	wishlist_controller "github.com/sut65/team13/controller/wishlist"
@@ -144,6 +145,14 @@ func main() {
 			protected.DELETE("/wishlists/:id", wishlist_controller.DeleteWishlist)
 
 			protected.GET("/wish_levels", wishlist_controller.ListWish_Level)
+
+			//review Router
+			protected.POST("/reviews", review_controller.CreateReview)
+			protected.GET("/review/:id", review_controller.ListReviews)
+			protected.PATCH("/reviews", review_controller.UpdateReview)
+			protected.DELETE("/review/:id", review_controller.DeleteReview)
+
+			protected.GET("/stars", review_controller.ListStars)
 
 		}
 	}
