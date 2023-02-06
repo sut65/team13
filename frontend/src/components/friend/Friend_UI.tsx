@@ -640,7 +640,7 @@ function Friend_UI() {
                         </Grid>
                         <Grid>
                             <TextField
-                                id="outlined-basic"
+                                id="nickname-add"
                                 placeholder="Insert nickname (no more than 50 characters)"
                                 variant="outlined"
                                 size="medium"
