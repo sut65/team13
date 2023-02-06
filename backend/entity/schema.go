@@ -168,8 +168,9 @@ type Review struct {
 
 type Star struct {
 	gorm.Model
-	Detail string
-	Review []Review `gorm:"foreignKey:Star_ID"`
+	Star_Level int
+	Detail     string
+	Review     []Review `gorm:"foreignKey:Star_ID"`
 }
 
 // ---ระบบ Admin---

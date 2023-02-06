@@ -589,4 +589,48 @@ func SetupDatabase() {
 	db.Model(&Basket{}).Create(&Basket3)
 	db.Model(&Basket{}).Create(&Basket4)
 	db.Model(&Basket{}).Create(&Basket5)
+
+	//review
+	Star1 := Star{
+		Star_Level: 1,
+		Detail:     "กระจอก",
+	}
+	Star2 := Star{
+		Star_Level: 2,
+		Detail:     "กาก",
+	}
+	Star3 := Star{
+		Star_Level: 3,
+		Detail:     "ก็งั้นๆ",
+	}
+	Star4 := Star{
+		Star_Level: 4,
+		Detail:     "ดี",
+	}
+	Star5 := Star{
+		Star_Level: 5,
+		Detail:     "ดีที่สุดในจักรวาล",
+	}
+	db.Model(&Star{}).Create(&Star1)
+	db.Model(&Star{}).Create(&Star2)
+	db.Model(&Star{}).Create(&Star3)
+	db.Model(&Star{}).Create(&Star4)
+	db.Model(&Star{}).Create(&Star5)
+
+	Review1 := Review{
+		User_ID: &User1.ID,
+		Game_ID: &Game3.ID,
+		Star_ID: &Star5.ID,
+		Comment: "เกมดี คอมมูดี",
+		Date:    time.Now(),
+	}
+	Review2 := Review{
+		User_ID: &User2.ID,
+		Game_ID: &Game1.ID,
+		Star_ID: &Star1.ID,
+		Comment: "เกมกระจอกภาพกระตุก",
+		Date:    time.Now(),
+	}
+	db.Model(&Review{}).Create(&Review1)
+	db.Model(&Review{}).Create(&Review2)
 }

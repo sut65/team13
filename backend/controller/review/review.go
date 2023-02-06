@@ -81,7 +81,8 @@ func GetReview(c *gin.Context) {
 
 func ListReviews(c *gin.Context) {
 	var review []entity.Review
-	if err := entity.DB().Preload("Star").Preload("Game").Preload("User").Raw("SELECT * FROM Reviews").Find(&review).Error; err != nil {
+	id := c.Param("id")
+	if err := entity.DB().Preload("Star").Preload("Game").Preload("User").Raw("SELECT * FROM Reviews Game_ID=?", id).Find(&review).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -101,9 +102,9 @@ func DeleteReview(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": id})
 }
 
-// PATCH /topgames
+// PATCH /reviews
 
-func UpdateTopgame(c *gin.Context) {
+func UpdateReview(c *gin.Context) {
 	var review entity.Review
 	var star entity.Star
 	var user entity.User
