@@ -24,9 +24,11 @@ import Order_UI from "./components/order/Order_UI";
 import Wishlist_UI from "./components/wishlist/Wishlist_UI";
 import Review_UI from "./components/review/Review_UI";
 
+
 // Admin import
 import Banner_UI from "./components/banner/Banner_UI";
 import Admin from "./components/admin/Admin_UI";
+import Topgame_UI from "./components/topgame/Topgame_UI";
 import Admin_list from "./components/admin/Admin_list";
 import User_list from "./components/admin/User.list";
 import PaymentVer_UI from "./components/payment_verification/PaymentVer_UI";
@@ -57,7 +59,7 @@ export default function App() {
           <Route path="/admin_createss" element = {<User_list/>}/> {/*Admin*/}
           <Route path="/payment_ver" element={<PaymentVer_UI/>} /> {/** payment verification */}
           <Route path="/payment_ver_table" element={<PaymentVerTable_UI/>} /> {/** payment verification */}
-         
+          <Route path="/topgames" element={<Topgame_UI/>} /> {/** Topgame*/}
           <Route path="/admin_list" element = {<Admin_list/>}/> {/*Admin*/}
         </Routes>
       );

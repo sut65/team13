@@ -27,6 +27,7 @@ import PaidIcon from '@mui/icons-material/Paid';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
+import StarIcon from '@mui/icons-material/Star';
 
 // Admin Icon
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
@@ -84,7 +85,13 @@ function FullAppBar() {
             <PriceCheckIcon/>
             <ListItemText primary="Payment Verification" sx={{paddingLeft:1}}/>
           </ListItem>
+
+          <ListItem button component={RouterLink} to="/topgames">
+            <StarIcon/>
+            <ListItemText primary="Topgame" sx={{paddingLeft:1}}/>
+          </ListItem>
         </List>
+
       );
     }else{ // User Drawer
       return(
