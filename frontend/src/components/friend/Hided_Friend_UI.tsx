@@ -161,8 +161,6 @@ function Hided_Friend_UI() {
                 setSuccess(true);
                 getUserFriend();
                 setOpenForEdit(false);
-                timeout(1000);
-                window.location.reload();
             } else {
                 setError(true);  
                 setErrorMsg(" - " + res.error);   
@@ -192,8 +190,6 @@ function Hided_Friend_UI() {
             if (res.data) {
                 setSuccess(true);
                 getUserFriend();
-                timeout(1000);
-                window.location.reload();
             } else {
                 setError(true);     
                 setErrorMsg(" - " + res.error);
@@ -222,8 +218,6 @@ function Hided_Friend_UI() {
                 setSuccess(true);
                 getUserFriend();
                 setOpenForDelete(false);   
-                timeout(1000);
-                window.location.reload();
             } else {
                 setError(true);     
                 setErrorMsg(" - " + res.error);
