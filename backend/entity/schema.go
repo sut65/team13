@@ -168,7 +168,7 @@ type Review struct {
 
 type Star struct {
 	gorm.Model
-	Star_Level int
+	Star_Level uint
 	Detail     string
 	Review     []Review `gorm:"foreignKey:Star_ID"`
 }

@@ -11,6 +11,7 @@ import (
 	payment_ver_controller "github.com/sut65/team13/controller/payment_ver"
 	review_controller "github.com/sut65/team13/controller/review"
 	storage_controller "github.com/sut65/team13/controller/storage"
+	topgame_controller "github.com/sut65/team13/controller/topgame"
 	user_controller "github.com/sut65/team13/controller/user"
 	wishlist_controller "github.com/sut65/team13/controller/wishlist"
 	"github.com/sut65/team13/entity"
@@ -148,11 +149,21 @@ func main() {
 
 			//review Router
 			protected.POST("/reviews", review_controller.CreateReview)
+			protected.GET("/reviews", review_controller.GetReview)
 			protected.GET("/review/:id", review_controller.ListReviews)
 			protected.PATCH("/reviews", review_controller.UpdateReview)
 			protected.DELETE("/review/:id", review_controller.DeleteReview)
 
 			protected.GET("/stars", review_controller.ListStars)
+
+			//topgame Router
+			protected.POST("/topgames", topgame_controller.CreateTopgame)
+			protected.GET("/topgames", topgame_controller.GetTopgame)
+			protected.GET("/topgame/:id", topgame_controller.ListTopgames)
+			protected.PATCH("/topgames", topgame_controller.UpdateTopgame)
+			protected.DELETE("/topgame/:id", topgame_controller.DeleteTopgame)
+
+			protected.GET("/rankings", topgame_controller.ListRankings)
 
 		}
 	}

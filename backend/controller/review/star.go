@@ -11,12 +11,12 @@ import (
 // GET /stars
 
 func ListStars(c *gin.Context) {
-	var stars []entity.Star
+	var star []entity.Star
 
-	if err := entity.DB().Raw("SELECT * FROM stars").Scan(&stars).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM stars").Scan(&star).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": stars})
+	c.JSON(http.StatusOK, gin.H{"data": star})
 }
