@@ -69,6 +69,12 @@ func SetupDatabase() {
 		// Wishlist
 		&Wish_Level{},
 		&Wishlist{},
+		// Review
+		&Star{},
+		&Review{},
+		// Topgame
+		&Ranking{},
+		&Topgame{},
 	)
 
 	db = database
@@ -633,4 +639,35 @@ func SetupDatabase() {
 	}
 	db.Model(&Review{}).Create(&Review1)
 	db.Model(&Review{}).Create(&Review2)
+
+	//Topgame
+	Ranking1 := Ranking{
+		Detail: "เกมอันดับ 1",
+	}
+	Ranking2 := Ranking{
+		Detail: "เกมอันดับ 2",
+	}
+	Ranking3 := Ranking{
+		Detail: "เกมอันดับ 3",
+	}
+	db.Model(&Ranking{}).Create(&Ranking1)
+	db.Model(&Ranking{}).Create(&Ranking2)
+	db.Model(&Ranking{}).Create(&Ranking3)
+
+	Topgame1 := Topgame{
+		Admin_ID: &admin1.ID,
+		Game_ID: &Game3.ID,
+		Ranking_ID: &Ranking3.ID,
+		Comment: "เกมน่าเล่น แนะนำสำหรับอาทิตย์นี้",
+		Date:    time.Now(),
+	}
+	Topgame2 := Topgame{
+		Admin_ID: &admin2.ID,
+		Game_ID: &Game2.ID,
+		Ranking_ID: &Ranking1.ID,
+		Comment: "เกมมาใหม่เหมาะสำหรับคนชอบเกมแนว RTS",
+		Date:    time.Now(),
+	}
+	db.Model(&Topgame{}).Create(&Topgame1)
+	db.Model(&Topgame{}).Create(&Topgame2)
 }
