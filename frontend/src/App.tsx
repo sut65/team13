@@ -30,7 +30,6 @@ import Banner_UI from "./components/banner/Banner_UI";
 import Admin from "./components/admin/Admin_UI";
 import Topgame_UI from "./components/topgame/Topgame_UI";
 import Admin_list from "./components/admin/Admin_list";
-import User_list from "./components/admin/User.list";
 import PaymentVer_UI from "./components/payment_verification/PaymentVer_UI";
 import PaymentVerTable_UI from "./components/payment_verification/PaymentVerTable_UI";
 
@@ -54,9 +53,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home_Admin/>} /> {/** home */}
           <Route path="/banner" element={<Banner_UI/>} /> {/** banner */}
-          <Route path="/admin_create" element = {<Admin_UI/>}/> {/*Admin*/}
-          <Route path="/admin_creates" element = {<Admin_list/>}/> {/*Admin*/}
-          <Route path="/admin_createss" element = {<User_list/>}/> {/*Admin*/}
           <Route path="/payment_ver" element={<PaymentVer_UI/>} /> {/** payment verification */}
           <Route path="/payment_ver_table" element={<PaymentVerTable_UI/>} /> {/** payment verification */}
           <Route path="/topgames" element={<Topgame_UI/>} /> {/** Topgame*/}
