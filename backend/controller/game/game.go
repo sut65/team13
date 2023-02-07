@@ -75,13 +75,13 @@ func CreateGame(c *gin.Context) {
 
 }
 
-// GET /game/:id
+// GET /game/:id for seller
 
 func GetGame(c *gin.Context) {
 	var game []entity.Game
 	id := c.Param("id")
 
-	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games WHERE seller_id = ? AND deleted_at IS NULL", id).Find(&game).Error; err != nil {
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT id,deleted_at,game_name,game_price,game_description,publish_date,seller_id,game_status_id,type_game_id,rating_id,game_picture FROM games WHERE seller_id = ? AND deleted_at IS NULL", id).Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -102,11 +102,23 @@ func GetIndividualGame(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": game})
 }
 
+// GET /gamefile//
+func GetGamefile(c *gin.Context) {
+	var game []entity.Game
+	id := c.Param("id")
+
+	if err := entity.DB().Raw("SELECT id , game_file FROM games WHERE deleted_at IS NULL", id).Find(&game).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"data": game})
+}
+
 // GET /game//
 func ListGames(c *gin.Context) {
 	var game []entity.Game
 
-	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games WHERE deleted_at IS NULL").Find(&game).Error; err != nil {
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT id,deleted_at,game_name,game_price,game_description,publish_date,seller_id,game_status_id,type_game_id,rating_id,game_picture FROM games WHERE deleted_at IS NULL").Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -117,7 +129,7 @@ func ListGames(c *gin.Context) {
 func ListALLGames(c *gin.Context) {
 	var game []entity.Game
 
-	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games").Find(&game).Error; err != nil {
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT  id,deleted_at,game_name,game_price,game_description,publish_date,seller_id,game_status_id,type_game_id,rating_id,game_picture FROM games").Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

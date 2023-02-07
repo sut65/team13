@@ -134,20 +134,7 @@ func TestGameValidate(t *testing.T) {
 
 		g.Expect(err).NotTo(gomega.BeNil()) // ข้อมูลผิด error จะไม่เป็น nil
 
-		g.Expect(err.Error()).To(gomega.Equal("Please Upload Game file")) // check error message
-	})
-
-	t.Run("game_file incorrect", func(t *testing.T) {
-		gameTest := game
-		gameTest.Game_file = "asdsad"
-
-		ok, err := govalidator.ValidateStruct(gameTest)
-
-		g.Expect(ok).NotTo(gomega.BeTrue()) // ข้อมูลผิด ok จะเป็น false
-
-		g.Expect(err).NotTo(gomega.BeNil()) // ข้อมูลผิด error จะไม่เป็น nil
-
-		g.Expect(err.Error()).To(gomega.Equal("Link incorrect")) // check error message
+		g.Expect(err.Error()).To(gomega.Equal("Please upload game file")) // check error message
 	})
 
 	t.Run("game_picture incorrect", func(t *testing.T) {

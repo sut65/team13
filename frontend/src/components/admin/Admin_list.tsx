@@ -53,6 +53,12 @@ function Admin_list() {
 
     const [name, setName] = React.useState<string>("");
 
+    const [UpdateSuccess, setUpdateSuccess] = useState(false);
+    const [UpdateError, setUpdateError] = useState(false);
+    const [DeleteSuccess, setDeleteSuccess] = useState(false);
+    const [DeleteError, setDeleteError] = useState(false);
+    const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
+
     const [searchQuery, setSearchQuery] = React.useState("");
     const [imageString, setImageString] = useState<string | ArrayBuffer | null>(null);
 
@@ -80,14 +86,15 @@ function Admin_list() {
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    // await timeout(1000); //for 1 sec delay
-                    window.location.reload();
-                    //  setSubmitSuccess(true);
+
                     if (String(id) == localStorage.getItem("aid")) {
                         signout();
                     }
+                    setDeleteSuccess(true);
+                    window.location.reload();
                 } else {
-                    // setSubmitError(true);
+                    setDeleteError(true);
+                    setErrorMsg(" - " + res.error);
                 }
             });
     }
@@ -100,7 +107,7 @@ function Admin_list() {
             Email: adminEdit?.Email,
             Name: adminEdit?.Name,
             Password: adminEdit?.Password,
-            Address:  adminEdit?.Address,
+            Address: adminEdit?.Address,
             Gender_ID: adminEdit?.Gender_ID,
             Department_ID: adminEdit?.Department_ID,
             Province_ID: adminEdit?.Province_ID,
@@ -122,11 +129,11 @@ function Admin_list() {
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
+                    setUpdateSuccess(true);
                     window.location.reload()
-
-                    //setSuccess(true);
                 } else {
-                    //setError(true);
+                    setUpdateError(true);
+                    setErrorMsg(" - " + res.error);
 
                 }
             });
@@ -166,7 +173,18 @@ function Admin_list() {
     };
 
 
-
+    const handleCloseSnackbar = (
+        event?: React.SyntheticEvent | Event,
+        reason?: string
+    ) => {
+        if (reason === "clickaway") {
+            return;
+        }
+        setUpdateSuccess(false);
+        setUpdateError(false);
+        setDeleteSuccess(false);
+        setDeleteError(false);
+    };
 
     //image
     const handleImageChange = (event: any) => {
@@ -200,6 +218,7 @@ function Admin_list() {
 
     const handleClickOpenForEdit = (item: AdminsInterface) => {
         setOpenForEdit(true);
+        setImageString(item.Profile_Picture);
 
 
         setAdminEdit(item);
@@ -228,279 +247,318 @@ function Admin_list() {
     }, []);
     return (
         <Container maxWidth="xl" sx={{ p: 5 }}  >
-              <Grid container> {/** Search direction={"column-reverse"} */}
-          <Grid container>
+            {/*snackbar update*/}
+            <Snackbar
+                open={UpdateSuccess}
+                autoHideDuration={1500}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert onClose={handleCloseSnackbar} severity="success">
+                    Update complete
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={UpdateError}
+                autoHideDuration={1500}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert onClose={handleCloseSnackbar} severity="error">
+                    Failed to Update {errorMsg}
+                </Alert>
+            </Snackbar>
 
-            <Grid item xs={11}>
-              <TextField sx = {{width : "20%"}}
-                id="search-bar"
-                onChange={(event) => ( 
-                  setSearchQuery(event.target.value)
-                )}
-                label="Search by name, department"
-                variant="outlined"
-                placeholder="Searching..."
-                size="medium"
-               
-              />
-              </Grid>
-            <Grid item xs={1} display="flex"
-              justifyContent="flex-end"
-              alignItems="flex-end">
-              <Fab color="secondary" aria-label="add" onClick={() => handleClickOpenForCreate()}>
-                <AddIcon />
-              </Fab>
+            {/*snackbar delete*/}
+            <Snackbar
+                open={DeleteSuccess}
+                autoHideDuration={1500}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert onClose={handleCloseSnackbar} severity="success">
+                    Delete complete
+                </Alert>
+            </Snackbar>
+            <Snackbar
+                open={DeleteError}
+                autoHideDuration={1500}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+                <Alert onClose={handleCloseSnackbar} severity="error">
+                    Failed to Delete {errorMsg}
+                </Alert>
+            </Snackbar>
+            <Grid container> {/** Search direction={"column-reverse"} */}
+                <Grid container>
+
+                    <Grid item xs={11}>
+                        <TextField sx={{ width: "20%" }}
+                            id="search-bar"
+                            onChange={(event) => (
+                                setSearchQuery(event.target.value)
+                            )}
+                            label="Search by name, department"
+                            variant="outlined"
+                            placeholder="Searching..."
+                            size="medium"
+
+                        />
+                    </Grid>
+                    <Grid item xs={1} display="flex"
+                        justifyContent="flex-end"
+                        alignItems="flex-end">
+                        <Fab color="secondary" aria-label="add" onClick={() => handleClickOpenForCreate()}>
+                            <AddIcon />
+                        </Fab>
+                    </Grid>
+                </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-        
-        <Grid container sx = {{mt : 1}}>
-            <TableContainer component={Paper}>
-                <Table className={classes.table}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell><h4>Name</h4></TableCell>
-                            <TableCell align="center"><h4>Profile</h4></TableCell>
-                            <TableCell align="center"><h4>Email</h4></TableCell>
-                            <TableCell align="center"><h4>Department</h4></TableCell>
-                            <TableCell align="center"><h4>Gender</h4></TableCell>
-                            <TableCell align="center"><h4></h4></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {/* //.filter(item => item.Seller_ID == Number(localStorage.getItem("uid")) */}
-                        {admin.filter(item => item.Name.toLowerCase().includes(searchQuery.toLowerCase()) || item.Department.Department_Title.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
-                            <TableRow key={item.ID} >
-                                <TableCell align="center">{item.Name}</TableCell>
-                                <TableCell align="center"><img src={`${item.Profile_Picture}`} width="100" height="100" /> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
-                                <TableCell align="center">{item.Email}</TableCell>
-                                <TableCell align="center">{item.Department?.Department_Title}</TableCell>
-                                <TableCell align="center">{item.Gender.Gender}</TableCell>
-                                <TableCell align="center">
-                                    <Stack direction="column" spacing={2}>
-                                        {/* <Button variant="outlined" color="primary" component={RouterLink} to={"/admin_profile/" + String(item.Email)}>
+
+            <Grid container sx={{ mt: 1 }}>
+                <TableContainer component={Paper}>
+                    <Table className={classes.table}>
+                        <TableHead>
+                            <TableRow>
+                                <TableCell><h4>Name</h4></TableCell>
+                                <TableCell align="center"><h4>Profile</h4></TableCell>
+                                <TableCell align="center"><h4>Email</h4></TableCell>
+                                <TableCell align="center"><h4>Department</h4></TableCell>
+                                <TableCell align="center"><h4></h4></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {/* //.filter(item => item.Seller_ID == Number(localStorage.getItem("uid")) */}
+                            {admin.filter(item => item.Name.toLowerCase().includes(searchQuery.toLowerCase()) || item.Department.Department_Title.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+                                <TableRow key={item.ID} >
+                                    <TableCell align="center">{item.Name}</TableCell>
+                                    <TableCell align="center"><img src={`${item.Profile_Picture}`} width="100" height="100" /> {/** src={`${games.Picture}`} เอาไว้ตอนนัททำใส่รูปให้แล้ว*/}</TableCell>
+                                    <TableCell align="center">{item.Email}</TableCell>
+                                    <TableCell align="center">{item.Department?.Department_Title}</TableCell>
+                                    <TableCell align="center">
+                                        <Stack direction="column" spacing={2}>
+                                            {/* <Button variant="outlined" color="primary" component={RouterLink} to={"/admin_profile/" + String(item.Email)}>
                                             Profile
                                         </Button> */}
-                                        <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)} >
-                                            Edit
-                                        </Button>
-                                        <Button variant="contained" color="error" onClick={() => deleteAdmin(Number(item.ID))}>
-                                            Delete
-                                        </Button>
+                                            <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)} >
+                                                Edit
+                                            </Button>
+                                            <Button variant="contained" color="error" onClick={() => deleteAdmin(Number(item.ID))}>
+                                                Delete
+                                            </Button>
 
 
-                                    </Stack>
-                                </TableCell>
-                                <Dialog maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
-                                    <DialogTitle>{adminEdit?.Name}</DialogTitle>
-                                    <DialogContent>
+                                        </Stack>
+                                    </TableCell>
+                                    <Dialog maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
+                                        <DialogTitle>{adminEdit?.Name}</DialogTitle>
+                                        <DialogContent>
+                                            <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
+                                                <Grid item xs={3}>
+                                                    <h2 style={{
+                                                        color: "black"
 
+                                                    }}>Name</h2>
 
-                                        <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
-                                            <Grid item xs={3}>
-                                                <h2 style={{
-                                                    color: "black"
-
-                                                }}>Name</h2>
-
-                                                <FormControl fullWidth variant="outlined"  >
-                                                    <TextField
-                                                        id="Name"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        placeholder="------------------------------------"
-                                                        defaultValue={adminEdit?.Name}
-                                                        // value={game.Game_Name || ""}
-                                                        onChange={handleInputChange}
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-
-                                            <Grid item xs={3} >
-                                                <h2>Email</h2>
-                                                <FormControl fullWidth variant="outlined" >
-                                                    <TextField
-                                                        id="Email"
-                                                        variant="outlined"
-
-                                                        size="medium"
-                                                        placeholder="------------------------------------"
-                                                        // value={game.Game_Price || ""}
-                                                        // onWheel={event => { event.preventDefault();  }}
-                                                        defaultValue={adminEdit?.Email}
-                                                        onChange={handleInputChange}
-
-
-
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-                                            <Grid item xs={3} >
-                                                <h2>Password</h2>
-                                                <FormControl fullWidth variant="outlined" >
-                                                    <TextField
-                                                        id="Password"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        placeholder="------------------------------------"
-                                                        defaultValue={adminEdit?.Password}
-                                                        onChange={handleInputChange}
-
-                                                    />
-                                                </FormControl>
-                                            </Grid>
-
-                                            <Grid item xs={7} >
-                                            </Grid >
-                                        </Grid>
-                                        <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
-
-                                            <Grid item xs={4} >
-
-                                                <Autocomplete sx={{ mt: 5 }}
-                                                    id="Departments-autocomplete"
-                                                    options={department} //ตัวที่เราจะเลือกมีอะไรบ้าง
-                                                    fullWidth
-                                                    size="medium"
-                                                    defaultValue={adminEdit?.Department} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
-                                                    onChange={(event: any, value) => {
-                                                        setAdminEdit({ ...adminEdit, Department_ID: value?.ID }); // บันทึกค่าลง interface
-                                                    }}
-                                                    getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                                                        `${option.Department_Title}`
-                                                    } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                                                    renderInput={(params) => <TextField {...params} label="Department" />}
-                                                    renderOption={(props: any, option: any) => {
-                                                        return (
-                                                            <li
-                                                                {...props}
-                                                                value={`${option.ID}`}
-                                                                key={`${option.ID}`}
-                                                            >{`${option.Department_Title}`}</li>
-                                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
-                                                    }}
-                                                />
-                                                <Autocomplete sx={{ mt: 5 }}
-                                                    id="Province-autocomplete"
-                                                    options={province} //ตัวที่เราจะเลือกมีอะไรบ้าง
-                                                    fullWidth
-                                                    size="medium"
-                                                    defaultValue={adminEdit?.Province} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
-                                                    onChange={(event: any, value) => {
-                                                        setAdminEdit({ ...adminEdit, Province_ID: value?.ID }); // บันทึกค่าลง interface
-                                                    }}
-                                                    getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                                                        `${option.Province_Title}`
-                                                    } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                                                    renderInput={(params) => <TextField {...params} label="Province" />}
-                                                    renderOption={(props: any, option: any) => {
-                                                        return (
-                                                            <li
-                                                                {...props}
-                                                                value={`${option.ID}`}
-                                                                key={`${option.ID}`}
-                                                            >{`${option.Province_Title}`}</li>
-                                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
-                                                    }}
-                                                />
-
-
-                                                <FormControl>
-                                                    <FormLabel sx={{ mt: 5 }} id="radio-buttons-group-gender">Gender</FormLabel >
-                                                    <RadioGroup
-                                                        aria-labelledby="radio-buttons-group-gender"
-                                                        name="radio-buttons-group-gender"
-                                                        defaultValue={adminEdit?.Gender_ID}
-                                                        onChange={(event) => setAdminEdit({ ...adminEdit, Gender_ID: Number(event.target.value) })}
-                                                    >
-                                                        {gender.map((o) => (
-                                                            <FormControlLabel
-                                                                value={o.ID} // <---- pass a primitive id value, don't pass the whole object here
-                                                                control={<Radio size="small" />}
-                                                                label={o.Gender}
-                                                            />
-                                                        ))}
-                                                    </RadioGroup>
-                                                </FormControl>
-
-                                            </Grid>
-
-                                            <Grid item xs={4}  >
-
-                                                <h2>Address</h2>
-                                                <FormControl fullWidth variant="outlined">
-
-                                                    <TextField
-                                                        id="Address"
-                                                        variant="outlined"
-                                                        type="string"
-                                                        size="medium"
-                                                        placeholder="------"
-                                                        multiline={true}
-                                                        rows={16}
-                                                     defaultValue={adminEdit.Address}
-                                                    // value={game.Game_description || ""}
-                                                    onChange={handleInputChange}
-                                                    />
-                                                </FormControl>
-
-                                            </Grid>
-                                            <Grid item xs={4}  >
-
-
-                                                <Grid item xs={8}>
-                                                    <h2>Admin Profiles</h2>
-                                                    <Grid>
-                                                        <img src={`${imageString}`} width="250" height="250" /> {/** show base64 picture from string variable (that contain base64 picture data) */}
-                                                    </Grid>
-                                                    <input type="file" onChange={handleImageChange} />
-                                                    {/* <FormHelperText>recommend size is 250*250 pixels</FormHelperText> */}
+                                                    <FormControl fullWidth variant="outlined"  >
+                                                        <TextField
+                                                            id="Name"
+                                                            variant="outlined"
+                                                            type="string"
+                                                            size="medium"
+                                                            placeholder="------------------------------------"
+                                                            defaultValue={adminEdit?.Name}
+                                                            // value={game.Game_Name || ""}
+                                                            onChange={handleInputChange}
+                                                        />
+                                                    </FormControl>
                                                 </Grid>
+
+                                                <Grid item xs={3} >
+                                                    <h2>Email</h2>
+                                                    <FormControl fullWidth variant="outlined" >
+                                                        <TextField
+                                                            id="Email"
+                                                            variant="outlined"
+
+                                                            size="medium"
+                                                            placeholder="------------------------------------"
+                                                            // value={game.Game_Price || ""}
+                                                            // onWheel={event => { event.preventDefault();  }}
+                                                            defaultValue={adminEdit?.Email}
+                                                            onChange={handleInputChange}
+
+
+
+                                                        />
+                                                    </FormControl>
+                                                </Grid>
+                                                <Grid item xs={3} >
+                                                    <h2>Password</h2>
+                                                    <FormControl fullWidth variant="outlined" >
+                                                        <TextField
+                                                            id="Password"
+                                                            variant="outlined"
+                                                            type="string"
+                                                            size="medium"
+                                                            placeholder="------------------------------------"
+                                                            defaultValue={adminEdit?.Password}
+                                                            onChange={handleInputChange}
+
+                                                        />
+                                                    </FormControl>
+                                                </Grid>
+
+                                                <Grid item xs={7} >
+                                                </Grid >
                                             </Grid>
+                                            <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
+
+                                                <Grid item xs={4} >
+
+                                                    <Autocomplete sx={{ mt: 5 }}
+                                                        id="Departments-autocomplete"
+                                                        options={department} //ตัวที่เราจะเลือกมีอะไรบ้าง
+                                                        fullWidth
+                                                        size="medium"
+                                                        defaultValue={adminEdit?.Department} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
+                                                        onChange={(event: any, value) => {
+                                                            setAdminEdit({ ...adminEdit, Department_ID: value?.ID }); // บันทึกค่าลง interface
+                                                        }}
+                                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                                            `${option.Department_Title}`
+                                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                                        renderInput={(params) => <TextField {...params} label="Department" />}
+                                                        renderOption={(props: any, option: any) => {
+                                                            return (
+                                                                <li
+                                                                    {...props}
+                                                                    value={`${option.ID}`}
+                                                                    key={`${option.ID}`}
+                                                                >{`${option.Department_Title}`}</li>
+                                                            ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                                        }}
+                                                    />
+                                                    <Autocomplete sx={{ mt: 5 }}
+                                                        id="Province-autocomplete"
+                                                        options={province} //ตัวที่เราจะเลือกมีอะไรบ้าง
+                                                        fullWidth
+                                                        size="medium"
+                                                        defaultValue={adminEdit?.Province} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
+                                                        onChange={(event: any, value) => {
+                                                            setAdminEdit({ ...adminEdit, Province_ID: value?.ID }); // บันทึกค่าลง interface
+                                                        }}
+                                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                                            `${option.Province_Title}`
+                                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                                        renderInput={(params) => <TextField {...params} label="Province" />}
+                                                        renderOption={(props: any, option: any) => {
+                                                            return (
+                                                                <li
+                                                                    {...props}
+                                                                    value={`${option.ID}`}
+                                                                    key={`${option.ID}`}
+                                                                >{`${option.Province_Title}`}</li>
+                                                            ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                                        }}
+                                                    />
 
 
-                                        </Grid>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleCloseForEdit}>Cancel</Button>
-                                        <Button onClick={() => UpdateAdmin(item.ID)}>Update</Button>
-                                        {/* <Button>onClick ={UpdateAdmin}</Button> */}
-                                    </DialogActions>
-                                </Dialog>
-                                <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
-                                    <DialogTitle>DELETE</DialogTitle>
-                                    <DialogContent>
-                                        <DialogContentText>
-                                            {/* Are you SURE to DELETE Friend "{item.User_Friend.Profile_Name}" ? */}
-                                        </DialogContentText>
-                                    </DialogContent>
-                                    <DialogActions>
-                                        <Button onClick={handleCloseForDelete}>Cancel</Button>
-                                        {/* <Button color="error" onClick={() => deleteUserFriend(deleteFriend?.ID||0)}>Delete</Button> */}
-                                    </DialogActions>
-                                </Dialog>
-                                <Dialog fullWidth maxWidth="xl" open={openForCreate} onClose={handleCloseForCreate}>
-                                    <DialogTitle sx={{
-                                        bgcolor: "#E3E3E3"
+                                                    <FormControl>
+                                                        <FormLabel sx={{ mt: 5 }} id="radio-buttons-group-gender">Gender</FormLabel >
+                                                        <RadioGroup
+                                                            aria-labelledby="radio-buttons-group-gender"
+                                                            name="radio-buttons-group-gender"
+                                                            defaultValue={adminEdit?.Gender_ID}
+                                                            onChange={(event) => setAdminEdit({ ...adminEdit, Gender_ID: Number(event.target.value) })}
+                                                        >
+                                                            {gender.map((o) => (
+                                                                <FormControlLabel
+                                                                    value={o.ID} // <---- pass a primitive id value, don't pass the whole object here
+                                                                    control={<Radio size="small" />}
+                                                                    label={o.Gender}
+                                                                />
+                                                            ))}
+                                                        </RadioGroup>
+                                                    </FormControl>
 
-                                    }}>Create Game</DialogTitle>
-                                    <DialogContent sx={{
-                                        bgcolor: "#E3E3E3"
+                                                </Grid>
 
-                                    }}>
-                                        <Admin />
-                                    </DialogContent>
-                                </Dialog>
-                            </TableRow>
-                        ))}
+                                                <Grid item xs={4}  >
 
-                    </TableBody>
+                                                    <h2>Address</h2>
+                                                    <FormControl fullWidth variant="outlined">
 
-                </Table>
-            </TableContainer>
-        </Grid>
+                                                        <TextField
+                                                            id="Address"
+                                                            variant="outlined"
+                                                            type="string"
+                                                            size="medium"
+                                                            placeholder="------"
+                                                            multiline={true}
+                                                            rows={16}
+                                                            defaultValue={adminEdit.Address}
+                                                            // value={game.Game_description || ""}
+                                                            onChange={handleInputChange}
+                                                        />
+                                                    </FormControl>
+
+                                                </Grid>
+                                                <Grid item xs={4}  >
+
+
+                                                    <Grid item xs={8}>
+                                                        <h2>Admin Profiles</h2>
+                                                        <Grid>
+                                                            <img src={`${imageString}`} width="250" height="250" /> {/** show base64 picture from string variable (that contain base64 picture data) */}
+                                                        </Grid>
+                                                        <input type="file" onChange={handleImageChange} />
+                                                        {/* <FormHelperText>recommend size is 250*250 pixels</FormHelperText> */}
+                                                    </Grid>
+                                                </Grid>
+
+
+                                            </Grid>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseForEdit}>Cancel</Button>
+                                            <Button onClick={() => UpdateAdmin(item.ID)}>Update</Button>
+                                            {/* <Button>onClick ={UpdateAdmin}</Button> */}
+                                        </DialogActions>
+                                    </Dialog>
+                                    <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
+                                        <DialogTitle>DELETE</DialogTitle>
+                                        <DialogContent>
+                                            <DialogContentText>
+                                                {/* Are you SURE to DELETE Friend "{item.User_Friend.Profile_Name}" ? */}
+                                            </DialogContentText>
+                                        </DialogContent>
+                                        <DialogActions>
+                                            <Button onClick={handleCloseForDelete}>Cancel</Button>
+                                            {/* <Button color="error" onClick={() => deleteUserFriend(deleteFriend?.ID||0)}>Delete</Button> */}
+                                        </DialogActions>
+                                    </Dialog>
+                                    <Dialog fullWidth maxWidth="md" open={openForCreate} onClose={handleCloseForCreate}>
+                                        <DialogTitle sx={{
+                                            bgcolor: "#E3E3E3"
+
+                                        }}>Create Admin</DialogTitle>
+                                        <DialogContent sx={{
+                                            bgcolor: "#E3E3E3"
+
+                                        }}>
+                                            <Admin />
+                                        </DialogContent>
+                                    </Dialog>
+                                </TableRow>
+                            ))}
+
+                        </TableBody>
+
+                    </Table>
+                </TableContainer>
+            </Grid>
 
         </Container>
     );

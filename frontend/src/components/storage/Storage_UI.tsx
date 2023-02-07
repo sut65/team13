@@ -325,12 +325,13 @@ function Storage_UI() {
                       {/* <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/" + String(item.User_Friend.Email)}>
                         Profile
                       </Button> */}
-                      
-                        <Link href={item.Game.Game_file} underline="none" sx={{width : "100%"}}>
-                        
-                        <Button variant="contained" color="primary" fullWidth>Dowload</Button>
-                        </Link>
-                      
+                        <Link   href={item.Game.Game_file} underline="none" sx={{ width: "100%" }} download = {item.Game.Game_Name}   >
+                    <Button type="submit"
+                        fullWidth
+                        variant="contained" 
+                        color="secondary"
+                        > Dowload</Button>
+                </Link>
                       <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
                         Add to Collection
                       </Button>

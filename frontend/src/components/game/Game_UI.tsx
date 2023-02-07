@@ -30,6 +30,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@mui/material/Alert";
 import Autocomplete from "@mui/material/Autocomplete";
+import { color } from "@mui/system";
 function timeout(delay: number) {
   return new Promise(res => setTimeout(res, delay));
 }
@@ -41,6 +42,7 @@ function Game_UI() {
   const [game_status, setGame_status] = useState<Game_StatusInterface[]>([]);
   const [game, setGame] = React.useState<Partial<GamesInterface>>({ Publish_Date: new Date(), });
   const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null); // สร้างตัวแปรแยกเนื่องจาก render.result มันต้องการ ArrayBuffer ด้วย
+  const [gamefileString, setGamefileString] = React.useState<string | ArrayBuffer | null>(null); 
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -64,6 +66,17 @@ function Game_UI() {
     reader.onload = () => {
       const base64Data = reader.result;
       setImageString(base64Data)
+    }
+  }
+  //game_file
+  const handleGamefileChange = (event: any) => {
+    const game_file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(game_file);
+    reader.onload = () => {
+      const base64Data = reader.result;
+      setGamefileString(base64Data)
     }
   }
   // TextField
@@ -150,7 +163,7 @@ function Game_UI() {
       Game_Status_ID: convertType(game.Game_Status_ID),
       Type_Game_ID: convertType(game.Type_Game_ID),
       Rating_ID: convertType(game.Rating_ID),
-      Game_file: game.Game_file,
+      Game_file: gamefileString,
       Game_Picture: imageString
 
 
@@ -168,18 +181,18 @@ function Game_UI() {
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then(async (res) => {
-        if (res.data) {          
+        if (res.data) {
           setSuccess(true);
-          await timeout(500); 
+          await timeout(500);
           window.location.reload();
         } else {
           setError(true);
-          setErrorMsg(" - "+res.error);
+          setErrorMsg(" - " + res.error);
         }
       });
 
 
-  
+
   }
   if (user.Is_Seller)
     return (
@@ -330,75 +343,75 @@ function Game_UI() {
             <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
 
               <Grid item xs={4} >
-              <Autocomplete sx={{ mt: 5 }}
-                          id="Type_Game-autocomplete"
-                          options={game_type}
-                          fullWidth
-                          size="medium"
-                          //defaultValue={gameEdit?.Type_Game} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
-                          onChange={(event: any, value) => {
-                            setGame({ ...game, Type_Game_ID: value?.ID }); // บันทึกค่าลง interface
-                          }}
-                          getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                            `${option.Type_Game_Name} ${option.ID}`
-                          } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                          renderInput={(params) => <TextField {...params} label="Game type" />}
-                          renderOption={(props: any, option: any) => {
-                            return (
-                              <li
-                                {...props}
-                                value={`${option.ID}`}
-                                key={`${option.ID}`}
-                              >{`${option.Type_Game_Name}`}</li>//แสดงผลใน box
-                            ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
-                          }}
-                        />
                 <Autocomplete sx={{ mt: 5 }}
-                          id="Game_Status-autocomplete"
-                          options={game_status} //ตัวที่เราจะเลือกมีอะไรบ้าง
-                          fullWidth
-                          size="medium"
-                          //defaultValue={gameEdit?.Game_Status} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
-                          onChange={(event: any, value) => {
-                            setGame({ ...game, Game_Status_ID: value?.ID }); // บันทึกค่าลง interface
-                          }}
-                          getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                            `${option.Status_Type}`
-                          } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                          renderInput={(params) => <TextField {...params} label="Game Status" />}
-                          renderOption={(props: any, option: any) => {
-                            return (
-                              <li
-                                {...props}
-                                value={`${option.ID}`}
-                                key={`${option.ID}`}
-                              >{`${option.Status_Type}`}</li>
-                            ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
-                          }}
-                        />
+                  id="Type_Game-autocomplete"
+                  options={game_type}
+                  fullWidth
+                  size="medium"
+                  //defaultValue={gameEdit?.Type_Game} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
+                  onChange={(event: any, value) => {
+                    setGame({ ...game, Type_Game_ID: value?.ID }); // บันทึกค่าลง interface
+                  }}
+                  getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                    `${option.Type_Game_Name} ${option.ID}`
+                  } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                  renderInput={(params) => <TextField {...params} label="Game type" />}
+                  renderOption={(props: any, option: any) => {
+                    return (
+                      <li
+                        {...props}
+                        value={`${option.ID}`}
+                        key={`${option.ID}`}
+                      >{`${option.Type_Game_Name}`}</li>//แสดงผลใน box
+                    ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                  }}
+                />
                 <Autocomplete sx={{ mt: 5 }}
-                          id="Rating-autocomplete"
-                          options={game_rating} //ตัวที่เราจะเลือกมีอะไรบ้าง
-                          fullWidth
-                          size="medium"
-                          //defaultValue={gameEdit?.Rating} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
-                          onChange={(event: any, value) => {
-                            setGame({ ...game, Rating_ID: value?.ID }); // บันทึกค่าลง interface
-                          }}
-                          getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                            `${option.Rating_Name}`
-                          } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                          renderInput={(params) => <TextField {...params} label="Game Rating" />}
-                          renderOption={(props: any, option: any) => {
-                            return (
-                              <li
-                                {...props}
-                                value={`${option.ID}`}
-                                key={`${option.ID}`}
-                              >{`${option.Rating_Name}`}</li>
-                            ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
-                          }}
-                        />
+                  id="Game_Status-autocomplete"
+                  options={game_status} //ตัวที่เราจะเลือกมีอะไรบ้าง
+                  fullWidth
+                  size="medium"
+                  //defaultValue={gameEdit?.Game_Status} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
+                  onChange={(event: any, value) => {
+                    setGame({ ...game, Game_Status_ID: value?.ID }); // บันทึกค่าลง interface
+                  }}
+                  getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                    `${option.Status_Type}`
+                  } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                  renderInput={(params) => <TextField {...params} label="Game Status" />}
+                  renderOption={(props: any, option: any) => {
+                    return (
+                      <li
+                        {...props}
+                        value={`${option.ID}`}
+                        key={`${option.ID}`}
+                      >{`${option.Status_Type}`}</li>
+                    ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                  }}
+                />
+                <Autocomplete sx={{ mt: 5 }}
+                  id="Rating-autocomplete"
+                  options={game_rating} //ตัวที่เราจะเลือกมีอะไรบ้าง
+                  fullWidth
+                  size="medium"
+                  //defaultValue={gameEdit?.Rating} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้ //ค่า default ที่ดึงมาแสดง
+                  onChange={(event: any, value) => {
+                    setGame({ ...game, Rating_ID: value?.ID }); // บันทึกค่าลง interface
+                  }}
+                  getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                    `${option.Rating_Name}`
+                  } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                  renderInput={(params) => <TextField {...params} label="Game Rating" />}
+                  renderOption={(props: any, option: any) => {
+                    return (
+                      <li
+                        {...props}
+                        value={`${option.ID}`}
+                        key={`${option.ID}`}
+                      >{`${option.Rating_Name}`}</li>
+                    ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                  }}
+                />
                 <Button
                   fullWidth
                   sx={{ mt: 2 }}
@@ -407,7 +420,7 @@ function Game_UI() {
                   variant="contained"
                   color="primary"
                   startIcon={< CloudUploadIcon />}
-                  
+
 
                 >
                   Upload Game
@@ -442,13 +455,13 @@ function Game_UI() {
                   <TextField
                     id="Game_file"
                     variant="outlined"
-                    type="string"
+                    type="file"
                     size="medium"
                     placeholder="------"
 
 
                     //value={ game. || ""}
-                    onChange={handleInputChange}
+                    onChange={handleGamefileChange}
                   />
 
                 </FormControl>
@@ -472,7 +485,7 @@ function Game_UI() {
                   <Grid>
                     <img src={`${imageString}`} width="500" height="250" /> {/** show base64 picture from string variable (that contain base64 picture data) */}
                   </Grid>
-                  <input type="file" onChange={handleImageChange} />
+                  <input  type="file" onChange={handleImageChange}  />
                   {/* <FormHelperText>recommend size is 500*250 pixels</FormHelperText> */}
                 </Grid>
               </Grid>

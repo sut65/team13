@@ -34,6 +34,7 @@ import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
 
 import { Link as RouterLink } from "react-router-dom";
 import { UsersInterface } from '../models/user/IUser';
+import { AdminsInterface } from '../models/admin/IAdmin';
 
 const useStyles = makeStyles({
   drawer: {
@@ -46,97 +47,119 @@ const useStyles = makeStyles({
 
 function FullAppBar() {
   const [user, setUser] = React.useState<Partial<UsersInterface>>({});
-  
+  const [admin, setAdmin] = React.useState<Partial<AdminsInterface>>({});
   const signout = () => {
     localStorage.clear();
     window.location.href = "/";
   };
 
   function drawerList() {
-    function gameMarketList(){
-      if(user.Is_Seller){
-        return(
+    function gameMarketList() {
+      if (user.Is_Seller) {
+        return (
           <ListItem button component={RouterLink} to="/game_list">
-            <SellIcon/>         
-            <ListItemText primary="Game Market" sx={{paddingLeft:1}}/>
+            <SellIcon />
+            <ListItemText primary="Game Market" sx={{ paddingLeft: 1 }} />
           </ListItem>
         );
       }
     }
-    if(localStorage.getItem("position") == "Admin"){
-      return( // Admin Drawer
-        <List className={classes.drawer} sx={{width:"100%"}}>
-          <ListItem button component={RouterLink} to="/">
-            <HomeIcon/>
-            <ListItemText primary="FirstPage" sx={{paddingLeft:1}}/>
-          </ListItem>
+    function AdminList() {
+      console.log(admin.Email)
 
-          <ListItem button component={RouterLink} to="/banner">
-            <ViewCarouselIcon/>
-            <ListItemText primary="Banner" sx={{paddingLeft:1}}/>
-          </ListItem>
-
+      if (admin.Department?.Department_Title == "Master") {
+        return (
           <ListItem button component={RouterLink} to="/admin_list">
-            <PriceCheckIcon/>
-            <ListItemText primary="Admin Modify" sx={{paddingLeft:1}}/>
+            <SupervisorAccountIcon />
+            <ListItemText primary="Admin Modify" sx={{ paddingLeft: 1 }} />
+          </ListItem>
+        );
+      }
+    }
+    function payment_ver() {
+      if (admin.Department?.Department_Title == "Accounting" || admin.Department?.Department_Title == "Master") {
+        return (
+          <ListItem button component={RouterLink} to="/payment_ver">
+            <PriceCheckIcon />
+            <ListItemText primary="Payment Verification" sx={{ paddingLeft: 1 }} />
+          </ListItem>
+        );
+      }
+    }
+    function banner() {
+      if (admin.Department?.Department_Title == "Programmer" || admin.Department?.Department_Title == "Master") {
+        return (
+          <ListItem button component={RouterLink} to="/banner">
+            <ViewCarouselIcon />
+            <ListItemText primary="Banner" sx={{ paddingLeft: 1 }} />
+          </ListItem>);
+      }
+    }
+    if (localStorage.getItem("position") == "Admin") {
+      return ( // Admin Drawer
+        <List className={classes.drawer} sx={{ width: "100%" }}>
+          <ListItem button component={RouterLink} to="/">
+            <HomeIcon />
+            <ListItemText primary="FirstPage" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
-          <ListItem button component={RouterLink} to="/payment_ver">
-            <PriceCheckIcon/>
-            <ListItemText primary="Payment Verification" sx={{paddingLeft:1}}/>
-          </ListItem>
+          {banner()}
+
+          {AdminList()}
+
+          {payment_ver()}
 
           <ListItem button component={RouterLink} to="/topgames">
-            <StarIcon/>
-            <ListItemText primary="Topgame" sx={{paddingLeft:1}}/>
+            <StarIcon />
+            <ListItemText primary="Topgame" sx={{ paddingLeft: 1 }} />
           </ListItem>
         </List>
 
       );
-    }else{ // User Drawer
-      return(
-        <List className={classes.drawer} sx={{width:"100%"}}>
+    } else { // User Drawer
+      return (
+        <List className={classes.drawer} sx={{ width: "100%" }}>
 
           <ListItem button component={RouterLink} to="/">
-            <HomeIcon/>
-            <ListItemText primary="FirstPage" sx={{paddingLeft:1}}/>
+            <HomeIcon />
+            <ListItemText primary="FirstPage" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
           <ListItem button component={RouterLink} to="/dashboard">
-            <DashboardIcon/>
-            <ListItemText primary="Dashboard" sx={{paddingLeft:1}}/>
+            <DashboardIcon />
+            <ListItemText primary="Dashboard" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
           {gameMarketList()} {/** หากเป็น seller จะshow */}
 
           <ListItem button component={RouterLink} to="/my_basket">
-            <ShoppingBasketIcon/>
-            <ListItemText primary="My Basket" sx={{paddingLeft:1}}/>
+            <ShoppingBasketIcon />
+            <ListItemText primary="My Basket" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
           <ListItem button component={RouterLink} to="/my_order">
-            <PaidIcon/>
-            <ListItemText primary="My Order" sx={{paddingLeft:1}}/>
+            <PaidIcon />
+            <ListItemText primary="My Order" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
           <ListItem button component={RouterLink} to="/my_friend">
-            <PeopleIcon/>
-            <ListItemText primary="My Friend" sx={{paddingLeft:1}}/>
+            <PeopleIcon />
+            <ListItemText primary="My Friend" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
           <ListItem button component={RouterLink} to="/storage">
-            <FeaturedPlayListIcon/>
-            <ListItemText primary="Storage" sx={{paddingLeft:1}}/>
+            <FeaturedPlayListIcon />
+            <ListItemText primary="Storage" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
           <ListItem button component={RouterLink} to="/wishlist">
-            <BookmarkIcon/>
-            <ListItemText primary="Wishlist" sx={{paddingLeft:1}}/>
+            <BookmarkIcon />
+            <ListItemText primary="Wishlist" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
           <ListItem button component={RouterLink} to="/user_store_setting">
-            <SettingsIcon/>
-            <ListItemText primary="User & Store Setting" sx={{paddingLeft:1}}/>
+            <SettingsIcon />
+            <ListItemText primary="User & Store Setting" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
         </List>
@@ -145,11 +168,17 @@ function FullAppBar() {
   }
 
   function myStoreMenuItem() {
-    if(user.Is_Seller){
-      return(
-        <MenuItem onClick={handleClose} component={RouterLink} to={"/store_profile/"+localStorage.getItem("email")} >My Store</MenuItem>
+    if (user.Is_Seller) {
+      return (
+        <MenuItem onClick={handleClose} component={RouterLink} to={"/store_profile/" + localStorage.getItem("email")} >My Store</MenuItem>
       );
     }
+  }
+  function myProfileUser() {
+    if (localStorage.getItem("position") == "user")
+      return (
+        <MenuItem onClick={handleClose} component={RouterLink} to={"/user_profile/" + localStorage.getItem("email")} >My Profile</MenuItem>
+      )
   }
 
   const [auth] = React.useState(true);
@@ -167,27 +196,46 @@ function FullAppBar() {
   const classes = useStyles();
 
   const getUser = async () => {
-    const apiUrl = "http://localhost:8080/user/"+localStorage.getItem("email");
+    const apiUrl = "http://localhost:8080/user/" + localStorage.getItem("email");
     const requestOptions = {
-        method: "GET",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-        },
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
     };
-   
-    await fetch(apiUrl, requestOptions)
-        .then((response) => response.json())
-        .then((res) => {
-            if (res.data) {
-                setUser(res.data);
-            }
-        });
-  };
 
+    await fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.data) {
+          setUser(res.data);
+
+        }
+      });
+  };
+  async function GetAdmin() {
+    const apiUrl = "http://localhost:8080/admin/" + localStorage.getItem("email");
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    await fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.data) {
+          setAdmin(res.data);
+        }
+      });
+  };
   React.useEffect(() => {
     const fetchData = async () => {
-        await getUser();
+      await getUser();
+      await GetAdmin();
     }
     fetchData();
   }, []);
@@ -195,24 +243,24 @@ function FullAppBar() {
   return (
     <Box sx={{ flexGrow: 1 }}>
 
-      <AppBar position="static" sx ={{ background : "#212121"}}>    
+      <AppBar position="static" sx={{ background: "#212121" }}>
         <Toolbar>
-        <IconButton
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          onClick={() => setIsDrawerOpen(true)}
-        >
-          <MenuIcon />
-        </IconButton>
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={() => setIsDrawerOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
 
-        <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
+          <Drawer open={isDrawerOpen} onClose={() => setIsDrawerOpen(false)}>
 
-          <GamesIcon sx={{ fontSize: 150, margin: 1, padding: 2 }} />
-          {/** List of Drawer Divided by position */}
-          {drawerList()}
+            <GamesIcon sx={{ fontSize: 150, margin: 1, padding: 2 }} />
+            {/** List of Drawer Divided by position */}
+            {drawerList()}
 
-        </Drawer>
+          </Drawer>
 
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Game Store
@@ -228,7 +276,7 @@ function FullAppBar() {
                 onClick={handleMenu}
                 color="inherit"
               >
-              <AccountCircle />
+                <AccountCircle />
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -245,7 +293,7 @@ function FullAppBar() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose} component={RouterLink} to={"/user_profile/"+localStorage.getItem("email")} >My Profile</MenuItem>
+                {myProfileUser()} {/*for user */}
                 {myStoreMenuItem()}
                 <MenuItem onClick={signout} component={RouterLink} to="/" >Logout</MenuItem>
               </Menu>
@@ -256,7 +304,7 @@ function FullAppBar() {
       </AppBar>
 
     </Box>
-  
+
   );
 }
 

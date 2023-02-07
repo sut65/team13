@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
 	"golang.org/x/crypto/bcrypt"
 
@@ -16,7 +17,7 @@ func CreateAdmin(c *gin.Context) {
 	var gender entity.Gender
 	var department entity.Department
 	var province entity.Province
-	var emailCheck entity.Admin
+	// var emailCheck entity.Admin
 
 	if err := c.ShouldBindJSON(&admin); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -28,18 +29,18 @@ func CreateAdmin(c *gin.Context) {
 		return
 	}
 	if tx := entity.DB().Where("id = ?", admin.Department_ID).First(&department); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Department not found"})
 		return
 	}
 	if tx := entity.DB().Where("id = ?", admin.Province_ID).First(&province); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "not found"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Province not found"})
 		return
 	}
 
-	if tx := entity.DB().Where("email = ?", admin.Email).First(&emailCheck); !(tx.RowsAffected == 0) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "This email is used"})
-		return
-	}
+	// if tx := entity.DB().Where("email = ?", admin.Email).First(&emailCheck); !(tx.RowsAffected == 0) {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "This email is used"})
+	// 	return
+	// }
 
 	hashPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), 12)
 	if err != nil {
@@ -57,7 +58,10 @@ func CreateAdmin(c *gin.Context) {
 		Department:      department,
 		Province:        province,
 	}
-
+	if _, err := govalidator.ValidateStruct(newAdmin); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	if err := entity.DB().Create(&newAdmin).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -93,28 +97,6 @@ func ListAdmin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"data": admin})
 }
 
-// // GET /sellers
-// func ListSellers(c *gin.Context) {
-// 	var users []entity.User
-
-// 	if err := entity.DB().Preload("Game").Preload("Storage").Raw("SELECT * FROM users WHERE Is_Seller = ?", true).Scan(&users).Error; err != nil {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-// 		return
-// 	}
-// 	c.JSON(http.StatusOK, gin.H{"data": users})
-// }
-
-// DELETE /users/:email --> ใช้อยู่
-
-// func DeleteAdmin(c *gin.Context) {
-// 	email := c.Param("email")
-// 	if tx := entity.DB().Exec("DELETE FROM admins WHERE email = ?", email); tx.RowsAffected == 0 {
-// 		c.JSON(http.StatusBadRequest, gin.H{"error": "admin not found"})
-// 		return
-// 	}
-
-//		c.JSON(http.StatusOK, gin.H{"data": email})
-//	}
 func DeleteAdmin(c *gin.Context) {
 
 	id := c.Param("id")
@@ -139,32 +121,20 @@ func UpdateAdmin(c *gin.Context) {
 		return
 	}
 
-	if len(admin.Password) <= 7 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัว"})
-		return
-	}
-
-	if !(admin.Password[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
-		hashPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), 12)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
-			return
-		}
-		print("HASH!!!!")
-		admin.Password = string(hashPassword)
-	} else {
-		print("NOT HASH!!!")
-	}
+	// if len(admin.Password) <= 7 {
+	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "รหัสผ่านต้องมากกว่าหรือเท่ากับ 8 ตัว"})
+	// 	return
+	// }
 
 	if tx := entity.DB().Where("id = ?", admin.Gender_ID).First(&gender); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "gender not found"})
 		return
 	}
 
-	// if tx := entity.DB().Where("id = ?", admin.Department_ID).First(&department); tx.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "department not found"})
-	// 	return
-	// }
+	if tx := entity.DB().Where("id = ?", admin.Department_ID).First(&department); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "department not found"})
+		return
+	}
 
 	if tx := entity.DB().Where("id = ?", admin.Province_ID).First(&province); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "province not found"})
@@ -173,6 +143,7 @@ func UpdateAdmin(c *gin.Context) {
 
 	updateAdmin := entity.Admin{
 		Name:            admin.Name,
+		Email:           admin.Email,
 		Password:        admin.Password,
 		Address:         admin.Address,
 		Profile_Picture: admin.Profile_Picture,
@@ -189,7 +160,21 @@ func UpdateAdmin(c *gin.Context) {
 		// Game_file:        game.Game_file,
 		// Game_Picture:     game.Game_Picture,
 	}
-
+	if _, err := govalidator.ValidateStruct(updateAdmin); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if !(admin.Password[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
+		hashPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), 12)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
+			return
+		}
+		print("HASH!!!!")
+		admin.Password = string(hashPassword)
+	} else {
+		print("NOT HASH!!!")
+	}
 	if err := entity.DB().Where("ID = ?", admin.ID).Updates(&updateAdmin).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

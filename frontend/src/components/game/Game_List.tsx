@@ -7,7 +7,8 @@ import { GamesInterface } from "../../models/game/IGame";
 import { RatingsInterface } from "../../models/game/IRating";
 import { Type_GamesInterface } from "../../models/game/IType_Game";
 import { Game_StatusInterface } from "../../models/game/IGame_Status";
-
+import { Upload } from '@progress/kendo-react-upload';
+import "../../App.css"
 import {
   GetGame_Type,
   GetGame_Status,
@@ -27,7 +28,7 @@ import Moment from 'moment';
 import AddIcon from '@mui/icons-material/Add';
 import Game_UI from "./Game_UI";
 //import id from "date-fns/esm/locale/id/index.js";
-
+import "../../App.css"
 
 function Game() {
   Moment.locale('th');
@@ -49,6 +50,7 @@ function Game() {
   const [DeleteError, setDeleteError] = useState(false);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
+  const [gamefileString, setGamefileString] = React.useState<string | ArrayBuffer | null>(null);
   const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
   function timeout(delay: number) {
     return new Promise(res => setTimeout(res, delay));
@@ -64,13 +66,13 @@ function Game() {
       Game_Name: game1.Game_Name,
       Game_Price: convertType(game1.Game_Price),
       Game_description: game1.Game_description,
-      Publish_Date : game1.Publish_Date,
+      Publish_Date: game1.Publish_Date,
       Game_Status_ID: convertType(game1.Game_Status_ID),
       Type_Game_ID: convertType(game1.Type_Game_ID),
       Rating_ID: convertType(game1.Rating_ID),
-      Game_file: game1.Game_file,
+      Game_file: gamefileString,
       Game_Picture: imageString
-      
+
     };
     const apiUrl = "http://localhost:8080/Game";
     const requestOptions = {
@@ -84,13 +86,13 @@ function Game() {
     fetch(apiUrl, requestOptions)
       .then((response) => response.json())
       .then(async (res) => {
-        if (res.data) {          
+        if (res.data) {
           setUpdateSuccess(true);
-          await timeout(500); 
+          await timeout(500);
           window.location.reload();
         } else {
           setUpdateError(true);
-          setErrorMsg(" - "+res.error);
+          setErrorMsg(" - " + res.error);
         }
       });
 
@@ -112,11 +114,11 @@ function Game() {
       .then(async (res) => {
         if (res.data) {
           setDeleteSuccess(true);
-          await timeout(500); 
+          await timeout(500);
           window.location.reload();
         } else {
           setDeleteError(true);
-          setErrorMsg(" - "+res.error);
+          setErrorMsg(" - " + res.error);
         }
       });
   }
@@ -143,6 +145,17 @@ function Game() {
     setDeleteSuccess(false);
     setDeleteError(false);
   };
+  //game_file
+  const handleGamefileChange = (event: any) => {
+    const game_file = event.target.files[0];
+
+    const reader = new FileReader();
+    reader.readAsDataURL(game_file);
+    reader.onload = () => {
+      const base64Data = reader.result;
+      setGamefileString(base64Data)
+    }
+  }
   // TextField
   const handleInputChange = (
     event: React.ChangeEvent<{ id?: string; value: any }>
@@ -168,6 +181,7 @@ function Game() {
     setGameEdit(item);
     setGame1(item) //เสร็จ Default อีกที
     setImageString(item.Game_Picture) // ชนิดข้อมูลไม่สอดคร้องกัน
+    setGamefileString(item.Game_file)
   };
   const handleCloseForEdit = () => {
     setOpenForEdit(false);
@@ -222,7 +236,7 @@ function Game() {
     }}>
 
       <Container maxWidth="xl" sx={{ p: 20 }}  >
-        <Grid container sx = {{mb : 4}} > {/** Search direction={"column-reverse"} */ }
+        <Grid container sx={{ mb: 4 }} > {/** Search direction={"column-reverse"} */}
           <Grid container>
             <Grid item xs={11}>
               <TextField
@@ -246,28 +260,28 @@ function Game() {
           </Grid>
         </Grid>
         <Paper elevation={5}>
-        <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}>
-        
-          {game.filter(item => item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
-            <Grid item xs={3} key={item.ID} >
-              <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
-                <CardActionArea onClick={() => handleClickOpenForEdit(item)}>
-                  <CardMedia
-                    component="img"
-                    height="140"
-                    image={item.Game_Picture}
-                    alt="" />
-                  <CardContent>
-                    {item.Game_Name}
-                  </CardContent>
-                </CardActionArea>
-              </Card>
-            </Grid>
-          ))}
-          
-        </Grid>
+          <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}>
+
+            {game.filter(item => item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+              <Grid item xs={3} key={item.ID} >
+                <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
+                  <CardActionArea onClick={() => handleClickOpenForEdit(item)}>
+                    <CardMedia
+                      component="img"
+                      height="140"
+                      image={item.Game_Picture}
+                      alt="" />
+                    <CardContent>
+                      {item.Game_Name}
+                    </CardContent>
+                  </CardActionArea>
+                </Card>
+              </Grid>
+            ))}
+
+          </Grid>
         </Paper>
-        
+
         <Dialog fullWidth maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} sx={{
           // bgcolor: "#e3f2fd",
           //ml: 10,
@@ -385,7 +399,7 @@ function Game() {
                             placeholder="------------------------------------"
                             // onWheel={event => { event.preventDefault();  }}
                             defaultValue={gameEdit?.Game_Price}
-                            onChange={handleInputChange}          
+                            onChange={handleInputChange}
                             inputProps={{ type: "number" }}
                           />
                         </FormControl>
@@ -518,18 +532,20 @@ function Game() {
                         </FormControl>
                       </Grid>
                       <Grid item xs={4}  >
-                        <h2>Upload file </h2>
+                        <h2>Update file </h2>
                         <FormControl fullWidth variant="outlined">
                           <TextField
+                          
                             id="Game_file"
                             variant="outlined"
-                            type="string"
+                            type="file"
                             size="medium"
-                            placeholder="------"
-                            onChange={handleInputChange}
-                            defaultValue={gameEdit?.Game_file}
-                            
+                           // placeholder={gameEdit?.Game_file}
+                            onChange={handleGamefileChange}
+                          //defaultValue={gameEdit?.Game_file.at.length}
+                      
                           />
+                        
                         </FormControl>
                         <FormControl fullWidth variant="outlined"  >
                           <h2>Publish Date</h2>
@@ -540,7 +556,7 @@ function Game() {
                             size="medium"
                             placeholder="------"
                             defaultValue={`${Moment(gameEdit?.Publish_Date).format('DD MMMM YYYY')}`} //`${Moment(gameEdit?.Publish_Date).format('DD MMMM YYYY')}`
-                            onChange = {handleInputChange}
+                            onChange={handleInputChange}
                           />
                         </FormControl>
                         <Grid item xs={8}>
@@ -548,7 +564,9 @@ function Game() {
                           <Grid>
                             <img src={`${imageString}`} width="500" height="250" /> {/** show base64 picture from string variable (that contain base64 picture data) */}
                           </Grid>
-                          <input type="file" onChange={handleImageChange} />
+                          <input  type="file" onChange={handleImageChange} />
+           
+                         
                           {/* <FormHelperText>recommend size is 250*250 pixels</FormHelperText> */}
                         </Grid>
                       </Grid>
@@ -575,7 +593,7 @@ function Game() {
             <Button color="error" onClick={DeleteGame}> Yes </Button>
           </DialogActions>
         </Dialog>
-         {/* <Box>
+        {/* <Box>
           <Paper elevation={10} sx={{
             //backgroundImage: `url("https://img5.goodfon.com/wallpaper/nbig/b/3c/reze-chainsaw-man-devushka-tsvety-nebo.jpg")`,
             bgcolor : "Black",
@@ -601,5 +619,4 @@ function Game() {
   );
   else return (null);
 }
-
 export default Game;
