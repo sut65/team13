@@ -15,7 +15,7 @@ func TestFriendValidate(t *testing.T) {
 	//var t = true
 	var f = false
 	friend := entity.Friend{
-		Nickname: "Jj",
+		Nickname: "Jj LLL",
 		Is_Hide:  &f,
 		Date:     time.Now().Add(time.Second * -599),
 	}
@@ -57,35 +57,6 @@ func TestFriendValidate(t *testing.T) {
 
 		g.Expect(err.Error()).To(gomega.Equal("ชื่อเล่นความยาวไม่เกิน 50 ตัวอักษร")) // check error message
 	})
-
-	// Is_Hide เทสไม่ได้
-	// t.Run("Is_Hide invalid(string)", func(t *testing.T) {
-	// 	fTest := friend
-	// 	var testBoolean = "1"
-	// 	fTest.Is_Hide = &testBoolean
-
-	// 	ok, err := govalidator.ValidateStruct(fTest)
-
-	// 	g.Expect(ok).NotTo(gomega.BeTrue()) // ข้อมูลผิด ok จะเป็น false
-
-	// 	g.Expect(err).NotTo(gomega.BeNil()) // ข้อมูลผิด error จะไม่เป็น nil
-
-	// 	g.Expect(err.Error()).To(gomega.Equal("การซ่อนผิดพลาด")) // check error message
-	// })
-
-	// t.Run("Is_Hide invalid(number)", func(t *testing.T) {
-	// 	fTest := friend
-	// 	var testBoolean = 1
-	// 	fTest.Is_Hide = &testBoolean
-
-	// 	ok, err := govalidator.ValidateStruct(fTest)
-
-	// 	g.Expect(ok).NotTo(gomega.BeTrue()) // ข้อมูลผิด ok จะเป็น false
-
-	// 	g.Expect(err).NotTo(gomega.BeNil()) // ข้อมูลผิด error จะไม่เป็น nil
-
-	// 	g.Expect(err.Error()).To(gomega.Equal("การซ่อนผิดพลาด")) // check error message
-	// })
 
 	t.Run("date invalid(in past (>10 min))", func(t *testing.T) {
 		fTest := friend

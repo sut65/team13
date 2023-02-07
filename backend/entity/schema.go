@@ -127,7 +127,7 @@ type Friend struct {
 	Nickname       string    `valid:"required~คุณไม่ได้ใส่ชื่อเล่น,maxstringlength(50)~ชื่อเล่นความยาวไม่เกิน 50 ตัวอักษร"`
 	Game_ID        *uint     `valid:"-"`
 	Game           Game      `gorm:"references:id" valid:"-"`
-	Is_Hide        *bool     `valid:"ToBoolean~การซ่อนผิดพลาด"`
+	Is_Hide        *bool     `valid:"-"`
 	Date           time.Time `valid:"DelayNow10Min~เวลาเป็นอดีต ลองโหลดหน้าเว็บอีกรอบ"`
 	Order          []Order   `gorm:"foreignKey:Friend_ID"`
 }
@@ -306,26 +306,6 @@ type Wishlist struct {
 }
 
 func init() {
-	govalidator.CustomTypeTagMap.Set("IsFuture", func(i interface{}, context interface{}) bool {
-		t := i.(time.Time)
-		return t.After(time.Now())
-	})
-
-	govalidator.CustomTypeTagMap.Set("IsPresent", func(i interface{}, context interface{}) bool {
-		t := i.(time.Time)
-		return t.After(time.Now().AddDate(0, 0, -1)) && t.Before(time.Now().AddDate(0, 0, 1))
-	})
-
-	govalidator.CustomTypeTagMap.Set("IsPast", func(i interface{}, context interface{}) bool {
-		t := i.(time.Time)
-		return t.Before(time.Now())
-	})
-
-	govalidator.CustomTypeTagMap.Set("IsnotPast", func(i interface{}, context interface{}) bool {
-		t := i.(time.Time)
-		return t.After(time.Now().AddDate(0, 0, -1))
-	})
-
 	govalidator.CustomTypeTagMap.Set("DelayNow10Min", func(i interface{}, context interface{}) bool {
 		t := i.(time.Time)
 		return t.After(time.Now().Add(time.Minute * -10))
