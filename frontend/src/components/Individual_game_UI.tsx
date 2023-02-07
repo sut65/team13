@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Button from "@mui/material/Button";
-import { Container, Grid, Paper } from '@mui/material';
+import { Container, Grid, Link, Paper } from '@mui/material';
 import Box from "@mui/material/Box";
 import Moment from 'moment';
 import dayjs, { Dayjs } from "dayjs";
@@ -23,7 +23,7 @@ function Individual_game() {
     const { id } = useParams(); // ดึง parameter จาก url-parameter
     const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
     const [isGameOnStore, setIsGameOnStore] = React.useState<boolean | null>(false);
-    const [isGameOnAvailable, setIsGameOnAvailable] = React.useState<boolean | null>(false);
+    const [isGameNotOnAvailable, setIsGameNotOnAvailable] = React.useState<boolean | null>(false);
     const [games, setgames] = React.useState<GamesInterface[]>([]);
 
     const [wish_levels, setWish_Levels] = React.useState<Wish_levelInterface[]>([]);
@@ -42,7 +42,28 @@ function Individual_game() {
     const [openAddWishlist, setOpenAddWishlist] = React.useState(false);
     const [noteWishlist, setNoteWishlist] = React.useState<string>("");
     const [wishMessage, setAlertWihsMessage] = React.useState("");
+    const [game_files,setGame_file] = React.useState<GamesInterface>();
 
+   // const getGame = async 
+   const getGamefile = async (id: number) => {
+    const apiUrl = "http://localhost:8080/Game_file/"+id;
+    const requestOptions = {
+        method: "GET",
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            "Content-Type": "application/json",
+        },
+    };
+   
+    await fetch(apiUrl, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+            if (res.data) {
+                setGame_file(res.data)
+            }
+            console.log(game_files)
+        });
+};
 
     const getGame = async () => {
         const apiUrl = "http://localhost:8080/Individual_Game/" + id;
@@ -61,14 +82,13 @@ function Individual_game() {
                     // เป็นการทำให้ state ของ games ถูกเปลี่ยนทันที เพราะหากไม่ทำแบบนี้ games จะไม่ถูก set โดยทันทีแล้วค่าจะไม่ออก
                     // แต่จริงๆแล้วมันน่าจะเป็นการเติม array เข้าไปมากกว่า แต่ด้วยเหตุผลทางเทคนิคมันทำให้ใช้ได้
                     setgames(prevgames => ([...prevgames, ...res.data]));
-                    if (res.data[0].DeletedAt == null) {                    
+                    if (res.data[0].DeletedAt == null) {
                         setIsGameOnStore(true);
-                    }     
-                    if (res.data[0].Game_Status_ID == 1) {                    
-                        setIsGameOnAvailable(true);
-                        console.log(res.data[0].DeletedAt)
-                    }  
-                }   
+                    }
+                    if (res.data[0].Game_Status.Status_Type == "Not Available") {
+                        setIsGameNotOnAvailable(true);
+                    }
+                }
             });
     };
 
@@ -186,7 +206,44 @@ function Individual_game() {
                 }
             });
     };
+    function ListDemoCheck() {
+        if (games[0].Game_Status.Status_Type != "Demo") {
+            return (<Box sx={{ mt: 1 }}
+                m={1}
+                display="flex"
+                justifyContent="flex-end"
+                alignItems="flex-end"
+            >
+                <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="success"
+                    sx={{ mt: 1, mb: 2 }}
+                    onClick={handleClickOpenForAdd}
+                >
+                    Add to Basket
+                </Button>
+            </Box>)
+        }
+        else {
+            return (<Box sx={{ mt: 1 }}
+                m={1}
+                display="flex"
+                justifyContent="flex-end"
+                alignItems="flex-end"
+            >
+                {/* <Link target="_blank" rel="noopener noreferrer" href={games[0].Game_file} underline="none" sx={{ width: "100%" }} download = {games[0].Game_file}  > */}
+                <Link   href={games[0].Game_file} underline="none" sx={{ width: "100%" }} download = {games[0].Game_Name}   >
+                    <Button type="submit"
+                        fullWidth
+                        variant="contained" 
+                        color="secondary"
+                        sx={{ mt: 1, mb: 2 }}> Dowload Demo </Button>
+                </Link></Box>);
+        }
 
+    }
     React.useEffect(() => {
 
         const fetchData = async () => {
@@ -198,7 +255,7 @@ function Individual_game() {
 
     }, []);
 
-    if (isDataLoaded && isGameOnStore && isGameOnAvailable) return (
+    if (isDataLoaded && isGameOnStore && !isGameNotOnAvailable) return (
         <Container>
             <Box>
                 <Paper elevation={2} sx={{ padding: 2, margin: 2 }}>
@@ -229,7 +286,7 @@ function Individual_game() {
                                     borderRadius: 2,
                                     fontSize: '0.875rem',
                                     fontWeight: '700',
-                                    
+
                                 }}
                             >{/** กำหนดให้เว้นบรรทัด auto จาก white space */}
                                 {games[0].Game_description}
@@ -249,23 +306,7 @@ function Individual_game() {
                         </Grid>
                     </Grid>
                     <Grid container> {/** Wish list */}
-                        <Box sx={{ mt: 1 }}
-                            m={1}
-                            display="flex"
-                            justifyContent="flex-end"
-                            alignItems="flex-end"
-                        >
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="success"
-                                sx={{ mt: 1, mb: 2 }}
-                                onClick={handleClickOpenForAdd}
-                            >
-                                Add to Basket
-                            </Button>
-                        </Box>
+                        {ListDemoCheck()} {/* if status is demo  basket icon it will show download icon instead */}
                         <Box sx={{ mt: 1 }}
                             m={1}
                             display="flex"
@@ -452,7 +493,7 @@ function Individual_game() {
             </Box>
         </Container>
     );
-    else if (!isGameOnAvailable) return (
+    else if (isGameNotOnAvailable) return (
         <Container>
             <Box>
                 <Grid container justifyContent={"center"} marginTop={50}>

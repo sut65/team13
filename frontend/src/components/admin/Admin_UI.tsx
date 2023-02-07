@@ -19,14 +19,16 @@ function Admin() {
   const [admin, setAdmin] = useState<Partial<AdminsInterface>>({});
   const [imageString, setImageString] = useState<string | ArrayBuffer | null>(null);
 
-
+  const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const [success, setSuccess] = React.useState(false);
   const [error, setError] = React.useState(false);
+  const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
 
   useEffect(() => {
     getGender();
     getDepartment();
     getProvince();
+    setIsDataloaded(true);
   }, []);
   const getDepartment = async () => {
     let res = await GetDepartment();
@@ -48,6 +50,17 @@ function Admin() {
     if (res) {
       setGender(res);
     }
+  };
+
+  const handleClose = (
+    event?: React.SyntheticEvent | Event,
+    reason?: string
+  ) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSuccess(false);
+    setError(false);
   };
   //image
   const handleImageChange = (event: any) => {
@@ -80,17 +93,51 @@ function Admin() {
       //adreass
       Profile_Picture: imageString,
     };
-    let res = await CreateAdmin(data);
-    if (res) {
-      window.location.reload();
-      setSuccess(true);
-    } else {
-      setError(true);
-    }
+    const apiUrl = "http://localhost:8080/admin";
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    };
+    fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then(async (res) => {
+        if (res.data) {
+          setSuccess(true);
+          //await timeout(500);
+          window.location.reload();
+        } else {
+          setError(true);
+          setErrorMsg(" - " + res.error);
+        }
+      });
 
   }
-  return (
+  if (isDataLoaded)  return (
     <Container maxWidth="xl"   >
+              <Snackbar
+          open={success}
+          autoHideDuration={1500}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="success">
+            Crate complete
+          </Alert>
+        </Snackbar>
+        <Snackbar
+          open={error}
+          autoHideDuration={1500}
+          onClose={handleClose}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+        >
+          <Alert onClose={handleClose} severity="error">
+            Failed to Crate {errorMsg}
+          </Alert>
+        </Snackbar>
       <Box >
         <Paper  elevation={10} sx={{
           mt: 4,
@@ -228,15 +275,7 @@ function Admin() {
                   ))}
                 </RadioGroup>
               </FormControl>
-              <Button
-                style={{ float: "right" }}
-                onClick={submit}
-                variant="contained"
-                color="inherit"
-              //startIcon={< CloudUploadIcon />}
-              >
-                Create Admin
-              </Button>
+            
 
             </Grid>
 
@@ -268,7 +307,17 @@ function Admin() {
                 <input type="file" onChange={handleImageChange} />
                 {/* <FormHelperText>recommend size is 250*250 pixels</FormHelperText> */}
               </Grid>
+              <Button
+                style={{ float: "right" }}
+                onClick={submit}
+                variant="contained"
+                color="inherit"
+              //startIcon={< CloudUploadIcon />}
+              >
+                Create Admin
+              </Button>
             </Grid>
+            
 
 
           </Grid>
@@ -279,6 +328,7 @@ function Admin() {
       </Box>
     </Container>
   );
+  return null;
 }
 
 

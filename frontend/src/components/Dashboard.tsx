@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { Container } from "@material-ui/core";
-import { Box, Button, Grid, Paper, TextField } from '@mui/material';
+import { Box, Button, FormControlLabel, Grid, Paper, Switch, TextField, Typography } from '@mui/material';
 import Carousel from 'react-material-ui-carousel';
 
-import {CardActionArea,CardContent,Card,CardMedia} from "@mui/material";
+import { CardActionArea, CardContent, Card, CardMedia } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 
 import IconButton from "@mui/material/IconButton";
@@ -13,27 +13,32 @@ import { GamesInterface } from '../models/game/IGame';
 import { BannersInterface } from '../models/banner/IBanner';
 import { strictEqual } from 'assert';
 
-function Dashboard(){
+function Dashboard() {
     const [games, setGames] = React.useState<GamesInterface[]>([]);
-    const [banners,setBanners] = React.useState<BannersInterface[]>([]);
+    const [banners, setBanners] = React.useState<BannersInterface[]>([]);
     const [searchQuery, setSearchQuery] = React.useState("");
+    const [SortDemo, setSortDemo] = React.useState("Available");
 
-    function ImageCarousel()
-    {
+    function handelSortSortDemo() {
+        if(SortDemo == "Available")
+        {setSortDemo("")}
+        else {setSortDemo("Available")}
+    }
+
+    function ImageCarousel() {
         return (
             <Carousel>
-            {
-                banners.map( (item, i) => <Item key={i} item={item} /> )
-            }
+                {
+                    banners.map((item, i) => <Item key={i} item={item} />)
+                }
             </Carousel>
         )
     }
 
-    function Item(props: any)
-    {
+    function Item(props: any) {
         return (
-            <Paper component={RouterLink} to={"/individual_game/"+props.item.Game.ID}>
-                <img src={`${props.item.Banner_Picture}`} width="100%" height="300"/>
+            <Paper component={RouterLink} to={"/individual_game/" + props.item.Game.ID}>
+                <img src={`${props.item.Banner_Picture}`} width="100%" height="300" />
             </Paper>
         )
     }
@@ -47,7 +52,7 @@ function Dashboard(){
                 "Content-Type": "application/json",
             },
         };
-       
+
         await fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -66,7 +71,7 @@ function Dashboard(){
                 "Content-Type": "application/json",
             },
         };
-       
+
         await fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
@@ -84,43 +89,56 @@ function Dashboard(){
     return (
         <Container>
             <Box>
-                <Paper elevation={2} sx={{padding:2,margin:2}}>
+                <Paper elevation={2} sx={{ padding: 2, margin: 2 }}>
                     <Grid direction={'column'}>
                         {ImageCarousel()}
                     </Grid>
                     <Grid container marginTop={2}>
-                        <TextField
-                            id="search-bar"
-                            fullWidth
-                            onChange={(event) => (
-                                setSearchQuery(event.target.value)
-                            )}
-                            label="Search a game by name"
-                            variant="outlined"
-                            //placeholder="Search..."
-                            size="small"
-                        />
+                        <Grid item xs={10}>
+                            <TextField
+                                id="search-bar"
+                                fullWidth
+                                onChange={(event) => (
+                                    setSearchQuery(event.target.value)
+                                )}
+                                label="Search a game by name"
+                                variant="outlined"
+                                //placeholder="Search..."
+                                size="small"
+                            />
+                        </Grid>
+                        <Grid item xs={2}>
+                            <Box 
+                            
+                                display="flex"
+                                justifyContent="flex-end"
+                                alignItems="flex-end" > 
+                              <Typography > Game Demo <Switch onClick={handelSortSortDemo} /></Typography>
+                               
+                            </Box>
+                            </Grid>
+
                     </Grid>
                     <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 12 }}> {/** Card */}
-                
-                        {games.filter(item => item.Game_Status.Status_Type == "Available" && item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
-                        
-                        <Grid item xs={3} key={item.ID} >
-                        <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
-                        
-                            <CardActionArea component={RouterLink} to={"/individual_game/"+item.ID} >
-                                <CardMedia
-                                    component="img"
-                                    height="140"
-                                    image={item.Game_Picture}
-                                    alt="" />
-                                <CardContent>
-                                    {item.Game_Name}
-                                </CardContent>
-                            </CardActionArea>
-                            
-                        </Card>
-                        </Grid>
+
+                        {games.filter(item => (item.Game_Status.Status_Type == SortDemo || item.Game_Status.Status_Type == "Demo") && item.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+
+                            <Grid item xs={3} key={item.ID} >
+                                <Card sx={{ display: 'flex', maxWidth: 345, mt: 2 }}>
+
+                                    <CardActionArea component={RouterLink} to={"/individual_game/" + item.ID} >
+                                        <CardMedia
+                                            component="img"
+                                            height="140"
+                                            image={item.Game_Picture}
+                                            alt="" />
+                                        <CardContent>
+                                            {item.Game_Name}
+                                        </CardContent>
+                                    </CardActionArea>
+
+                                </Card>
+                            </Grid>
                         ))}
                     </Grid>
                 </Paper>

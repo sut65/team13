@@ -77,7 +77,7 @@ type Game struct {
 	Type_Game              Type_Game   `gorm:"references:id" valid:"-"`
 	Rating_ID              *uint       `valid:"-"`
 	Rating                 Rating      `gorm:"references:id" valid:"-"`
-	Game_file              string      `valid:"url~Link incorrect,required~Please Upload Game file"`
+	Game_file              string      `valid:"required~Please upload game file"`
 	Game_Picture           string      `valid:"image_valid~Game Image incorrect,required~Please upload image"`
 	Storage                []Storage   `gorm:"foreignKey:Game_ID"`
 	User_Out_Standing_Game []User      `gorm:"foreignKey:Out_Standing_Game_ID"`
@@ -187,17 +187,17 @@ type Province struct {
 type Admin struct {
 	// Normal User
 	gorm.Model
-	Name            string
-	Email           string `gorm:"uniqueIndex"`
-	Password        string
-	Address         string
-	Gender_ID       *uint
-	Gender          Gender `gorm:"references:id"`
-	Department_ID   *uint
+	Name            string     `valid:"maxstringlength(30)~Name must be less than  30 character,required~Please Enter Name"`
+	Email           string     `gorm:"uniqueIndex" valid:"email~Format email incorrect,required~Please enter email"`
+	Password        string     `valid:"minstringlength(8)~Name must be more than  8 character,required~Please Enter password"`
+	Address         string     `valid:"maxstringlength(100)~Address must not more than 100 character"`
+	Gender_ID       *uint      `valid:"-"`
+	Gender          Gender     `gorm:"references:id"`
+	Department_ID   *uint      `valid:"-"`
 	Department      Department `gorm:"references:id"`
-	Province_ID     *uint
-	Province        Province `gorm:"references:id"`
-	Profile_Picture string
+	Province_ID     *uint      `valid:"-"`
+	Province        Province   `gorm:"references:id"`
+	Profile_Picture string     `valid:"image_valid~Picture incorrect,required~Please upload Picture"`
 
 	Banner               []Banner               `gorm:"foreignKey:Admin_ID"`
 	Payment_Verification []Payment_Verification `gorm:"foreignKey:Admin_ID"`

@@ -76,6 +76,7 @@ func main() {
 			// Game Routes
 			protected.GET("/Game", game_controller.ListGames)
 			protected.GET("/Game/:id", game_controller.GetGame)
+			protected.GET("/Game_file/:id", game_controller.GetGamefile)
 			protected.POST("/Game", game_controller.CreateGame)
 			protected.PATCH("/Game", game_controller.UpdateGame)
 			protected.DELETE("/Game/:id", game_controller.DeleteGame)
@@ -113,7 +114,7 @@ func main() {
 			protected.DELETE("/banner/:id", banner_controller.DeleteBanner)
 			// Admin Routes
 			protected.GET("/admin", admin_controller.ListAdmin)
-			protected.GET("/admin/:id", admin_controller.GetAdmin)
+			protected.GET("/admin/:email", admin_controller.GetAdmin)
 			protected.POST("/admin", admin_controller.CreateAdmin)
 			protected.PATCH("/admin", admin_controller.UpdateAdmin)
 			protected.DELETE("/admin/:id", admin_controller.DeleteAdmin)
