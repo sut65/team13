@@ -7,7 +7,7 @@ import { GamesInterface } from "../../models/game/IGame";
 import { RatingsInterface } from "../../models/game/IRating";
 import { Type_GamesInterface } from "../../models/game/IType_Game";
 import { Game_StatusInterface } from "../../models/game/IGame_Status";
-import { Upload } from '@progress/kendo-react-upload';
+//import { Upload } from '@progress/kendo-react-upload';
 import "../../App.css"
 import {
   GetGame_Type,
