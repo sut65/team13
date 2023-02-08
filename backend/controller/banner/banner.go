@@ -136,6 +136,11 @@ func UpdateBanner(c *gin.Context) {
 		Game:           game,
 	}
 
+	if _, err := govalidator.ValidateStruct(updateBanner); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	if err := entity.DB().Where("id = ?", banner.ID).Updates(&updateBanner).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

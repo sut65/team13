@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+<title>Banner Delete</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3" data-tags="">Success</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/banner<datalist><option>http://localhost:3000/banner</option></datalist></td><td></td></tr>
+<tr><td>click</td><td>xpath=//div[@id='root']/div/div[2]/div[3]/div/table/tbody/tr[2]/td[7]/div/button[2]<datalist><option>xpath=//div[@id='root']/div/div[2]/div[3]/div/table/tbody/tr[2]/td[7]/div/button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Edit'])[2]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Mark'])[2]/following::button[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Udong'])[2]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Elden Ring'])[2]/preceding::button[1]</option><option>xpath=//tr[2]/td[7]/div/button[2]</option></datalist></td><td></td></tr>
+<tr><td>click</td><td>xpath=(.//*[normalize-space(text()) and normalize-space(.)='NO'])[1]/following::button[1]<datalist><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='NO'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Are you sure to delete Banner?'])[1]/following::button[2]</option><option>xpath=//*/text()[normalize-space(.)='YES']/parent::*</option><option>xpath=//div[3]/button[2]</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-text.MuiButton-textError.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButton-root.MuiButton-text.MuiButton-textError.MuiButton-sizeMedium.MuiButton-textSizeMedium.css-10fi992-MuiButtonBase-root-MuiButton-root</option></datalist></td><td></td></tr>
+<tr><td>assertText</td><td>xpath=//div[@id='success']/div/div[2]<datalist><option>xpath=//div[@id='success']/div/div[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Game Store'])[1]/following::div[6]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Create New Banner'])[1]/preceding::div[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Search a Banner by Game Name'])[1]/preceding::div[4]</option><option>xpath=//*/text()[normalize-space(.)='บันทึกข้อมูลสำเร็จ']/parent::*</option><option>xpath=//div[2]/div/div/div[2]</option><option>css=div.MuiAlert-message.css-1pxa9xg-MuiAlert-message</option></datalist></td><td>บันทึกข้อมูลสำเร็จ</td></tr>
+</tbody></table>
+</body>
+</html>

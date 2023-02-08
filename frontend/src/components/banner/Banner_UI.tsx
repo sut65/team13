@@ -67,7 +67,7 @@ function Banner_UI(){
         setOpenDialogForDelete(true);
     };
 
-    const handleDialogClose = () => {
+    const handleDialogClose = async () => {
         setOpenDialogForCreate(false);
         setOpenDialogForUpdate(false);
         setOpenDialogForDelete(false);
@@ -172,8 +172,8 @@ function Banner_UI(){
                 setOpenDialogForCreate(false);
                 setSubmitSuccess(true);
             } else {
-                setSubmitError(true);
                 setErrorMsg(" - "+res.error);
+                setSubmitError(true);
             }
         });
 
@@ -210,8 +210,8 @@ function Banner_UI(){
                 setSubmitSuccess(true);
                 console.log(res.data);
             } else {
-                setSubmitError(true);
                 setErrorMsg(" - "+res.error);
+                setSubmitError(true);
             }
         });
 
