@@ -30,7 +30,7 @@
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3" data-tags="">Password length must >= 8</td></tr>
+<tr><td rowspan="1" colspan="3" data-tags="">Password length must &gt;= 8</td></tr>
 </thead>
 <tbody>
 <tr><td>open</td><td>http://localhost:3000/user_store_setting<datalist><option>http://localhost:3000/user_store_setting</option></datalist></td><td></td></tr>
@@ -61,7 +61,7 @@
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3" data-tags="">Profile name length must <= 50</td></tr>
+<tr><td rowspan="1" colspan="3" data-tags="">Profile name length must &lt;= 50</td></tr>
 </thead>
 <tbody>
 <tr><td>open</td><td>http://localhost:3000/user_store_setting<datalist><option>http://localhost:3000/user_store_setting</option></datalist></td><td></td></tr>
@@ -84,7 +84,7 @@
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3" data-tags="">Profile description length must <= 200</td></tr>
+<tr><td rowspan="1" colspan="3" data-tags="">Profile description length must &lt;= 200</td></tr>
 </thead>
 <tbody>
 <tr><td>open</td><td>http://localhost:3000/user_store_setting<datalist><option>http://localhost:3000/user_store_setting</option></datalist></td><td></td></tr>
@@ -116,7 +116,7 @@
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3" data-tags="">Store description length must <= 200</td></tr>
+<tr><td rowspan="1" colspan="3" data-tags="">Store description length must &lt;= 200</td></tr>
 </thead>
 <tbody>
 <tr><td>open</td><td>http://localhost:3000/user_store_setting<datalist><option>http://localhost:3000/user_store_setting</option></datalist></td><td></td></tr>
@@ -148,7 +148,7 @@
 </tbody></table>
 <table cellpadding="1" cellspacing="1" border="1">
 <thead>
-<tr><td rowspan="1" colspan="3" data-tags="">Store contact length must <= 100</td></tr>
+<tr><td rowspan="1" colspan="3" data-tags="">Store contact length must &lt;= 100</td></tr>
 </thead>
 <tbody>
 <tr><td>open</td><td>http://localhost:3000/user_store_setting<datalist><option>http://localhost:3000/user_store_setting</option></datalist></td><td></td></tr>
@@ -165,6 +165,16 @@
 1234567890</td></tr>
 <tr><td>click</td><td>xpath=//div[@id='root']/div/div[2]/div/div/div/div[5]/button<datalist><option>xpath=//div[@id='root']/div/div[2]/div/div/div/div[5]/button</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Store Contact'])[2]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Store Contact'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='DELETE ACCOUNT'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='My Profile'])[1]/preceding::button[2]</option><option>xpath=//*/text()[normalize-space(.)='submit']/parent::*</option><option>xpath=//div[5]/button</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.css-ke5b6m-MuiButtonBase-root-MuiButton-root</option></datalist></td><td></td></tr>
 <tr><td>assertText</td><td>xpath=//div[@id='error']/div/div[2]<datalist><option>xpath=//div[@id='error']/div/div[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Game Store'])[1]/following::div[6]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Profile'])[1]/preceding::div[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='New Password'])[1]/preceding::div[4]</option><option>xpath=//*/text()[normalize-space(.)='บันทึกข้อมูลไม่สำเร็จ']/parent::*</option><option>xpath=//div[2]/div/div/div[2]</option><option>css=div.MuiAlert-message.css-1pxa9xg-MuiAlert-message</option></datalist></td><td>บันทึกข้อมูลไม่สำเร็จ - Store Contact ความยาวไม่เกิน 100 ตัวอักษร</td></tr>
+</tbody></table>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3" data-tags="">Picture invalid</td></tr>
+</thead>
+<tbody>
+<tr><td>open</td><td>http://localhost:3000/user_store_setting<datalist><option>http://localhost:3000/user_store_setting</option></datalist></td><td></td></tr>
+<tr><td>type</td><td>xpath=//input[@type='file']<datalist><option>xpath=//input[@type='file']</option><option>xpath=//div[@id='root']/div/div[2]/div/div/div/div[3]/div/input</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Profile Picture'])[1]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Confirm Password'])[2]/following::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Profile Name'])[1]/preceding::input[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Profile Name'])[2]/preceding::input[2]</option><option>xpath=//div[3]/div/input</option><option>css=input[type="file"]</option></datalist></td><td>C:\Users\All User\Desktop\New Text Document.txt</td></tr>
+<tr><td>click</td><td>xpath=//div[@id='root']/div/div[2]/div/div/div/div[5]/button<datalist><option>xpath=//div[@id='root']/div/div[2]/div/div/div/div[5]/button</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Store Contact'])[2]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='natt@gmail.com'])[1]/following::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='DELETE ACCOUNT'])[1]/preceding::button[1]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='My Profile'])[1]/preceding::button[2]</option><option>xpath=//div[5]/button</option><option>css=button.MuiButtonBase-root.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedSuccess.MuiButton-sizeMedium.MuiButton-containedSizeMedium.css-ke5b6m-MuiButtonBase-root-MuiButton-root</option></datalist></td><td></td></tr>
+<tr><td>assertText</td><td>xpath=//div[@id='error']/div/div[2]<datalist><option>xpath=//div[@id='error']/div/div[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Game Store'])[1]/following::div[6]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='Profile'])[1]/preceding::div[2]</option><option>xpath=(.//*[normalize-space(text()) and normalize-space(.)='New Password'])[1]/preceding::div[4]</option><option>xpath=//div[2]/div/div/div[2]</option><option>css=div.MuiAlert-message.css-1pxa9xg-MuiAlert-message</option></datalist></td><td>บันทึกข้อมูลไม่สำเร็จ - รูปภาพไม่ถูกต้อง</td></tr>
 </tbody></table>
 </body>
 </html>
