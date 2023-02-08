@@ -175,7 +175,7 @@ function FullAppBar() {
     }
   }
   function myProfileUser() {
-    if (localStorage.getItem("position") == "user")
+    if (localStorage.getItem("position") == "User")
       return (
         <MenuItem onClick={handleClose} component={RouterLink} to={"/user_profile/" + localStorage.getItem("email")} >My Profile</MenuItem>
       )
