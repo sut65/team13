@@ -224,7 +224,7 @@ function PaymentVer_UI() {
                 <Grid container item xs={4} direction='row-reverse'>
                     <Stack direction="row" spacing={2}>
                         <Button component={RouterLink} to="/payment_ver_table" variant="contained" color="inherit">
-                            Edit Verification
+                            Verification History
                         </Button>
                     </Stack>
                 </Grid>
