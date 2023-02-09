@@ -136,12 +136,6 @@ func UpdatePaymentVer(c *gin.Context) {
 
 	println("Test3")
 
-	// //เลือกเฉพาะ order ที่ verification status ไม่ใช่สถานะ 2 (ชำระสำเร็จ)
-	// if tx := entity.DB().Where("id != 2 ").Last(&ver_status); tx.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "ชำระสำเร็จแล้ว"})
-	// 	return
-	// }
-
 	updatePaymentVer := entity.Payment_Verification{
 		Verification_Status_ID: payment_ver.Verification_Status_ID,
 		Note:                   payment_ver.Note,
