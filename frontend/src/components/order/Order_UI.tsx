@@ -44,6 +44,7 @@ function Order_UI() {
     const [ver_status, setVerStatus] = React.useState<VerificationStatusInterface[]>([]);
     const [userfriend, setUserFriend] = React.useState<FriendsInterface[]>([]);
     const [editOrder, setEditOrder] = useState<OrderInterface>();
+    const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
     const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
@@ -64,6 +65,7 @@ function Order_UI() {
         }
         setSuccess(false);
         setError(false);
+        setErrorMsg("");
     };
 
     const handleClickOpenForNew = () => {
@@ -98,24 +100,6 @@ function Order_UI() {
         }
       }
     
-    // const getOption = async () => {                                
-    //     const apiUrl = "http://localhost:8080/options";
-    //     const requestOptions = {
-    //         method: "GET",      
-    //         headers: {
-    //             Authorization: `Bearer ${localStorage.getItem("token")}`,
-    //             "Content-Type": "application/json",
-    //         },
-    //     };
-      
-    //     fetch(apiUrl, requestOptions)
-    //         .then((response) => response.json())
-    //         .then((res) => {
-    //             if (res.data) {
-    //                 setOption(res.data);
-    //             }
-    //         });
-    // };
 
     const getVerStatus = async () => {
         const apiUrl = "http://localhost:8080/Verification_Status";
@@ -247,6 +231,7 @@ function Order_UI() {
                     window.location.reload();
                 } else {
                     setError(true);
+                    setErrorMsg(" - "+res.error);
                 }
             });
       
@@ -275,7 +260,8 @@ function Order_UI() {
                 setSuccess(true);
                 window.location.reload();     
             } else {
-                setError(true);     
+                setError(true);
+                setErrorMsg(" - "+res.error);     
             }
         });        
     }
@@ -372,7 +358,7 @@ function Order_UI() {
                 anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
                 <Alert onClose={handleClose} severity="error">
-                    สั่งซื้อไม่สำเร็จ
+                    สั่งซื้อไม่สำเร็จ{errorMsg}
                 </Alert>
             </Snackbar>
 
