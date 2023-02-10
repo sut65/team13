@@ -13,7 +13,7 @@ import (
 func ListRankings(c *gin.Context) {
 	var rankings []entity.Ranking
 
-	if err := entity.DB().Raw("SELECT * FROM stars").Scan(&rankings).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM rankings").Scan(&rankings).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

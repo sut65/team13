@@ -12,11 +12,12 @@ import Moment from 'moment';
 
 import { GamesInterface } from '../../models/game/IGame';
 import { TopgameInterface } from '../../models/topgame/ITopgame';
-import { UsersInterface } from '../../models/user/IUser';
+import { RankingInterface } from '../../models/topgame/IRanking';
 
 import SaveIcon from "@mui/icons-material/Save";
 import AutoModeIcon from '@mui/icons-material/AutoMode';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
+import { id } from 'date-fns/locale';
 
 function Topgame_UI(){
     Moment.locale('th');
@@ -31,10 +32,14 @@ function Topgame_UI(){
     const [openDialogForDelete, setOpenDialogForDelete] = React.useState(false);
 
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
-
+    const [commentEdit,setCommentEdit] = React.useState(String)
     const [games, setGames] = React.useState<GamesInterface[]>([]);
-    const [rankings, setRankings] = React.useState<UsersInterface[]>([]);
+    const [rankings, setRankings] = React.useState<RankingInterface[]>([]);
     const [topgames, setTopgames] = React.useState<Partial<TopgameInterface>>({});
+    const [topgamesForUpdate, setTopgamesForUpdate] = React.useState<TopgameInterface>();
+    const [gameForEdit, setgameForEdit] = React.useState(Number);
+    const [rankingForEdit, setrankingForEdit] = React.useState(Number);
+    const [topgamesForDel, setTopgamesForDel] = React.useState<TopgameInterface>();
     const [topgamesTable, setTopgamesTable] = React.useState<TopgameInterface[]>([]);
     const [topgamesForUpdateDefault, setTopgamesForUpdateDefault] = React.useState<TopgameInterface[]>([]);
 
@@ -54,13 +59,13 @@ function Topgame_UI(){
         setOpenDialogForCreate(true);
     };
 
-    const handleDialogClickOpenForUpdate = (item : any) => {
-        setTopgames(item);
+    const handleDialogClickOpenForUpdate = (item : TopgameInterface) => {
         setOpenDialogForUpdate(true);
+        setTopgamesForUpdate(item);
     };
 
-    const handleDialogClickOpenForDelete = (item : any) => {
-        setTopgames(item);
+    const handleDialogClickOpenForDelete = (item : TopgameInterface) => {
+        setTopgamesForDel(item);
         setOpenDialogForDelete(true);
     };
 
@@ -109,7 +114,7 @@ function Topgame_UI(){
     };
 
     const getTopgame = async () => {
-        const apiUrl = "http://localhost:8080/topgames";
+        const apiUrl = "http://localhost:8080/topgame";
         const requestOptions = {
             method: "GET",
             headers: {
@@ -165,13 +170,13 @@ function Topgame_UI(){
 
     }
 
-    const updateTopgame = () => {
+    const updateTopgame = (id: number) => {
         let updateData = {
-            ID: topgames.ID,
-            Comment: topgames.Comment,
+            ID: id,
+            Comment:  commentEdit,
             Date: date,
-            Ranking_ID: topgames.Ranking_ID,
-            Game_ID: topgames.Game_ID,
+            Ranking_ID: rankingForEdit,
+            Game_ID: gameForEdit,
             Admin_ID: Number(localStorage.getItem('aid')),
         };
 
@@ -202,8 +207,8 @@ function Topgame_UI(){
 
     }
 
-    const deleteTopgame = () => {
-        const apiUrl = "http://localhost:8080/topgame/"+topgames.ID;
+    const deleteTopgame = (id:number) => {
+        const apiUrl = "http://localhost:8080/topgame/"+id;
         const requestOptions = {
             method: "DELETE",
             headers: {
@@ -260,7 +265,7 @@ function Topgame_UI(){
 
             {/** Create Button */}
             <Grid container justifyContent={"center"} marginTop={2}>
-                <Button variant="contained" color="success" endIcon={<SaveIcon />} onClick={() => handleDialogClickOpenForCreate()}>Create New Banner</Button>
+                <Button variant="contained" color="success" endIcon={<SaveIcon />} onClick={() => handleDialogClickOpenForCreate()}>Create New Topgame</Button>
             </Grid>
 
             {/** Search Bar */}
@@ -273,7 +278,7 @@ function Topgame_UI(){
                         onChange={(event) => (
                             setSearchQuery(event.target.value)
                         )}
-                        label="Search a Banner by Game Name"
+                        label="Search a Topgame"
                         variant="outlined"
                         size="small"
                     />
@@ -286,22 +291,22 @@ function Topgame_UI(){
                     <Table aria-label="Topgame">
                         <TableHead>
                             <TableRow>
-                                <TableCell align="center"><h4>Comment</h4></TableCell>
                                 <TableCell align="center"><h4>Ranking</h4></TableCell>
                                 <TableCell align="center"><h4>Game</h4></TableCell>
+                                <TableCell align="center"><h4>Comment</h4></TableCell>
+                                <TableCell align="center"><h4>Date</h4></TableCell>                                
                                 <TableCell align="center"><h4>Admin</h4></TableCell>
-                                <TableCell align="center"><h4>Date</h4></TableCell>
                                 <TableCell align="center"></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {topgamesTable.filter(item => item.Game.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+                        {topgamesTable.filter(item => item.Game.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
                                 <TableRow key={item.ID}>
-                                    <TableCell align="center">{item.Comment}</TableCell>
                                     <TableCell align="center">{item.Ranking.Detail}</TableCell>
                                     <TableCell align="center">{item.Game.Game_Name}</TableCell>
-                                    <TableCell align="center">{item.Admin.Name}</TableCell>
+                                    <TableCell align="center">{item.Comment}</TableCell>
                                     <TableCell align="center">{`${Moment(item.Date).format('DD MMMM YYYY')}`}</TableCell>
+                                    <TableCell align="center">{item.Admin.Name}</TableCell>
                                     <TableCell align="center">
                                         <Stack direction="column" spacing={2}>
                                             <Button variant="outlined" color="inherit" endIcon={<AutoModeIcon/>} onClick={() => handleDialogClickOpenForUpdate(item)}>
@@ -313,7 +318,7 @@ function Topgame_UI(){
                                         </Stack>
                                     </TableCell>
                                 </TableRow>
-                            ))}
+                            ))} 
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -439,22 +444,22 @@ function Topgame_UI(){
                 aria-describedby="alert-dialog-description"
                 >
                 <DialogTitle id="alert-dialog-title">
-                    {"Create New Topgame"}
+                    {"Update Topgame"}
                 </DialogTitle>
 
                 <DialogContent>
                     <Box> {/** Content Section */}
                         <Paper elevation={2} sx={{padding:2,margin:2}}>
                             <Grid container>
-                                <Grid container marginBottom={2}> {/** Game */}
+                            <Grid container marginBottom={2}> {/** Game */}
                                     <Autocomplete
                                         id="game-autocomplete"
                                         options={games}
                                         fullWidth
                                         size="medium"
-                                        defaultValue={topgames.Game}
+                                        defaultValue={topgamesForUpdate?.Game}
                                         onChange={(event: any, value) => {
-                                            setTopgames({ ...topgames, Game_ID: value?.ID }); // บันทึกค่าลง interface
+                                            setgameForEdit(event.target.value); // บันทึกค่าลง interface
                                         }}
                                         getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
                                             `${option.ID} - ${option.Game_Name}`
@@ -478,9 +483,10 @@ function Topgame_UI(){
                                         options={rankings}
                                         fullWidth
                                         size="medium"
+                                        defaultValue={topgamesForUpdate?.Ranking}
                                         //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
                                         onChange={(event: any, value) => {
-                                            setTopgames({ ...topgames, Ranking_ID: value?.ID }); // บันทึกค่าลง interface
+                                            setrankingForEdit(event.target.value); // บันทึกค่าลง interface
                                         }}
                                         getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
                                             `${option.ID} - ${option.Detail}`
@@ -515,8 +521,8 @@ function Topgame_UI(){
                                         id="topgame-Comment"
                                         label="Topgame Comment"
                                         variant="outlined"
-                                        defaultValue={topgames.Comment}
-                                        onChange={(event) => setTopgames({ ...topgames, Comment: event.target.value })}
+                                        defaultValue={topgamesForUpdate?.Comment}
+                                        onChange={(event) => setCommentEdit(event.target.value )}
                                         />
                                 </Grid>
 
@@ -540,7 +546,7 @@ function Topgame_UI(){
 
                 <DialogActions>
                     <Button onClick={handleDialogClose}>Exit</Button>
-                    <Button onClick={updateTopgame} color="error" autoFocus>Update</Button>
+                    <Button onClick={() => updateTopgame(topgamesForUpdate?.ID||0)} color="error" autoFocus>Update</Button>
                 </DialogActions>
             </Dialog>
 
@@ -552,7 +558,7 @@ function Topgame_UI(){
                 aria-describedby="alert-dialog-description"
                 >
                 <DialogTitle id="alert-dialog-title">
-                    {"Are you sure to delete Banner?"}
+                    {"Are you sure to delete Topgame?"}
                 </DialogTitle>
 
                 <DialogContent>
@@ -563,7 +569,7 @@ function Topgame_UI(){
 
                 <DialogActions>
                     <Button onClick={handleDialogClose}>NO</Button>
-                    <Button onClick={deleteTopgame} color="error" autoFocus>YES</Button>
+                    <Button onClick={() => deleteTopgame(topgamesForDel?.ID||0)} color="error" autoFocus>YES</Button>
                 </DialogActions>
             </Dialog>
         </Container>

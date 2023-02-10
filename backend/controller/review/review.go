@@ -81,8 +81,7 @@ func GetReview(c *gin.Context) {
 
 func ListReviews(c *gin.Context) {
 	var review []entity.Review
-	id := c.Param("id")
-	if err := entity.DB().Preload("Star").Preload("Game").Preload("User").Raw("SELECT * FROM Reviews Game_ID=?", id).Find(&review).Error; err != nil {
+	if err := entity.DB().Preload("Star").Preload("Game").Preload("User").Raw("SELECT * FROM Reviews").Find(&review).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -132,7 +131,7 @@ func UpdateReview(c *gin.Context) {
 
 	updateReview := entity.Review{
 		Comment: review.Comment,
-		Date:    review.Date,
+		Date:    review.Date.Local(),
 		Star:    star, // โยงความสัมพันธ์กับ Entity star
 		Game:    game, // โยงความสัมพันธ์กับ Entity game
 		User:    user, // โยงความสัมพันธ์กับ Entity user
