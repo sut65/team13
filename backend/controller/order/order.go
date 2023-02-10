@@ -139,11 +139,6 @@ func ListUserFriend(c *gin.Context) {
 
 func UpdateOrder(c *gin.Context) {
 	var order entity.Order
-	// var orderLast entity.Order
-	// var payment_status entity.Payment_Status
-	// var ver_status entity.Verification_Status
-
-	//id := c.Param("id")
 
 	if err := c.ShouldBindJSON(&order); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
