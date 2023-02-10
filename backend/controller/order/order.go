@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity"
 
 	"github.com/gin-gonic/gin"
@@ -52,6 +53,12 @@ func CreateOrder(c *gin.Context) {
 		Date:                order.Date.Local(),
 		Send_gift:           order.Send_gift,
 		Friend_ID:           order.Friend_ID,
+	}
+
+	// validate order
+	if _, err := govalidator.ValidateStruct(od); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	if err := entity.DB().Create(&od).Error; err != nil {
@@ -132,11 +139,6 @@ func ListUserFriend(c *gin.Context) {
 
 func UpdateOrder(c *gin.Context) {
 	var order entity.Order
-	// var orderLast entity.Order
-	// var payment_status entity.Payment_Status
-	// var ver_status entity.Verification_Status
-
-	//id := c.Param("id")
 
 	if err := c.ShouldBindJSON(&order); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -146,6 +148,11 @@ func UpdateOrder(c *gin.Context) {
 	updateOrder := entity.Order{
 		Slip: order.Slip,
 		Date: order.Date.Local(),
+	}
+
+	if _, err := govalidator.ValidateStruct(updateOrder); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	if err := entity.DB().Where("id =?", order.ID).Updates(&updateOrder).Error; err != nil {

@@ -246,17 +246,17 @@ type Option struct {
 
 type Order struct {
 	gorm.Model
-	User_ID                *uint
-	User                   User `gorm:"references:id"`
-	Option_ID              *uint
-	Option                 Option `gorm:"references:id"`
-	Verification_Status_ID *uint
-	Verification_Status    Verification_Status `gorm:"references:id"`
-	Slip                   string
-	Date                   time.Time
-	Send_gift              *bool
-	Friend_ID              *uint
-	Friend                 Friend `gorm:"references:id"`
+	User_ID                *uint               `valid:"-"`
+	User                   User                `gorm:"references:id" valid:"-"`
+	Option_ID              *uint               `valid:"-"`
+	Option                 Option              `gorm:"references:id" valid:"-"`
+	Verification_Status_ID *uint               `valid:"-"`
+	Verification_Status    Verification_Status `gorm:"references:id" valid:"-"`
+	Slip                   string              `valid:"image_valid~รูปภาพไม่ถูกต้อง,required~กรุณาอัปโหลดรูปภาพ"`
+	Date                   time.Time           `valid:"DelayNow10Min~เวลาเป็นอดีต กรุณาโหลดหน้าเว็บใหม่"`
+	Send_gift              *bool               `valid:"-"`
+	Friend_ID              *uint               `valid:"-"`
+	Friend                 Friend              `gorm:"references:id" valid:"-"`
 
 	Basket               []Basket               `gorm:"foreignKey:Order_ID"`
 	Payment_Verification []Payment_Verification `gorm:"foreignKey:Order_ID"`
@@ -280,8 +280,8 @@ type Payment_Verification struct {
 	Order                  Order               `gorm:"references:id" valid:"-"`
 	Verification_Status_ID *uint               `valid:"-"`
 	Verification_Status    Verification_Status `gorm:"references:id" valid:"-"`
-	Date                   time.Time
-	Note                   string `valid:"required~Note cannot be blank"`
+	Date                   time.Time           `valid:"DelayNow10Min~เวลาเป็นอดีต กรุณาโหลดหน้าเว็บใหม่"`
+	Note                   string              `valid:"required~Note cannot be blank"`
 }
 
 // ----ระบบ Wishlist---
