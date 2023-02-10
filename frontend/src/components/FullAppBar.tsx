@@ -28,6 +28,7 @@ import BookmarkIcon from '@mui/icons-material/Bookmark';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
 import StarIcon from '@mui/icons-material/Star';
+import RateReviewIcon from '@mui/icons-material/RateReview';
 
 // Admin Icon
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
@@ -160,6 +161,11 @@ function FullAppBar() {
           <ListItem button component={RouterLink} to="/user_store_setting">
             <SettingsIcon />
             <ListItemText primary="User & Store Setting" sx={{ paddingLeft: 1 }} />
+          </ListItem>
+
+          <ListItem button component={RouterLink} to="/review">
+            <RateReviewIcon />
+            <ListItemText primary="Test review" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
         </List>

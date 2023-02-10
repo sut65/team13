@@ -1,138 +1,79 @@
-import React, { useEffect, useState } from "react";
-import { makeStyles } from '@material-ui/core/styles';
-import Button from "@mui/material/Button";
-import Autocomplete from '@mui/material/Autocomplete';
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import { useParams } from 'react-router-dom';
-import Snackbar from "@mui/material/Snackbar";
-import Alert from "@mui/material/Alert";
-import TextField from "@mui/material/TextField";
+import * as React from 'react';
+import { Container, Snackbar, makeStyles } from "@material-ui/core";
+import { Alert, Autocomplete, Box, Button, FormHelperText, Grid, Paper, TextField ,Rating } from '@mui/material';
+import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Stack } from '@mui/material';
+import { Dialog,DialogTitle,DialogContent,DialogContentText,DialogActions } from "@material-ui/core";
 
-import { UsersInterface } from '../../models/user/IUser';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import dayjs ,{ Dayjs } from "dayjs";
+import Moment from 'moment';
+
 import { GamesInterface } from '../../models/game/IGame';
 import { ReviewInterface } from '../../models/review/IReview';
+import { UsersInterface } from '../../models/user/IUser';
 import { StarInterface } from '../../models/review/IStar';
 
-import dayjs, { Dayjs } from "dayjs";
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider, DateTimePicker } from '@mui/x-date-pickers';
-import Moment from 'moment';
-import { Container } from "@material-ui/core";
+import StarIcon from '@mui/icons-material/Star';
+import SaveIcon from "@mui/icons-material/Save";
+import AutoModeIcon from '@mui/icons-material/AutoMode';
+import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
 
-const useStyles = makeStyles((theme) => ({
-    table: {
-        minWidth: 650,
-    },
-}));
-
-function Review_UI() {
-    const classes = useStyles();
+function Review_UI(){
     Moment.locale('th');
-    const { id } = useParams(); // ดึง parameter จาก url-parameter
-    const [review, setReview] = useState<ReviewInterface[]>([]);
-    const [toEditReview, setToEditReview] = useState<ReviewInterface>();
-    const [deleteReview, setDeleteReview] = useState<ReviewInterface>();
-    const [reviewAdd, setReviewAdd] = React.useState<Partial<ReviewInterface>>({});
-    const [userForAdd, setUserForAdd] = useState<UsersInterface[]>([]);
-    const [star, setStar] = useState<StarInterface[]>([]);
-    const [game, setGame] = useState<GamesInterface[]>([]);
-    const [date, setDate] = React.useState<Dayjs | null>(dayjs());
-    const [toEditStar, setToEditStar] = React.useState<StarInterface>();
 
-    const starForAdd = 1;
-    const [comment, setComment] = React.useState<string>("");
-    const [commentEdit, setCommentEdit] = React.useState<string>("");
-    const [starEdit, setStarEdit] = React.useState<Number>();
-    const [gameEdit, setGameEdit] = React.useState<Number>();
-
-    const [success, setSuccess] = React.useState(false);
-    const [error, setError] = React.useState(false);
+    const [submitSuccess, setSubmitSuccess] = React.useState(false);
+    const [submitError, setSubmitError] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
 
-    const [openForAdd, setOpenForAdd] = React.useState(false);
-    const [openForEdit, setOpenForEdit] = React.useState(false);
-    const [openForDelete, setOpenForDelete] = React.useState(false);
-    const [errorreview, setErrorReview] = React.useState(false);
-    const [noteReview, setNoteReview] = React.useState<string>("");
-    const [ReviewMessage, setAlertReviewMessage] = React.useState("");
     const [searchQuery, setSearchQuery] = React.useState("");
+    const [openDialogForCreate, setOpenDialogForCreate] = React.useState(false);
+    const [openDialogForUpdate, setOpenDialogForUpdate] = React.useState(false);
+    const [openDialogForDelete, setOpenDialogForDelete] = React.useState(false);
 
-    const [Numberstar, SetNumberstar] = React.useState<Number|null|undefined>();
-    const handleClose = (
+    const [date, setDate] = React.useState<Dayjs | null>(dayjs());
+
+    const [games, setGames] = React.useState<GamesInterface[]>([]);
+    const [users, setUsers] = React.useState<UsersInterface[]>([]);
+    const [stars, setStars] = React.useState<StarInterface[]>([]);
+    const [reviews, setReviews] = React.useState<Partial<ReviewInterface>>({});
+    const [reviewsTable, setReviewsTable] = React.useState<ReviewInterface[]>([]);
+    const [reviewsForUpdateDefault, setReviewsForUpdateDefault] = React.useState<ReviewInterface[]>([]);
+
+
+    const handleClose = ( // AlertBar
         event?: React.SyntheticEvent | Event,
         reason?: string
     ) => {
         if (reason === "clickaway") {
             return;
         }
-        setSuccess(false);
-        setError(false);
+        setSubmitSuccess(false);
+        setSubmitError(false);
+        setErrorMsg("");
     };
 
-    const handleClickOpenForAdd = () => {
-        setOpenForAdd(true);
+    const handleDialogClickOpenForCreate = () => {
+        setOpenDialogForCreate(true);
     };
 
-    const handleCloseForAdd = () => {
-        setOpenForAdd(false);
+    const handleDialogClickOpenForUpdate = (item : any) => {
+        setReviews(item);
+        setOpenDialogForUpdate(true);
     };
 
-    const handleClickOpenForEdit = (item: ReviewInterface) => {
-        setOpenForEdit(true);
-        setToEditReview(item);
+    const handleDialogClickOpenForDelete = (item : any) => {
+        setReviews(item);
+        setOpenDialogForDelete(true);
     };
 
-    const handleCloseForEdit = () => {
-        setOpenForEdit(false);
+    const handleDialogClose = () => {
+        setOpenDialogForCreate(false);
+        setOpenDialogForUpdate(false);
+        setOpenDialogForDelete(false);
     };
-
-    const handleClickOpenForDelete = (item: ReviewInterface) => {
-        setOpenForDelete(true);
-        setDeleteReview(item);
-    };
-
-    const handleCloseForDelete = () => {
-        setOpenForDelete(false);
-    };
-
-    function timeout(delay: number) {
-        return new Promise(res => setTimeout(res, delay));
-    }
-    const AddToStar = () => {
-        let data = {                                   //ประกาศก้อนข้อมูล
-            User_ID: Number(localStorage.getItem("uid")),
-            Game_ID: Number(id),
-            Star_Level_ID: starEdit,
-            Note: noteReview,
-            Date: date,
-        };
-
-        const apiUrl = "http://localhost:8080/revies";           //ส่งขอบันทึก
-        const requestOptions = {
-            method: "POST",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-        };
-
-        fetch(apiUrl, requestOptions)                                       //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
-            .then((response) => response.json())
-            .then((res) => {
-                if (res.data) {
-                    setSuccess(true);
-                    // setOpenAddWishlist(false);
-                    setAlertReviewMessage("บันทึกข้อมูลสำเร็จ");
-
-                } else {
-                    setErrorReview(true);
-                    setAlertReviewMessage(res.error);
-                }
-            });
-    };
-
+      
     const getStar = async () => {
         const apiUrl = "http://localhost:8080/stars";
         const requestOptions = {
@@ -142,17 +83,16 @@ function Review_UI() {
                 "Content-Type": "application/json",
             },
         };
-
-        fetch(apiUrl, requestOptions)
+       
+        await fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setStar(res.data);
-                    console.log(res.data)
+                    setStars(res.data);
                 }
             });
     };
-
+    
     const getGame = async () => {
         const apiUrl = "http://localhost:8080/Game";
         const requestOptions = {
@@ -162,202 +102,502 @@ function Review_UI() {
                 "Content-Type": "application/json",
             },
         };
-
-        fetch(apiUrl, requestOptions)
+       
+        await fetch(apiUrl, requestOptions)
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setGame(res.data);
+                    setGames(res.data);
                 }
             });
     };
 
-    const AddReview = () => {
-        let data = {
-            User_ID: Number(localStorage.getItem("uid")),
-            Star_ID: reviewAdd.Star_ID || starForAdd,
-            Comment: comment,
-            Game_ID: reviewAdd.Game_ID,
-            Date: date,
+    const getUser = async () => {
+        const apiUrl = "http://localhost:8080/sellers";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
         };
-        const apiUrl = "http://localhost:8080/reviews";           //ส่งขอบันทึก
+       
+        await fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setUsers(res.data);
+                }
+            });
+    };
+
+    const getReview = async () => {
+        const apiUrl = "http://localhost:8080/review";
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+       
+        await fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+                    setReviewsTable(res.data);
+                    console.log(res.data);
+                }
+            });
+    };
+
+   
+
+    const createReview = () => {
+        let createData = {
+            Comment: reviews.Comment,
+            Date: date,
+            Star_ID: reviews.Star_ID,
+            Game_ID: reviews.Game_ID,
+            User_ID: Number(localStorage.getItem('uid')),
+        };
+
+        console.log(createData)
+
+        const apiUrl = "http://localhost:8080/reviews";
         const requestOptions = {
             method: "POST",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(createData),
         };
 
         fetch(apiUrl, requestOptions)
-            .then((response) => response.json())
-            .then(async (res) => {
-                if (res.data) {
-                    setSuccess(true);
-                    await timeout(1000); //for 1 sec delay
-                    window.location.reload();
-                } else {
-                    setError(true);
-                    setErrorMsg(" - " + res.error);
-                }
-            });
+        .then((response) => response.json())
+        .then((res) => {
+            if (res.data) {
+                setOpenDialogForCreate(false);
+                setSubmitSuccess(true);
+            } else {
+                setSubmitError(true);
+                setErrorMsg(" - "+res.error);
+            }
+        });
+
     }
 
-    const updateReview = (id: number) => {
-        let data = {       //ประกาศก้อนข้อมูล
-            ID: id,
-            Comment: commentEdit,
-            Star_ID: starEdit,
-            Game_ID: gameEdit,
+    const updateReview = () => {
+        let updateData = {
+            Comment: reviews.Comment,
+            Date: date,
+            Star_ID: reviews.Star_ID,
+            Game_ID: reviews.Game_ID,
+            User_ID: Number(localStorage.getItem('uid')),
         };
-        const apiUrl = "http://localhost:8080/reviews";                      //ส่งขอการลบ  
+
+        console.log(updateData)
+
+        const apiUrl = "http://localhost:8080/reviews";
         const requestOptions = {
             method: "PATCH",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data),
+            body: JSON.stringify(updateData),
         };
 
-        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
-            .then((response) => response.json())
-            .then(async (res) => {
-                if (res.data) {
-                    setSuccess(true);
-                    await timeout(1000); //for 1 sec delay
-                    window.location.reload();
-                } else {
-                    setError(true);
-                    setErrorMsg(" - " + res.error);
-                }
-            });
+        fetch(apiUrl, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+            if (res.data) {
+                setOpenDialogForUpdate(false);
+                setSubmitSuccess(true);
+                console.log(res.data);
+            } else {
+                setSubmitError(true);
+                setErrorMsg(" - "+res.error);
+            }
+        });
+
     }
 
-
-    const deleteUserFriend = (id: number) => {
-        let data = {                                                            //ประกาศก้อนข้อมูล
-            ID: id,
-        };
-        const apiUrl = "http://localhost:8080/friend/:id";                      //ส่งขอการลบ  
+    const deleteReview = () => {
+        const apiUrl = "http://localhost:8080/review/"+reviews.ID;
         const requestOptions = {
             method: "DELETE",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data),
         };
-
-        fetch(apiUrl, requestOptions)                                            //ขอการส่งกลับมาเช็คว่าบันทึกสำเร็จมั้ย
-            .then((response) => response.json())
-            .then(async (res) => {
-                if (res.data) {
-                    setSuccess(true);
-                    await timeout(1000); //for 1 sec delay
-                    window.location.reload();
-                } else {
-                    setError(true);
-                    setErrorMsg(" - " + res.error);
-                }
-            });
+    
+        fetch(apiUrl, requestOptions)
+        .then((response) => response.json())
+        .then((res) => {
+            if (res.data) {
+                setOpenDialogForDelete(false);
+                setSubmitSuccess(true);
+            } else {
+                setSubmitError(true);
+                setErrorMsg(" - "+res.error);
+            }
+        });
     }
 
-
     React.useEffect(() => {
-
         const fetchData = async () => {
             await getStar();
             await getGame();
+            await getUser();
+            await getReview();
         }
         fetchData();
-
-    }, []);
-
+    }, [submitSuccess]); // เมื่อ submit success จะทำการ reload เพื่อแสดงค่าทันทีในตาราง
 
     return (
-        <Container>
-            <Box> {/** Popup ต่างๆ ระบบ review */}
-                <Snackbar
-                    id="error"                                                                                  //ป้ายบันทึกไม่สำเร็จ
-                    open={success}
-                    autoHideDuration={6000}
-                    onClose={handleClose}
-                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+        <Container maxWidth="xl">
+            <Snackbar // บันทึกสำเร็จ
+                id="success"
+                open={submitSuccess}
+                autoHideDuration={3000}
+                onClose={handleClose}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+                <Alert onClose={handleClose} severity="success">              
+                    บันทึกข้อมูลสำเร็จ
+                </Alert>
+            </Snackbar>
+
+            <Snackbar // บันทึกไม่สำเร็จ
+                id="error"
+                open={submitError} 
+                autoHideDuration={3000} 
+                onClose={handleClose} 
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
+                <Alert onClose={handleClose} severity="error">
+                    บันทึกข้อมูลไม่สำเร็จ{errorMsg}
+                </Alert>
+            </Snackbar>
+
+            {/** Create Button */}
+            <Grid container justifyContent={"center"} marginTop={2}>
+                <Button variant="contained" color="success" endIcon={<SaveIcon />} onClick={() => handleDialogClickOpenForCreate()}>Create New Review</Button>
+            </Grid>
+
+            {/** Table */}
+            <Grid container justifyContent={"center"}>
+                <TableContainer component={Paper} sx={{ width: "65%" }}>
+                    <Table aria-label="Review">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell align="center"><h4>Comment</h4></TableCell>
+                                <TableCell align="center"><h4>Star</h4></TableCell>
+                                <TableCell align="center"><h4>Game</h4></TableCell>
+                                <TableCell align="center"><h4>User</h4></TableCell>
+                                <TableCell align="center"><h4>Date</h4></TableCell>
+                                <TableCell align="center"></TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {reviewsTable.filter(item => item.Game.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+                                <TableRow key={item.ID}>
+                                    <TableCell align="center">{item.Comment}</TableCell>
+                                    <TableCell align="center">{item.Star.Detail}</TableCell>
+                                    <TableCell align="center">{item.Game.Game_Name}</TableCell>
+                                    <TableCell align="center">{item.User.Profile_Name}</TableCell>
+                                    <TableCell align="center">{`${Moment(item.Date).format('DD MMMM YYYY')}`}</TableCell>
+                                    <TableCell align="center">
+                                        <Stack direction="column" spacing={2}>
+                                            <Button variant="outlined" color="inherit" endIcon={<AutoModeIcon/>} onClick={() => handleDialogClickOpenForUpdate(item)}>
+                                                Edit
+                                            </Button>
+                                            <Button variant="contained" color="error" endIcon={<DeleteForeverOutlinedIcon/>} onClick={() => handleDialogClickOpenForDelete(item)}>
+                                                Delete
+                                            </Button>                                        
+                                        </Stack>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+            </Grid>
+            
+            {/** Create Review Dialog*/}
+            <Dialog
+                open={openDialogForCreate}
+                onClose={handleDialogClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
                 >
-                    <Alert onClose={handleClose} severity="error">
-                        {errorMsg}
-                    </Alert>
-                </Snackbar>
-                <Grid marginTop={2}>
-                    <Grid>
-                        Review
-                    </Grid>
-                    <Grid>
-                        {/* <Autocomplete
-                            id="Star"
-                            options={star}
-                            size="small"
-                            defaultValue={toEditStar?.ID}
-                            onChange={(event: any, value) => {
-                                setStarEdit(event.target.value);
-                            }}
-                            getOptionLabel={(option: any) =>
-                                `${option.Star_Level}`
-                            } //filter value
-                            renderInput={(params) => {
-                                return (
-                                    <TextField
-                                        {...params}
-                                        variant="outlined"
-                                        placeholder="Search..."
+                <DialogTitle id="alert-dialog-title">
+                    {"Create New Review"}
+                </DialogTitle>
+
+                <DialogContent>
+                    <Box> {/** Content Section */}
+                        <Paper elevation={2} sx={{padding:2,margin:2}}>
+                            <Grid container>
+                                <Grid container marginBottom={2}> {/** Game */}
+                                    <Autocomplete
+                                        id="game-autocomplete"
+                                        options={games}
+                                        fullWidth
+                                        size="medium"
+                                        onChange={(event: any, value) => {
+                                            setReviews({ ...reviews, Game_ID: value?.ID }); // บันทึกค่าลง interface
+                                        }}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.ID} - ${option.Game_Name}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Game ID" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}
+                                            key={`${option.ID}`}
+                                            >{`${option.ID} - ${option.Game_Name}`}</li>
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                        }}
                                     />
-                                );
-                            }}
-                            renderOption={(props: any, option: any) => {
-                                return (
-                                    <li
-                                        {...props}
-                                        value={`${option.ID}`}
-                                        key={`${option.ID}`}
-                                    >{`${option.Level}`}</li>
-                                ); //display value
-                            }}
-                        /> */}
-                    </Grid>
-                    <Grid marginTop={2}>
-                        <TextField
-                            id="outlined-basic"
-                            placeholder="Insert details"
-                            variant="outlined"
-                            size="medium"
-                            multiline={true}
-                            minRows={9}
-                            maxRows={2}
-                            fullWidth={true}
-                            onChange={(event) => setNoteReview(event.target.value)}
-                        />
-                    </Grid>
-                    <Grid>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DateTimePicker
-                                label="disabled"
-                                disabled
-                                value={date}
-                                onChange={(newValue) => {
-                                    setDate(newValue);
+                                </Grid>
+
+                                {/* <Grid container marginBottom={2}>
+                                    <Autocomplete
+                                        id="Ranking-autocomplete"
+                                        options={stars}
+                                        fullWidth
+                                        size="medium"
+                                        //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
+                                        onChange={(event: any, value) => {
+                                            setTopgames({ ...topgames, Ranking_ID: value?.ID }); // บันทึกค่าลง interface
+                                        }}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.ID} - ${option.Detail}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Ranking ID" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}
+                                            key={`${option.ID}`}
+                                            >{`${option.ID} - ${option.Detail}`}</li>
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ Detail แต่คืนค่าค่าเป็น id 
+                                        }}
+                                    />
+                                </Grid> */}
+
+                                {/* <Grid container marginBottom={2}>
+                                (
+                                <Box
+                                sx={{
+                                    width: 200,
+                                    display: 'flex',
+                                    alignItems: 'center',
                                 }}
-                                renderInput={(params) => <TextField sx={{ marginY: 2 }} {...params} />}
-                            />
-                        </LocalizationProvider>
-                    </Grid>
-                </Grid>
+                                >
+                                <Rating
+                                    name="text-feedback"
+                                    value={stars.Star_Level}
+                                    readOnly
+                                    precision={0.5}
+                                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
+                                />
+                                <Box sx={{ ml: 2 }}>{labels[stars.Detail]}</Box>
+                                </Box>
+                                );
+                                </Grid> */}
 
-                <Button color="success" onClick={AddToStar}>Add</Button>
+                                <Grid container marginBottom={2}> {/** Star */}
+                                    <Autocomplete
+                                        id="star-autocomplete"
+                                        options={stars}
+                                        fullWidth
+                                        size="medium"
+                                        onChange={(event: any, value) => {
+                                            setReviews({ ...reviews, Star_ID: value?.ID }); // บันทึกค่าลง interface
+                                        }}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.ID} - ${option.Detail}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Star ID" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}
+                                            key={`${option.ID}`}
+                                            >{`${option.ID} - ${option.Detail}`}</li>
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                        }}
+                                    />
+                                </Grid>
+                                
+                                <Grid container marginBottom={2}> {/** Comment */}
+                                    <TextField
+                                        fullWidth
+                                        id="review-Comment"
+                                        label="Review Comment"
+                                        variant="outlined"
+                                        onChange={(event) => setReviews({ ...reviews, Comment: event.target.value })}
+                                        />
+                                </Grid>
 
-            </Box>
+                                <Grid container marginBottom={2}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DateTimePicker
+                                            disabled
+                                            label="DateTimePicker"
+                                            value={date}
+                                            onChange={(newValue) => {
+                                                setDate(newValue);
+                                            }}
+                                            renderInput={(props) => <TextField {...props} />}
+                                        />
+                                    </LocalizationProvider>
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Box>
+                </DialogContent>
+
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>Exit</Button>
+                    <Button onClick={createReview} color="error" autoFocus>Create</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/** Update Topgame Dialog*/}
+            <Dialog
+                open={openDialogForUpdate}
+                onClose={handleDialogClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                >
+                <DialogTitle id="alert-dialog-title">
+                    {"Update New Review"}
+                </DialogTitle>
+
+                <DialogContent>
+                    <Box> {/** Content Section */}
+                        <Paper elevation={2} sx={{padding:2,margin:2}}>
+                            <Grid container>
+                                <Grid container marginBottom={2}> {/** Game */}
+                                    <Autocomplete
+                                        id="game-autocomplete"
+                                        options={games}
+                                        fullWidth
+                                        size="medium"
+                                        defaultValue={reviews.Game}
+                                        onChange={(event: any, value) => {
+                                            setReviews({ ...reviews, Game_ID: value?.ID }); // บันทึกค่าลง interface
+                                        }}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.ID} - ${option.Game_Name}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Game ID" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}
+                                            key={`${option.ID}`}
+                                            >{`${option.ID} - ${option.Game_Name}`}</li>
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
+                                        }}
+                                    />
+                                </Grid>
+
+                                <Grid container marginBottom={2}> {/** Star */}
+                                    <Autocomplete
+                                        id="Star-autocomplete"
+                                        options={stars}
+                                        fullWidth
+                                        size="medium"
+                                        defaultValue={reviews.Star}
+                                        //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
+                                        onChange={(event: any, value) => {
+                                            setReviews({ ...reviews, Star_ID: value?.ID }); // บันทึกค่าลง interface
+                                        }}
+                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
+                                            `${option.ID} - ${option.Detail}`
+                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
+                                        renderInput={(params) => <TextField {...params} label="Star ID" />}
+                                        renderOption={(props: any, option: any) => {
+                                        return (
+                                            <li
+                                            {...props}
+                                            value={`${option.ID}`}
+                                            key={`${option.ID}`}
+                                            >{`${option.ID} - ${option.Detail}`}</li>
+                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ Detail แต่คืนค่าค่าเป็น id 
+                                        }}
+                                    />
+                                </Grid>
+                                
+                                <Grid container marginBottom={2}> {/** Comment */}
+                                    <TextField
+                                        fullWidth
+                                        id="review-Comment"
+                                        label="Review Comment"
+                                        variant="outlined"
+                                        defaultValue={reviews.Comment}
+                                        onChange={(event) => setReviews({ ...reviews, Comment: event.target.value })}
+                                        />
+                                </Grid>
+
+                                <Grid container marginBottom={2}>
+                                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                        <DateTimePicker
+                                            disabled
+                                            label="DateTimePicker"
+                                            value={date}
+                                            onChange={(newValue) => {
+                                                setDate(newValue);
+                                            }}
+                                            renderInput={(props) => <TextField {...props} />}
+                                        />
+                                    </LocalizationProvider>
+                                </Grid>
+                            </Grid>
+                        </Paper>
+                    </Box>
+                </DialogContent>
+
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>Exit</Button>
+                    <Button onClick={updateReview} color="error" autoFocus>Update</Button>
+                </DialogActions>
+            </Dialog>
+
+            {/** Delete review Dialog*/}
+            <Dialog
+                open={openDialogForDelete}
+                onClose={handleDialogClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                >
+                <DialogTitle id="alert-dialog-title">
+                    {"Are you sure to delete Review?"}
+                </DialogTitle>
+
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        การกดที่ปุ่ม YES จะทำให้Reviewหายไปตลอดกาล
+                    </DialogContentText>
+                </DialogContent>
+
+                <DialogActions>
+                    <Button onClick={handleDialogClose}>NO</Button>
+                    <Button onClick={deleteReview} color="error" autoFocus>YES</Button>
+                </DialogActions>
+            </Dialog>
         </Container>
-    )
+    );
 }
-export default Review_UI;
+
+export default Review_UI

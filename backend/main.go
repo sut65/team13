@@ -151,7 +151,7 @@ func main() {
 			//review Router
 			protected.POST("/reviews", review_controller.CreateReview)
 			protected.GET("/reviews", review_controller.GetReview)
-			protected.GET("/review/:id", review_controller.ListReviews)
+			protected.GET("/review", review_controller.ListReviews)
 			protected.PATCH("/reviews", review_controller.UpdateReview)
 			protected.DELETE("/review/:id", review_controller.DeleteReview)
 
@@ -160,7 +160,7 @@ func main() {
 			//topgame Router
 			protected.POST("/topgames", topgame_controller.CreateTopgame)
 			protected.GET("/topgames", topgame_controller.GetTopgame)
-			protected.GET("/topgame/:id", topgame_controller.ListTopgames)
+			protected.GET("/topgame", topgame_controller.ListTopgames)
 			protected.PATCH("/topgames", topgame_controller.UpdateTopgame)
 			protected.DELETE("/topgame/:id", topgame_controller.DeleteTopgame)
 
