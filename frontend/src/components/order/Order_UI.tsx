@@ -228,7 +228,7 @@ function Order_UI() {
             .then((res) => {
                 if (res.data) {
                     setSuccess(true);
-                    // window.location.reload();
+                    window.location.reload();
                 } else {
                     setError(true);
                     setErrorMsg(" - "+res.error);
@@ -258,7 +258,7 @@ function Order_UI() {
         .then(async (res) => {      
             if (res.data) {
                 setSuccess(true);
-                // window.location.reload();     
+                window.location.reload();     
             } else {
                 setError(true);
                 setErrorMsg(" - "+res.error);     
