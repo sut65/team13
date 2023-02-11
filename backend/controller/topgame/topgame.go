@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
 
 	"github.com/gin-gonic/gin"
@@ -47,6 +48,11 @@ func CreateTopgame(c *gin.Context) {
 		Ranking: ranking, // โยงความสัมพันธ์กับ Entity ranking
 		Game:    game,    // โยงความสัมพันธ์กับ Entity game
 		Admin:   admin,   // โยงความสัมพันธ์กับ Entity admin
+	}
+
+	if _, err := govalidator.ValidateStruct(bk); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	// 13: บันทึก
