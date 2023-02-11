@@ -189,7 +189,7 @@ type Admin struct {
 	gorm.Model
 	Name            string     `valid:"maxstringlength(30)~Name must be less than  30 character,required~Please Enter Name"`
 	Email           string     `gorm:"uniqueIndex" valid:"email~Format email incorrect,required~Please enter email"`
-	Password        string     `valid:"minstringlength(8)~Name must be more than  8 character,required~Please Enter password"`
+	Password        string     `valid:"minstringlength(8)~Password must be more than  8 character,required~Please Enter password"`
 	Address         string     `valid:"maxstringlength(100)~Address must not more than 100 character"`
 	Gender_ID       *uint      `valid:"-"`
 	Gender          Gender     `gorm:"references:id"`

@@ -53,15 +53,17 @@ func CreateAdmin(c *gin.Context) {
 		Email:           admin.Email,
 		Address:         admin.Address,
 		Profile_Picture: admin.Profile_Picture,
-		Password:        string(hashPassword),
+		Password:        admin.Password,
 		Gender:          gender,
 		Department:      department,
 		Province:        province,
 	}
+
 	if _, err := govalidator.ValidateStruct(newAdmin); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+	newAdmin.Password = string(hashPassword)
 	if err := entity.DB().Create(&newAdmin).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

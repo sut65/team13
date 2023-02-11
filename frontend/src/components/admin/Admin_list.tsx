@@ -539,18 +539,7 @@ function Admin_list() {
                                             {/* <Button color="error" onClick={() => deleteUserFriend(deleteFriend?.ID||0)}>Delete</Button> */}
                                         </DialogActions>
                                     </Dialog>
-                                    <Dialog fullWidth maxWidth="md" open={openForCreate} onClose={handleCloseForCreate}>
-                                        <DialogTitle sx={{
-                                            bgcolor: "#E3E3E3"
-
-                                        }}>Create Admin</DialogTitle>
-                                        <DialogContent sx={{
-                                            bgcolor: "#E3E3E3"
-
-                                        }}>
-                                            <Admin />
-                                        </DialogContent>
-                                    </Dialog>
+                                   
                                 </TableRow>
                             ))}
 
@@ -559,7 +548,18 @@ function Admin_list() {
                     </Table>
                 </TableContainer>
             </Grid>
+            <Dialog fullWidth maxWidth="md" open={openForCreate} onClose={handleCloseForCreate}>
+                                        <DialogTitle sx={{
+                                            bgcolor: "#E3E3E3"
 
+                                        }}>Create Admin</DialogTitle>
+                                        <DialogContent sx={{
+                                            bgcolor: "#E3E3E3"
+
+                                        }}>
+                                            <Admin/>
+                                        </DialogContent>
+                                    </Dialog>
         </Container>
     );
 
