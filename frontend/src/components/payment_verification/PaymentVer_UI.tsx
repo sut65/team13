@@ -156,7 +156,7 @@ function PaymentVer_UI() {
             .then((res) => {
                 if (res.data) {
                     setSubmitSuccess(true);
-                    // window.location.reload();
+                    window.location.reload();
                 } else {
                     setSubmitError(true);
                     setErrorMsg(" - " + res.error);

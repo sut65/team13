@@ -5,7 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
-import Button from '@material-ui/core/Button';
+import Button from '@mui/material/Button';
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
 import { Box, DialogActions, DialogContent, DialogContentText, DialogTitle} from '@material-ui/core';
@@ -279,7 +279,7 @@ function Order_UI() {
         if(!Send_gift) {
             return (
                 <Grid marginTop={1} container justifyContent="center">
-                    <Button variant="contained" color="default" onClick={handleSendGift} endIcon={<CardGiftcardIcon />}>
+                    <Button variant="contained" color="primary" onClick={handleSendGift} endIcon={<CardGiftcardIcon />}>
                         Send To
                     </Button>
                 </Grid>
@@ -366,14 +366,10 @@ function Order_UI() {
                 <h1>My Order</h1>
             </Grid>
             
-            <Grid container sx={{ padding: 2}} direction='row-reverse'>
-                <Grid container item xs={4} direction='row-reverse'>
-                    <Stack direction="row" spacing={2}>
-                        <Button variant="contained" color="primary" endIcon={<AddShoppingCartIcon />} onClick={handleClickOpenForNew}>
-                            New Order
-                        </Button>
-                    </Stack>
-                </Grid>
+            <Grid container direction='row-reverse'>
+                <Button id="new-order" color="primary" endIcon={<AddShoppingCartIcon/>} onClick={handleClickOpenForNew}>
+                    New Order
+                </Button>
             </Grid>
 
             <TableContainer component={Paper}>
@@ -402,41 +398,43 @@ function Order_UI() {
                 </Table>
             </TableContainer>
             
-            <Dialog maxWidth="xl" fullWidth open={openForNew} onClose={handleCloseForNew}>
-                <DialogTitle id="alert-dialog-title">{"Order"}</DialogTitle>
+            <Dialog fullWidth maxWidth="xl" open={openForNew} onClose={handleCloseForNew}>
+                <DialogTitle id="alert-dialog-title">Order</DialogTitle>
                 <DialogContent>
                     <DialogContentText>Make a new order</DialogContentText>
-                    
+                        
                     <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="Basket">
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center"><h4>Game</h4></TableCell>
-                            <TableCell align="center"><h4>Price</h4></TableCell>
-                            <TableCell align="center"><h4>Note</h4></TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {basket.map((item) => (
-                            <TableRow key={item.ID}>
-                                <TableCell align="center" component="th" scope="row">{item.Game.Game_Name}</TableCell>
-                                <TableCell align="center">{item.Game.Game_Price}</TableCell>     
-                                <TableCell align="center">{item.Note}</TableCell>                     
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-            <TableContainer component={Paper}>
-                <Table className={classes.table} aria-label="Total">
-                    <TableBody>
-                        <TableRow>
-                            <TableCell align="center"><h4>Total unpaid</h4></TableCell>
-                            <TableCell align="center">{sum}</TableCell>
-                        </TableRow>
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                        <Table className={classes.table} aria-label="Basket">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell align="center"><h4>Game</h4></TableCell>
+                                    <TableCell align="center"><h4>Price</h4></TableCell>
+                                    <TableCell align="center"><h4>Note</h4></TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {basket.map((item) => (
+                                    <TableRow key={item.ID}>
+                                        <TableCell align="center" component="th" scope="row">{item.Game.Game_Name}</TableCell>
+                                        <TableCell align="center">{item.Game.Game_Price}</TableCell>     
+                                        <TableCell align="center">{item.Note}</TableCell>                     
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                    <TableContainer component={Paper}>
+                        <Table className={classes.table} aria-label="Total">
+                            <TableBody>
+                                <TableRow>
+                                    <TableCell align="center"><h4>Total unpaid</h4></TableCell>
+                                    <TableCell align="center">{sum}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
                     {/* Verification Status */}
                     <Grid container justifyContent={"center"} marginTop={2} sx={{ paddingY: 2,}}>
                         <Grid item xs={1}>
@@ -488,9 +486,10 @@ function Order_UI() {
 
                     </Grid>
                 </DialogContent>
+
                 <DialogActions>
-                    <Button onClick={handleCloseForNew} color="secondary">Cancel</Button>
-                    <Button variant="contained" color="primary" onClick={Neworder} autoFocus>Buy</Button>
+                    <Button onClick={handleCloseForNew} color="error">Cancel</Button>
+                    <Button variant="contained" color="success" onClick={Neworder} autoFocus>Buy</Button>
                 </DialogActions>
             </Dialog>
 
@@ -533,8 +532,8 @@ function Order_UI() {
                     </Grid>    
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseForEdit}>Cancel</Button>
-                    <Button onClick={updateOrder}>Save</Button>
+                    <Button onClick={handleCloseForEdit} color="error">Cancel</Button>
+                    <Button onClick={updateOrder} color="success">Save</Button>
                 </DialogActions>
             </Dialog>
         </Box>
