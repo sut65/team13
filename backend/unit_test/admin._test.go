@@ -67,7 +67,7 @@ func TestAdminValidate(t *testing.T) {
 
 		g.Expect(err).NotTo(gomega.BeNil()) // ข้อมูลผิด error จะไม่เป็น nil
 
-		g.Expect(err.Error()).To(gomega.Equal("Name must be more than  8 character")) // check error message
+		g.Expect(err.Error()).To(gomega.Equal("Password must be more than  8 character")) // check error message
 	})
 
 	t.Run("password can not be blank", func(t *testing.T) {
