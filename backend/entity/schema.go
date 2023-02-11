@@ -162,7 +162,7 @@ type Review struct {
 	Game    Game   `gorm:"references:id" valid:"-"`
 	Star_ID *uint  `valid:"-"`
 	Star    Star   `gorm:"references:id" valid:"-"`
-	Comment string `valid:"required~คุณไม่ได้ใส่โน๊ต,maxstringlength(200)~แสดงความคิดเห็นความยาวไม่เกิน 200 ตัวอักษร"`
+	Comment string `valid:"required~คุณไม่ได้ใส่โน๊ต,maxstringlength(400)~แสดงความคิดเห็นความยาวไม่เกิน 400 ตัวอักษร"`
 	Date    time.Time
 }
 
