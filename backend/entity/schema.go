@@ -163,7 +163,7 @@ type Review struct {
 	Star_ID *uint     `valid:"-"`
 	Star    Star      `gorm:"references:id" valid:"-"`
 	Comment string    `valid:"required~คุณไม่ได้ใส่โน๊ต,maxstringlength(400)~แสดงความคิดเห็นความยาวไม่เกิน 400 ตัวอักษร"`
-	Date    time.Time `valid:"DelayNow5Min~เวลาเป็นอดีต ลองโหลดหน้าเว็บอีกรอบ"`
+	Date    time.Time `valid:"DelayNow10Min~เวลาเป็นอดีต ลองโหลดหน้าเว็บอีกรอบ"`
 }
 
 type Star struct {
@@ -221,13 +221,13 @@ type Banner struct {
 // ---ระบบจัดอันดับเกม(TopGame)---
 type Topgame struct {
 	gorm.Model
-	Admin_ID   *uint
-	Admin      Admin `gorm:"references:id"`
-	Game_ID    *uint
-	Game       Game `gorm:"references:id"`
-	Ranking_ID *uint
-	Ranking    Ranking `gorm:"references:id"`
-	Comment    string
+	Admin_ID   *uint   `valid:"-"`
+	Admin      Admin   `gorm:"references:id" valid:"-"`
+	Game_ID    *uint   `valid:"-"`
+	Game       Game    `gorm:"references:id" valid:"-"`
+	Ranking_ID *uint   `valid:"-"`
+	Ranking    Ranking `gorm:"references:id" valid:"-"`
+	Comment    string  `valid:"required~Commentห้ามว่าง,maxstringlength(350)~แสดงความคิดเห็นความยาวไม่เกิน 350 ตัวอักษร"`
 	Date       time.Time
 }
 
