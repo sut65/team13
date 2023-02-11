@@ -190,6 +190,7 @@ function Review_UI(){
 
     const updateReview = () => {
         let updateData = {
+            ID: reviews.ID, 
             Comment: reviews.Comment,
             Date: date,
             Star_ID: reviews.Star_ID,
