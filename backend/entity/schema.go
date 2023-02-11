@@ -227,7 +227,7 @@ type Topgame struct {
 	Game       Game    `gorm:"references:id" valid:"-"`
 	Ranking_ID *uint   `valid:"-"`
 	Ranking    Ranking `gorm:"references:id" valid:"-"`
-	Comment    string  `valid:"required~Commentห้ามว่าง,maxstringlength(350)~แสดงความคิดเห็นความยาวไม่เกิน 350 ตัวอักษร"`
+	Comment    string  `valid:"required~Commentห้ามว่าง,maxstringlength(300)~แสดงความคิดเห็นความยาวไม่เกิน 300 ตัวอักษร"`
 	Date       time.Time
 }
 
