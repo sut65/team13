@@ -156,13 +156,13 @@ type Basket struct {
 // ---ระบบรีวิวเกม(GameReview)---
 type Review struct {
 	gorm.Model
-	User_ID *uint
-	User    User `gorm:"references:id"`
-	Game_ID *uint
-	Game    Game `gorm:"references:id"`
-	Star_ID *uint
-	Star    Star `gorm:"references:id"`
-	Comment string
+	User_ID *uint  `valid:"-"`
+	User    User   `gorm:"references:id" valid:"-"`
+	Game_ID *uint  `valid:"-"`
+	Game    Game   `gorm:"references:id" valid:"-"`
+	Star_ID *uint  `valid:"-"`
+	Star    Star   `gorm:"references:id" valid:"-"`
+	Comment string `valid:"required~คุณไม่ได้ใส่โน๊ต,maxstringlength(400)~แสดงความคิดเห็นความยาวไม่เกิน 400 ตัวอักษร"`
 	Date    time.Time
 }
 
