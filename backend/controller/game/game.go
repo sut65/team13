@@ -81,7 +81,7 @@ func GetGame(c *gin.Context) {
 	var game []entity.Game
 	id := c.Param("id")
 
-	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT id,deleted_at,game_name,game_price,game_description,publish_date,seller_id,game_status_id,type_game_id,rating_id,game_picture FROM games WHERE seller_id = ? AND deleted_at IS NULL", id).Find(&game).Error; err != nil {
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games WHERE seller_id = ? AND deleted_at IS NULL", id).Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -94,7 +94,7 @@ func GetIndividualGame(c *gin.Context) {
 	var game []entity.Game
 	id := c.Param("id")
 
-	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT * FROM games WHERE id = ?", id).Find(&game).Error; err != nil {
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT id,deleted_at,game_name,game_price,game_description,publish_date,seller_id,game_status_id,type_game_id,rating_id,game_picture FROM games WHERE id = ?", id).Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

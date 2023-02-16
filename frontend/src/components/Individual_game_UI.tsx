@@ -1,3 +1,4 @@
+
 import * as React from 'react';
 import Button from "@mui/material/Button";
 import { Container, Grid, Link, Paper } from '@mui/material';
@@ -37,34 +38,65 @@ function Individual_game() {
     const [error, setError] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
     const [openForAdd, setOpenForAdd] = React.useState(false);
-
     const [errorwishlist, setErrorWishlist] = React.useState(false);
     const [openAddWishlist, setOpenAddWishlist] = React.useState(false);
     const [noteWishlist, setNoteWishlist] = React.useState<string>("");
     const [wishMessage, setAlertWihsMessage] = React.useState("");
-    const [game_files,setGame_file] = React.useState<GamesInterface>();
+    const [downloading, setDownloading] = React.useState(false);
+    const [file, setfile] = React.useState<GamesInterface[]>([]);
 
-   // const getGame = async 
-   const getGamefile = async (id: number) => {
-    const apiUrl = "http://localhost:8080/Game_file/"+id;
-    const requestOptions = {
-        method: "GET",
-        headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-            "Content-Type": "application/json",
-        },
+    const handleGetfile = async () => {
+
+
+        const apiUrl = "http://localhost:8080/Game_file/" + id;
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+
+        await fetch(apiUrl, requestOptions)
+            .then((response) => response.json())
+            .then((res) => {
+                if (res.data) {
+
+                    setfile(res.data)
+                    console.log(res.data)
+                    
+
+
+                }
+
+
+            });
+
+
+
     };
-   
-    await fetch(apiUrl, requestOptions)
-        .then((response) => response.json())
-        .then((res) => {
-            if (res.data) {
-                setGame_file(res.data)
-            }
-            console.log(game_files)
-        });
-};
+    const handleDownload = async () => {
 
+
+        const apiUrl = "http://localhost:8080/Game_file/" + id;
+        const requestOptions = {
+            method: "GET",
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
+                "Content-Type": "application/json",
+            },
+        };
+
+        const response = await fetch(apiUrl, requestOptions);
+        const blob = await response.blob();
+        const objectURL = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = file[Number(id)-1].Game_file
+        link.download = String(file[Number(id)-1].ID)
+        document.body.appendChild(link);
+        link.click();
+        setDownloading(false)
+    };
     const getGame = async () => {
         const apiUrl = "http://localhost:8080/Individual_Game/" + id;
         const requestOptions = {
@@ -234,13 +266,14 @@ function Individual_game() {
                 alignItems="flex-end"
             >
                 {/* <Link target="_blank" rel="noopener noreferrer" href={games[0].Game_file} underline="none" sx={{ width: "100%" }} download = {games[0].Game_file}  > */}
-                <Link   href={games[0].Game_file} underline="none" sx={{ width: "100%" }} download = {games[0].Game_Name}   >
-                    <Button type="submit"
-                        fullWidth
-                        variant="contained" 
-                        color="secondary"
-                        sx={{ mt: 1, mb: 2 }}> Dowload Demo </Button>
-                </Link></Box>);
+
+                <Button type="submit"
+                    fullWidth
+                    variant="contained"
+                    color="secondary"
+                    sx={{ mt: 1, mb: 2 }}
+                    onClick={() => setDownloading(true)}>  {downloading ? "Downloading..." : "Download Demo"} </Button>
+            </Box>);
         }
 
     }
@@ -255,7 +288,24 @@ function Individual_game() {
 
     }, []);
 
+    React.useEffect(() => {
+
+        const fetchData = async () => {
+            await getGame();
+
+            await handleGetfile()
+            if (downloading) {
+                await handleDownload()
+            }
+
+
+        }
+
+        fetchData();
+
+    }, [downloading]);
     if (isDataLoaded && isGameOnStore && !isGameNotOnAvailable) return (
+
         <Container>
             <Box>
                 <Paper elevation={2} sx={{ padding: 2, margin: 2 }}>
@@ -514,3 +564,4 @@ function Individual_game() {
 }
 
 export default Individual_game
+
