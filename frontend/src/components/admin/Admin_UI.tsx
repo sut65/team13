@@ -149,7 +149,7 @@ function Admin() {
 
         }}>
           <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }} display="flex">
-            <Grid item xs={3} >
+            <Grid item xs={4} >
               <h2 style={{
                 color: "black"
 
@@ -161,7 +161,7 @@ function Admin() {
                   variant="outlined"
                   type="string"
                   size="medium"
-                  placeholder="------------------------------------"
+                 
 
                   // value={game.Game_Name || ""}
                   onChange={handleInputChange}
@@ -169,7 +169,7 @@ function Admin() {
               </FormControl>
             </Grid>
 
-            <Grid item xs={3} >
+            <Grid item xs={4} >
               <h2>Email</h2>
               <FormControl fullWidth variant="outlined" >
                 <TextField
@@ -177,7 +177,7 @@ function Admin() {
                   variant="outlined"
 
                   size="medium"
-                  placeholder="------------------------------------"
+                
                   // value={game.Game_Price || ""}
                   // onWheel={event => { event.preventDefault();  }}
                   onChange={handleInputChange}
@@ -187,7 +187,7 @@ function Admin() {
                 />
               </FormControl>
             </Grid>
-            <Grid item xs={3} >
+            <Grid item xs={4} >
               <h2>Password</h2>
               <FormControl fullWidth variant="outlined" >
                 <TextField
@@ -195,7 +195,7 @@ function Admin() {
                   variant="outlined"
                   type="string"
                   size="medium"
-                  placeholder="------------------------------------"
+                
                   // defaultValue={localStorage.getItem("email")}
                   onChange={handleInputChange}
 
@@ -308,13 +308,14 @@ function Admin() {
                 {/* <FormHelperText>recommend size is 250*250 pixels</FormHelperText> */}
               </Grid>
               <Button
+                sx = {{mt : 5 ,ml : 10}}
                 style={{ float: "right" }}
                 onClick={submit}
                 variant="contained"
-                color="inherit"
+                color="primary"
               //startIcon={< CloudUploadIcon />}
               >
-                Create Admin
+                Create
               </Button>
             </Grid>
             

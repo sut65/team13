@@ -42,7 +42,7 @@ function Admin_list() {
     const [admin, setAdmin] = useState<AdminsInterface[]>([]);
 
     const [adminEdit, setAdminEdit] = React.useState<Partial<AdminsInterface>>({});
-
+    const [adminDelete, setAdminDelete] = useState<AdminsInterface>();
     const [department, setDepartment] = useState<DepartmentInterface[]>([]);
     const [province, setProvince] = useState<ProvinceInterface[]>([]);
     const [gender, setGender] = useState<GendersInterface[]>([]);
@@ -61,6 +61,7 @@ function Admin_list() {
 
     const [searchQuery, setSearchQuery] = React.useState("");
     const [imageString, setImageString] = useState<string | ArrayBuffer | null>(null);
+    
 
 
     const classes = useStyles();
@@ -232,7 +233,7 @@ function Admin_list() {
 
     const handleClickOpenForDelete = (item: AdminsInterface) => {
         setOpenForDelete(true);
-        //  setDeleteFriend(item);
+        setAdminDelete(item);
     };
 
     const handleCloseForDelete = () => {
@@ -344,18 +345,20 @@ function Admin_list() {
                                             <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)} >
                                                 Edit
                                             </Button>
-                                            <Button variant="contained" color="error" onClick={() => deleteAdmin(Number(item.ID))}>
+                                            <Button variant="contained" color="error" onClick={() => handleClickOpenForDelete(item)}>
                                                 Delete
                                             </Button>
-
 
                                         </Stack>
                                     </TableCell>
                                     <Dialog maxWidth="xl" open={openForEdit} onClose={handleCloseForEdit} >
-                                        <DialogTitle>{adminEdit?.Name}</DialogTitle>
-                                        <DialogContent>
+                                    <DialogTitle sx={{
+                                            bgcolor: "#E3E3E3"  }}>Edit Admin</DialogTitle>
+                                        <DialogContent  sx={{
+                                            bgcolor: "#E3E3E3"}}>
+                                                <Container sx ={{bgcolor : "#FFFFFF"}}>
                                             <Grid container spacing={3} sx={{ padding: 2 }} columns={{ xs: 16 }}>
-                                                <Grid item xs={3}>
+                                                <Grid item xs={4}>
                                                     <h2 style={{
                                                         color: "black"
 
@@ -375,7 +378,7 @@ function Admin_list() {
                                                     </FormControl>
                                                 </Grid>
 
-                                                <Grid item xs={3} >
+                                                <Grid item xs={4} >
                                                     <h2>Email</h2>
                                                     <FormControl fullWidth variant="outlined" >
                                                         <TextField
@@ -394,7 +397,7 @@ function Admin_list() {
                                                         />
                                                     </FormControl>
                                                 </Grid>
-                                                <Grid item xs={3} >
+                                                <Grid item xs={4} >
                                                     <h2>Password</h2>
                                                     <FormControl fullWidth variant="outlined" >
                                                         <TextField
@@ -520,23 +523,25 @@ function Admin_list() {
 
 
                                             </Grid>
+                                            </Container>
                                         </DialogContent>
-                                        <DialogActions>
+                                        <DialogActions sx={{
+                                            bgcolor: "#E3E3E3"  }} >
                                             <Button onClick={handleCloseForEdit}>Cancel</Button>
                                             <Button onClick={() => UpdateAdmin(item.ID)}>Update</Button>
                                             {/* <Button>onClick ={UpdateAdmin}</Button> */}
-                                        </DialogActions>
+                                        </DialogActions >
                                     </Dialog>
                                     <Dialog fullWidth maxWidth="xl" open={openForDelete} onClose={handleCloseForDelete} >
                                         <DialogTitle>DELETE</DialogTitle>
                                         <DialogContent>
                                             <DialogContentText>
-                                                {/* Are you SURE to DELETE Friend "{item.User_Friend.Profile_Name}" ? */}
+                                                 Are you SURE to DELETE this "{item.Email}" Account
                                             </DialogContentText>
                                         </DialogContent>
                                         <DialogActions>
                                             <Button onClick={handleCloseForDelete}>Cancel</Button>
-                                            {/* <Button color="error" onClick={() => deleteUserFriend(deleteFriend?.ID||0)}>Delete</Button> */}
+                                            <Button color="error" onClick={() => deleteAdmin(item.ID)}>Delete</Button> 
                                         </DialogActions>
                                     </Dialog>
                                    
@@ -560,6 +565,7 @@ function Admin_list() {
                                             <Admin/>
                                         </DialogContent>
                                     </Dialog>
+                                    
         </Container>
     );
 

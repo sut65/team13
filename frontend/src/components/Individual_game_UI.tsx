@@ -92,7 +92,7 @@ function Individual_game() {
         const objectURL = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = file[Number(id)-1].Game_file
-        link.download = String(file[Number(id)-1].ID)
+        link.download = (file[Number(id)-1].Game_Name)
         document.body.appendChild(link);
         link.click();
         setDownloading(false)

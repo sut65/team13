@@ -16,7 +16,7 @@ import {
   GetGame_Rating,
   GetGame,
 } from "../../components/game/GameService";
-import { Container, Box, Snackbar, TextField, Paper, Card, CardActionArea, CardContent, CardMedia, Fab } from "@mui/material";
+import { Container, Box, Snackbar, TextField, Paper, Card, CardActionArea, CardContent, CardMedia, Fab, Backdrop, CircularProgress } from "@mui/material";
 import { Dialog, DialogTitle, DialogContent, DialogActions } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import { DatePicker, LocalizationProvider } from "@mui/x-date-pickers";
@@ -52,6 +52,7 @@ function Game() {
   const [isDataLoaded, setIsDataloaded] = React.useState<boolean | null>(false);
   const [gamefileString, setGamefileString] = React.useState<string | ArrayBuffer | null>(null);
   const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null);
+  const [updating, setUpdating] = useState(false);
   function timeout(delay: number) {
     return new Promise(res => setTimeout(res, delay));
   }
@@ -60,7 +61,7 @@ function Game() {
     return val;
   };
   const UpdateGame = () => {
-
+    setUpdating(true)
     let UpdateData = {
       ID: game1.ID,
       Game_Name: game1.Game_Name,
@@ -94,7 +95,10 @@ function Game() {
           setUpdateError(true);
           setErrorMsg(" - " + res.error);
         }
-      });
+        setUpdating(false)})
+      
+
+    
 
   }
 
@@ -195,6 +199,7 @@ function Game() {
   };
   const handleClickOpenForDelete = () => {
     setOpenForDelete(true);
+    
   };
   const handleCloseForDelete = () => {
     setOpenForDelete(false);
@@ -227,7 +232,7 @@ function Game() {
   };
 
 
-  if (isDataLoaded) return (
+  if (isDataLoaded ) return (
     <div style={{
       opacity: 1,
       //backgroundColor: 'black',
@@ -323,6 +328,12 @@ function Game() {
                 // border: 2,
                 //  p: 15
               }} >
+
+                <Backdrop
+                  sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                  open={updating}>
+                  <CircularProgress color="inherit" />
+                </Backdrop>
                 {/*snackbar update*/}
                 <Snackbar
                   open={UpdateSuccess}
@@ -379,13 +390,16 @@ function Game() {
                           color: "black"
                         }}>Game Title</h2>
                         <FormControl fullWidth variant="outlined"  >
-                          <TextField disabled
+                          <TextField 
                             id="Game_Name"
                             variant="outlined"
                             type="string"
                             size="medium"
                             defaultValue={gameEdit?.Game_Name}
                             onChange={handleInputChange}
+                            InputProps={{
+                              readOnly: true,
+                            }}
                           />
                         </FormControl>
                       </Grid>
@@ -407,13 +421,16 @@ function Game() {
                       <Grid item xs={3} >
                         <h2>Email</h2>
                         <FormControl fullWidth variant="outlined" >
-                          <TextField disabled
+                          <TextField 
                             id="Seller"
                             variant="outlined"
                             type="string"
                             size="medium"
                             placeholder="------------------------------------"
                             defaultValue={localStorage.getItem("email")}
+                            InputProps={{
+                              readOnly: true,
+                            }}
                           />
                         </FormControl>
                       </Grid>
@@ -535,21 +552,21 @@ function Game() {
                         <h2>Update file </h2>
                         <FormControl fullWidth variant="outlined">
                           <TextField
-                          
+
                             id="Game_file"
                             variant="outlined"
                             type="file"
                             size="medium"
-                           // placeholder={gameEdit?.Game_file}
+                            // placeholder={gameEdit?.Game_file}
                             onChange={handleGamefileChange}
                           //defaultValue={gameEdit?.Game_file.at.length}
-                      
+
                           />
-                        
+
                         </FormControl>
                         <FormControl fullWidth variant="outlined"  >
                           <h2>Publish Date</h2>
-                          <TextField disabled
+                          <TextField 
                             id="Publish_Date"
                             variant="outlined"
                             type="string"
@@ -557,6 +574,9 @@ function Game() {
                             placeholder="------"
                             defaultValue={`${Moment(gameEdit?.Publish_Date).format('DD MMMM YYYY')}`} //`${Moment(gameEdit?.Publish_Date).format('DD MMMM YYYY')}`
                             onChange={handleInputChange}
+                            InputProps={{
+                              readOnly: true,
+                            }}
                           />
                         </FormControl>
                         <Grid item xs={8}>
@@ -564,9 +584,9 @@ function Game() {
                           <Grid>
                             <img src={`${imageString}`} width="500" height="250" /> {/** show base64 picture from string variable (that contain base64 picture data) */}
                           </Grid>
-                          <input  type="file" onChange={handleImageChange} />
-           
-                         
+                          <input type="file" onChange={handleImageChange} />
+
+
                           {/* <FormHelperText>recommend size is 250*250 pixels</FormHelperText> */}
                         </Grid>
                       </Grid>
@@ -586,7 +606,7 @@ function Game() {
           </DialogContent>
         </Dialog>
         <Dialog fullWidth maxWidth="sm" open={openForDelete} onClose={handleCloseForDelete} >
-          <DialogTitle>Are you sure to DELETE  this game</DialogTitle>
+          <DialogTitle>Are you sure to DELETE  this {gameEdit?.Game_Name} game</DialogTitle>
           <DialogContent>
           </DialogContent>
           <DialogActions>

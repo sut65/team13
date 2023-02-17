@@ -93,7 +93,21 @@ function FullAppBar() {
           <ListItem button component={RouterLink} to="/banner">
             <ViewCarouselIcon />
             <ListItemText primary="Banner" sx={{ paddingLeft: 1 }} />
-          </ListItem>);
+          </ListItem>
+          
+          );
+      }
+    }
+
+    function TopGame() {
+      if (admin.Department?.Department_Title == "Programmer" || admin.Department?.Department_Title == "Master") {
+        return (
+          <ListItem button component={RouterLink} to="/topgames">
+            <StarIcon />
+            <ListItemText primary="Topgame" sx={{ paddingLeft: 1 }} />
+          </ListItem>
+          
+          );
       }
     }
     if (localStorage.getItem("position") == "Admin") {
@@ -110,10 +124,8 @@ function FullAppBar() {
 
           {payment_ver()}
 
-          <ListItem button component={RouterLink} to="/topgames">
-            <StarIcon />
-            <ListItemText primary="Topgame" sx={{ paddingLeft: 1 }} />
-          </ListItem>
+          {TopGame()}
+          
         </List>
 
       );

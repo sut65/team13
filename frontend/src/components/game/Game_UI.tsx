@@ -31,6 +31,8 @@ import Snackbar from "@material-ui/core/Snackbar";
 import Alert from "@mui/material/Alert";
 import Autocomplete from "@mui/material/Autocomplete";
 import { color } from "@mui/system";
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 function timeout(delay: number) {
   return new Promise(res => setTimeout(res, delay));
 }
@@ -42,10 +44,11 @@ function Game_UI() {
   const [game_status, setGame_status] = useState<Game_StatusInterface[]>([]);
   const [game, setGame] = React.useState<Partial<GamesInterface>>({ Publish_Date: new Date(), });
   const [imageString, setImageString] = React.useState<string | ArrayBuffer | null>(null); // สร้างตัวแปรแยกเนื่องจาก render.result มันต้องการ ArrayBuffer ด้วย
-  const [gamefileString, setGamefileString] = React.useState<string | ArrayBuffer | null>(null); 
+  const [gamefileString, setGamefileString] = React.useState<string | ArrayBuffer | null>(null);
   const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -154,6 +157,7 @@ function Game_UI() {
   };
 
   async function submit() {
+    setUploading(true)
     let data = {
       Game_Name: game.Game_Name,
       Game_Price: convertType(game.Game_Price),
@@ -189,6 +193,7 @@ function Game_UI() {
           setError(true);
           setErrorMsg(" - " + res.error);
         }
+        setUploading(false)
       });
 
 
@@ -196,6 +201,9 @@ function Game_UI() {
   }
   if (user.Is_Seller)
     return (
+
+
+
       // <div style={{
       //   //backgroundColor: 'black',
       //  // backgroundImage: `url("https://images6.alphacoders.com/655/655993.jpg")`
@@ -210,6 +218,11 @@ function Game_UI() {
         // border: 2,
         // p: 15
       }} >
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={uploading}>
+          <CircularProgress color="inherit" />
+        </Backdrop>
         <Snackbar
           open={success}
           autoHideDuration={1500}
@@ -316,13 +329,16 @@ function Game_UI() {
               <Grid item xs={3} >
                 <h2>Email</h2>
                 <FormControl fullWidth variant="outlined" >
-                  <TextField disabled
+                  <TextField 
                     id="Seller"
                     variant="outlined"
                     type="string"
                     size="medium"
                     placeholder="------------------------------------"
                     defaultValue={localStorage.getItem("email")}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 </FormControl>
               </Grid>
@@ -468,7 +484,7 @@ function Game_UI() {
                 <FormControl fullWidth variant="outlined"  >
                   <h2>Date Time</h2>
                   <LocalizationProvider dateAdapter={AdapterDayjs}  >
-                    <DatePicker disabled
+                    <DatePicker readOnly
                       value={game.Publish_Date}
                       onChange={(newValue) => {
                         setGame({
@@ -485,7 +501,7 @@ function Game_UI() {
                   <Grid>
                     <img src={`${imageString}`} width="500" height="250" /> {/** show base64 picture from string variable (that contain base64 picture data) */}
                   </Grid>
-                  <input  type="file" onChange={handleImageChange}  />
+                  <input type="file" onChange={handleImageChange} />
                   {/* <FormHelperText>recommend size is 500*250 pixels</FormHelperText> */}
                 </Grid>
               </Grid>

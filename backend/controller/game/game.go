@@ -48,6 +48,13 @@ func CreateGame(c *gin.Context) {
 		return
 
 	}
+	if game_status.Status_Type != "Not Available" && game.Game_file == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "This Status must Upload File"})
+
+		return
+
+	}
+
 	wv := entity.Game{
 
 		Game_Name:        game.Game_Name,
@@ -107,7 +114,7 @@ func GetGamefile(c *gin.Context) {
 	var game []entity.Game
 	id := c.Param("id")
 
-	if err := entity.DB().Raw("SELECT id , game_file FROM games WHERE deleted_at IS NULL", id).Find(&game).Error; err != nil {
+	if err := entity.DB().Raw("SELECT id,game_name , game_file FROM games WHERE deleted_at IS NULL", id).Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -192,6 +199,15 @@ func UpdateGame(c *gin.Context) {
 	}
 	if tx := entity.DB().Where("id = ?", game.Type_Game_ID).First(&type_game); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Type Game not found"})
+
+		return
+	}
+	if game.Game_file == "" {
+		entity.DB().Raw("SELECT  game_file FROM games WHERE deleted_at IS NULL", game.ID).Find(&game.Game_file)
+	}
+
+	if game_status.Status_Type != "Not Available" && (game.Game_file == "") {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "This Status must Upload File"})
 
 		return
 

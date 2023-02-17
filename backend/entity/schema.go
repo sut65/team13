@@ -77,14 +77,14 @@ type Game struct {
 	Type_Game              Type_Game   `gorm:"references:id" valid:"-"`
 	Rating_ID              *uint       `valid:"-"`
 	Rating                 Rating      `gorm:"references:id" valid:"-"`
-	Game_file              string      /// `valid:"required~Please upload game file"`
-	Game_Picture           string      `valid:"image_valid~Game Image incorrect,required~Please upload image"`
-	Storage                []Storage   `gorm:"foreignKey:Game_ID"`
-	User_Out_Standing_Game []User      `gorm:"foreignKey:Out_Standing_Game_ID"`
-	Basket                 []Basket    `gorm:"foreignKey:Game_ID"`
-	Friend                 []Friend    `gorm:"foreignKey:Game_ID"`
-	Banner                 []Banner    `gorm:"foreignKey:Game_ID"`
-	Wishlist               []Wishlist  `gorm:"foreignKey:Game_ID"`
+	Game_file              string
+	Game_Picture           string     `valid:"image_valid~Game Image incorrect,required~Please upload image"`
+	Storage                []Storage  `gorm:"foreignKey:Game_ID"`
+	User_Out_Standing_Game []User     `gorm:"foreignKey:Out_Standing_Game_ID"`
+	Basket                 []Basket   `gorm:"foreignKey:Game_ID"`
+	Friend                 []Friend   `gorm:"foreignKey:Game_ID"`
+	Banner                 []Banner   `gorm:"foreignKey:Game_ID"`
+	Wishlist               []Wishlist `gorm:"foreignKey:Game_ID"`
 }
 
 // ---ระบบคลังเกม(Storage)---
