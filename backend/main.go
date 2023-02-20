@@ -100,6 +100,8 @@ func main() {
 			protected.PATCH("/storages", storage_controller.UpdateStorage)
 			protected.DELETE("/storages/:id", storage_controller.DeleteStorage)
 
+			protected.GET("/BasketByOrder/:id", storage_controller.GetBasketByOrderID)
+
 			protected.GET("/ALLstorages", storage_controller.ListALLStorages) // เอาตัวที่ถูกลบแล้วขึ้นมาด้วย
 
 			protected.GET("/collections/:id", storage_controller.ListCollections)

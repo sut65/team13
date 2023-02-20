@@ -17,18 +17,10 @@ func CreateStroage(c *gin.Context) {
 	var user entity.User
 	var game entity.Game
 	var basket entity.Basket
-	var pv entity.Payment_Verification
 
-	if err := c.ShouldBindJSON(&pv); err != nil {
+	if err := c.ShouldBindJSON(&basket); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
-	}
-	if err := entity.DB().Raw("SELECT * FROM baskets WHERE Order_ID = ?", pv.Order_ID).Find(&basket).Error; err != nil {
-
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
-		return
-
 	}
 
 	if tx := entity.DB().Where("id = ?", basket.User_ID).First(&user); tx.RowsAffected == 0 {
@@ -41,7 +33,7 @@ func CreateStroage(c *gin.Context) {
 	}
 
 	st := entity.Storage{
-		User_ID: basket.User_ID, // โยงความสัมพันธ์กับ Entity Room
+		User_ID: basket.User_ID,
 		Game_ID: basket.Game_ID,
 	}
 
@@ -186,5 +178,23 @@ func UpdateStorage(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": stor})
+
+}
+
+func GetBasketByOrderID(c *gin.Context) {
+
+	var basket entity.Basket
+
+	id := c.Param("id")
+
+	if err := entity.DB().Raw("SELECT * FROM baskets WHERE Order_ID = ?", id).Scan(&basket).Error; err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": basket})
 
 }
