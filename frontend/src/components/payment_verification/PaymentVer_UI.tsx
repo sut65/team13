@@ -22,6 +22,8 @@ import { VerificationStatusInterface } from '../../models/payment_verification/I
 import PaymentVerTable_UI from './PaymentVerTable_UI';
 import { Stack } from '@mui/system';
 
+import { BasketInterface } from '../../models/basket/IBasket';
+
 const useStyles = makeStyles((theme) => ({
     table: {
         minWidth: 650,
@@ -44,6 +46,8 @@ function PaymentVer_UI() {
 
     const [note, setNote] = React.useState<string>("");
     const [date, setDate] = React.useState<Dayjs | null>(dayjs());
+
+    const [basket, setBasket] = React.useState<BasketInterface[]>([]);
 
     const handleClose = ( // AlertBar
         event?: React.SyntheticEvent | Event,
@@ -156,37 +160,60 @@ function PaymentVer_UI() {
             .then((res) => {
                 if (res.data) {
                     setSubmitSuccess(true);
-                    window.location.reload();
+                    // window.location.reload();
                 } else {
                     setSubmitError(true);
                     setErrorMsg(" - " + res.error);
                 }
             });
-        const apiUrlAddStorage = "http://localhost:8080/storages";           //ส่งขอบันทึก
-
-        const requestAddStorage = {
-
-            method: "POST",
-
+        const apiUrlBasketByOrder = "http://localhost:8080/BasketByOrder/"+String(payment_ver.Order_ID);           //ส่งขอบันทึก
+        const requestBasket = {
+            method: "GET",
             headers: {
                 Authorization: `Bearer ${localStorage.getItem("token")}`,
                 "Content-Type": "application/json",
             },
-
-            body: JSON.stringify(data),
-
+           
         };
-        fetch(apiUrlAddStorage,requestAddStorage)
+        fetch(apiUrlBasketByOrder, requestBasket)
             .then((response) => response.json())
             .then((res) => {
                 if (res.data) {
-                    setSubmitSuccess(true);
-                    window.location.reload();
-                } else {
-                    setSubmitError(true);
-                    setErrorMsg(" - " + res.error);
+                    setBasket(res.data)
+                    console.log(res.data)
                 }
             });
+
+        if (payment_ver.Verification_Status_ID == 2) {
+            //GetBasket สำหรับแอด Stroage
+            //Create Storage
+            for (var i = 0; i < basket.length; i++) {
+                let storage = {
+                    User_ID: basket[i].User_ID,
+                    Game_ID: basket[i].Game_ID,
+                };
+                const apiUrlAddStorage = "http://localhost:8080/storages";           //ส่งขอบันทึก
+                const requestAddStorage = {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`,
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(storage),
+                };
+                fetch(apiUrlAddStorage, requestAddStorage)
+                    .then((response) => response.json())
+                    .then((res) => {
+                        if (res.data) {
+                            setSubmitSuccess(true);
+                            window.location.reload();
+                        } else {
+                            setSubmitError(true);
+                            setErrorMsg(" - " + res.error);
+                        }
+                    });
+            }
+        }
     }
 
     React.useEffect(() => {
