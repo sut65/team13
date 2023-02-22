@@ -461,15 +461,6 @@ func SetupDatabase() {
 	db.Model(&Verification_Status{}).Create(&vs2)
 	db.Model(&Verification_Status{}).Create(&vs3)
 
-	// option1 := Option{
-	// 	Option_name: "สั่งซื้อให้ตัวเอง",
-	// }
-	// option2 := Option{
-	// 	Option_name: "สั่งซื้อให้เพื่อน",
-	// }
-	// db.Model(&Option{}).Create(&option1)
-	// db.Model(&Option{}).Create(&option2)
-
 	order1 := Order{
 		User_ID:                &User2.ID,
 		Verification_Status_ID: &vs2.ID,

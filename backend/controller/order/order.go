@@ -162,23 +162,5 @@ func UpdateOrder(c *gin.Context) {
 		return
 	}
 
-	// if err := entity.DB().Create(&updateOrder).Error; err != nil {
-
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-
-	// 	return
-	// }
-
-	// if tx := entity.DB().Where("id = ?", id).Last(&orderLast); tx.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "order not found"})
-	// 	return
-	// }
-
-	// //เลือกเฉพาะ order ที่ payment status = 2 (pending)
-	// if tx := entity.DB().Where("id = 2").Last(&payment_status); tx.RowsAffected == 0 {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "payment status not found"})
-	// 	return
-	// }
-
 	c.JSON(http.StatusOK, gin.H{"data": order})
 }

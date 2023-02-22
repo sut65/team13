@@ -1,6 +1,5 @@
 import {UsersInterface} from "../user/IUser"
 import {BasketInterface} from "../basket/IBasket"
-import {OptionsInterface} from "./IOption"
 import {FriendsInterface} from "../friend/IFriend"
 import { VerificationStatusInterface } from "../payment_verification/IVerificationStatus"
 
@@ -10,7 +9,6 @@ export interface OrderInterface {
     User: UsersInterface,
     Basket_ID: number,
     Basket: BasketInterface,
-    Option: OptionsInterface,
     Verification_Status_ID: number,
     Verification_Status: VerificationStatusInterface,
     Slip: string,

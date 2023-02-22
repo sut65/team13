@@ -237,19 +237,12 @@ type Ranking struct {
 	Topgame []Topgame `gorm:"foreignKey:Ranking_ID"`
 }
 
-// ---ระบบสั่งซื้อเกม---
-type Option struct {
-	gorm.Model
-	Option_name string
-	Order       []Order `gorm:"foreignKey:Option_ID"`
-}
+// ---ระบบสั่งซื้อเกม--
 
 type Order struct {
 	gorm.Model
 	User_ID                *uint               `valid:"-"`
 	User                   User                `gorm:"references:id" valid:"-"`
-	Option_ID              *uint               `valid:"-"`
-	Option                 Option              `gorm:"references:id" valid:"-"`
 	Verification_Status_ID *uint               `valid:"-"`
 	Verification_Status    Verification_Status `gorm:"references:id" valid:"-"`
 	Slip                   string              `valid:"image_valid~รูปภาพไม่ถูกต้อง,required~กรุณาอัปโหลดรูปภาพ"`
