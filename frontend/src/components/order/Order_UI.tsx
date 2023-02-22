@@ -19,7 +19,6 @@ import TextField from '@mui/material/TextField';
 import { OrderInterface } from '../../models/order/IOrder';
 import { UsersInterface } from '../../models/user/IUser';
 import { BasketInterface } from '../../models/basket/IBasket';
-import { OptionsInterface } from '../../models/order/IOption';
 import { FriendsInterface } from '../../models/friend/IFriend';
 import { VerificationStatusInterface } from '../../models/payment_verification/IVerificationStatus';
 
@@ -40,7 +39,7 @@ function Order_UI() {
     const [user, setUser] = React.useState<UsersInterface[]>([]);
     const [userOrder, setUserOrder] = React.useState<OrderInterface[]>([]);
     const [basket, setBasket] = React.useState<BasketInterface[]>([]);
-    // const [option, setOption] = React.useState<OptionsInterface[]>([]);
+
     const [ver_status, setVerStatus] = React.useState<VerificationStatusInterface[]>([]);
     const [userfriend, setUserFriend] = React.useState<FriendsInterface[]>([]);
     const [editOrder, setEditOrder] = useState<OrderInterface>();
@@ -310,7 +309,7 @@ function Order_UI() {
                             setOrder({ ...order, Friend_ID: value?.ID });
                         }}
                         getOptionLabel={(option: any) =>
-                        `${option.Freind_ID}`
+                        `${option.Nickname}`
                         }
                         renderInput={(params) => {
                         return (

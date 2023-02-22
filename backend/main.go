@@ -121,8 +121,6 @@ func main() {
 			protected.GET("/Department", admin_controller.ListDepartment)
 			protected.GET("/Province", admin_controller.ListProvince)
 			//Order Routes
-			protected.GET("/options", order_controller.ListOptions)
-
 			protected.GET("/order", order_controller.ListOrder)
 			protected.GET("/order/:id", order_controller.GetOrder)
 			protected.POST("/order/:id", order_controller.CreateOrder)
