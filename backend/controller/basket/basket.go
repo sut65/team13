@@ -96,16 +96,17 @@ func GetUserBasket(c *gin.Context) {
 		return
 	}
 
-	println(uid)
-
 	c.JSON(http.StatusOK, gin.H{"data": basket})
 }
 
 // GET /userbasketfororder/:uid
 func GetUserBasketForOrder(c *gin.Context) {
 	var basket []entity.Basket
+	var game entity.Game
 	uid := c.Param("uid")
-	if err := entity.DB().Preload("User").Preload("Game").Preload("Payment_Status").Raw("SELECT * FROM baskets WHERE payment_status_id = 1 AND user_id = ?", uid).Find(&basket).Error; err != nil {
+	if err := entity.DB().Preload("User").Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Where("deleted_at IS NULL").Find(&game)
+	}).Preload("Payment_Status").Raw("SELECT * FROM baskets WHERE payment_status_id = 1 AND user_id = ?", uid).Find(&basket).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

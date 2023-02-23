@@ -17,7 +17,7 @@ import { Autocomplete, DialogActions, DialogContent, DialogContentText, DialogTi
 import { Dialog, Paper, TableContainer } from '@mui/material';
 import Games from "@mui/icons-material/Games";
 import Alert from "@mui/material/Alert";
-import Link from '@mui/material/Link'; 
+import Link from '@mui/material/Link';
 
 import { GamesInterface } from "../../models/game/IGame";
 import { StoragesInterface } from '../../models/storage/IStorage';
@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 function Storage_UI() {
   const classes = useStyles();
+  const [id, SetID] = React.useState<Number | undefined>(0);
   const [storages, setStorages] = useState<StoragesInterface[]>([]);
   const [Games, setGames] = useState<GamesInterface[]>([]);
   const [collections, setCollections] = useState<CollectionsInterface[]>([]);
@@ -44,8 +45,50 @@ function Storage_UI() {
   const [openForDelete, setOpenForDelete] = React.useState(false);
   const [searchQuery, setSearchQuery] = React.useState("");
   const [collectionEdit, setCollectionEdit] = React.useState<Number>();
+  const [downloading, setDownloading] = React.useState(false);
+  const [file, setfile] = React.useState<GamesInterface[]>([]);
 
 
+  const handleGetfile = async () => {
+    const apiUrl = "http://localhost:8080/Game_file/" + id;
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    await fetch(apiUrl, requestOptions)
+      .then((response) => response.json())
+      .then((res) => {
+        if (res.data) {
+
+          setfile(res.data)
+          console.log(res.data)
+        }
+      });
+  };
+  const handleDownload = async () => {
+    const apiUrl = "http://localhost:8080/Game_file/" + id;
+    const requestOptions = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json",
+      },
+    };
+
+    const response = await fetch(apiUrl, requestOptions);
+    const blob = await response.blob();
+    const objectURL = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = file[Number(id) - 1].Game_file
+    link.download = (file[Number(id) - 1].Game_Name)
+    document.body.appendChild(link);
+    link.click();
+    setDownloading(false)
+  };
   const handleClickOpenForEdit = (item: StoragesInterface) => {
     setOpenForEdit(true);
     setToEditGame(item);
@@ -130,6 +173,17 @@ function Storage_UI() {
     getStorage();
     getCollection();
   }, []);
+  React.useEffect(() => {
+    const fetchData = async () => {
+      await handleGetfile()
+      if (downloading) {
+        await handleDownload()
+      }
+    }
+
+    fetchData();
+
+  }, [downloading]);
 
   const getCollection = async () => {
     let res = await GetCollection();
@@ -221,6 +275,12 @@ function Storage_UI() {
       valueFormatter: (params) => params.value.Name,
     },
   ];
+  const setDownloadingTosendID = (id: number) => {
+    setDownloading(true)
+    SetID(id)
+
+
+  }
 
   return (
 
@@ -325,13 +385,11 @@ function Storage_UI() {
                       {/* <Button variant="outlined" color="primary" component={RouterLink} to={"/user_profile/" + String(item.User_Friend.Email)}>
                         Profile
                       </Button> */}
-                        <Link   href={item.Game.Game_file} underline="none" sx={{ width: "100%" }} download = {item.Game.Game_Name}   >
-                    <Button type="submit"
+                      <Button type="submit"
                         fullWidth
-                        variant="contained" 
+                        variant="contained"
                         color="secondary"
-                        > Dowload</Button>
-                </Link>
+                        onClick={() => setDownloadingTosendID(item.Game_ID)}>  {downloading ? "Downloading..." : "Download"} </Button>
                       <Button variant="outlined" color="inherit" onClick={() => handleClickOpenForEdit(item)}>
                         Add to Collection
                       </Button>
