@@ -61,6 +61,7 @@ func CreatePaymentVer(c *gin.Context) {
 		return
 	}
 
+	// Update Basket
 	if tx := entity.DB().Where("id = 2").Last(&ver_status_if); tx.RowsAffected == 0 {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "verifications tatus not found"})
 		return
@@ -144,6 +145,27 @@ func UpdatePaymentVer(c *gin.Context) {
 
 		return
 
+	}
+
+	//Update Basket
+	var ver_status_if entity.Verification_Status
+	var paymentForUpdateBasket entity.Payment_Verification
+
+	if tx := entity.DB().Where("id = ?", payment_ver.ID).First(&paymentForUpdateBasket); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "order not found"})
+		return
+	}
+
+	if tx := entity.DB().Where("id = 2").Last(&ver_status_if); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "verifications tatus not found"})
+		return
+	}
+
+	if *updatePaymentVer.Verification_Status_ID == ver_status_if.ID {
+		if err := entity.DB().Exec("UPDATE baskets SET payment_status_id = 3 WHERE order_id = ?", paymentForUpdateBasket.Order_ID).Error; err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "basket not found"})
+			return
+		}
 	}
 
 	println("Test5")
