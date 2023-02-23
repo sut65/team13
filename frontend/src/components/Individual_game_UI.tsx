@@ -18,6 +18,7 @@ import { useParams } from 'react-router-dom';
 import { GamesInterface } from '../models/game/IGame';
 import { Wish_levelInterface } from '../models/wishlist/IWish_Level';
 import { WishlistsInterface } from '../models/wishlist/IWishlist';
+import Review_UI from './review/Review_UI';
 
 function Individual_game() {
     Moment.locale('th');
@@ -291,8 +292,6 @@ function Individual_game() {
     React.useEffect(() => {
 
         const fetchData = async () => {
-            await getGame();
-
             await handleGetfile()
             if (downloading) {
                 await handleDownload()
@@ -341,6 +340,9 @@ function Individual_game() {
                             >{/** กำหนดให้เว้นบรรทัด auto จาก white space */}
                                 {games[0].Game_description}
                             </Box>
+                            <Grid>
+                                Price : {`${games[0].Game_Price}`}
+                            </Grid>
                             <Grid>
                                 Publish Date : {`${Moment(games[0].Publish_Date).format('DD MMMM YYYY')}`}
                             </Grid>
@@ -532,6 +534,8 @@ function Individual_game() {
                     </DialogActions>
                 </Dialog>
             </Box>
+            <Box> <div>
+                <Review_UI/></div></Box>
         </Container>
     );
     else if (!isGameOnStore) return (

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/asaskevich/govalidator"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
@@ -77,8 +78,11 @@ func GetBanner(c *gin.Context) {
 // GET /banners
 func ListBanners(c *gin.Context) {
 	var banners []entity.Banner
+	var game entity.Game
 
-	if err := entity.DB().Preload("Game").Preload("User").Preload("Admin").Raw("SELECT * FROM banners").Find(&banners).Error; err != nil {
+	if err := entity.DB().Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Find(&game)
+	}).Preload("User").Preload("Admin").Raw("SELECT * FROM banners").Find(&banners).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

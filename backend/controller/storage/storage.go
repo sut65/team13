@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 
@@ -78,10 +79,13 @@ func GetStorage(c *gin.Context) {
 func ListStorages(c *gin.Context) {
 
 	var storages []entity.Storage
+	var game entity.Game
 
 	// มี prelaod เพื่อใช้โหลดให้ระบบ user
 
-	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages WHERE deleted_at IS NULL").Find(&storages).Error; err != nil {
+	if err := entity.DB().Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Where("deleted_at IS NULL").Find(&game)
+	}).Raw("SELECT * FROM storages WHERE deleted_at IS NULL").Find(&storages).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -97,8 +101,11 @@ func ListStorages(c *gin.Context) {
 func ListALLStorages(c *gin.Context) {
 
 	var storages []entity.Storage
+	var game entity.Game
 
-	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages").Find(&storages).Error; err != nil {
+	if err := entity.DB().Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Find(&game)
+	}).Raw("SELECT * FROM storages").Find(&storages).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
@@ -114,10 +121,13 @@ func ListALLStorages(c *gin.Context) {
 func ListStoragesUser(c *gin.Context) {
 
 	var storages []entity.Storage
+	var game entity.Game
 	id := c.Param("id")
 
 	// มี prelaod เพื่อใช้โหลดให้ระบบ Storages
-	if err := entity.DB().Preload("Game").Preload("User").Preload("Collection").Raw("SELECT * FROM storages WHERE user_id = ? AND deleted_at IS NULL ", id).Find(&storages).Error; err != nil {
+	if err := entity.DB().Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Find(&game)
+	}).Preload("User").Preload("Collection").Raw("SELECT * FROM storages WHERE user_id = ? AND deleted_at IS NULL ", id).Find(&storages).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 

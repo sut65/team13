@@ -14,7 +14,7 @@ import { GamesInterface } from '../../models/game/IGame';
 import { ReviewInterface } from '../../models/review/IReview';
 import { UsersInterface } from '../../models/user/IUser';
 import { StarInterface } from '../../models/review/IStar';
-
+import { useParams } from 'react-router-dom';
 import StarIcon from '@mui/icons-material/Star';
 import SaveIcon from "@mui/icons-material/Save";
 import AutoModeIcon from '@mui/icons-material/AutoMode';
@@ -23,6 +23,7 @@ import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined
 function Review_UI(){
     Moment.locale('th');
 
+    const { id } = useParams();
     const [submitSuccess, setSubmitSuccess] = React.useState(false);
     const [submitError, setSubmitError] = React.useState(false);
     const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
@@ -158,7 +159,7 @@ function Review_UI(){
             Comment: reviews.Comment,
             Date: date,
             Star_ID: reviews.Star_ID,
-            Game_ID: reviews.Game_ID,
+            Game_ID: Number(id),
             User_ID: Number(localStorage.getItem('uid')),
         };
 
@@ -194,7 +195,7 @@ function Review_UI(){
             Comment: reviews.Comment,
             Date: date,
             Star_ID: reviews.Star_ID,
-            Game_ID: reviews.Game_ID,
+            Game_ID: Number(id),
             User_ID: Number(localStorage.getItem('uid')),
         };
 
@@ -293,20 +294,20 @@ function Review_UI(){
                     <Table aria-label="Review">
                         <TableHead>
                             <TableRow>
+                                <TableCell align="center"><h4>ระดับความพึงพอใจ</h4></TableCell>
                                 <TableCell align="center"><h4>Comment</h4></TableCell>
-                                <TableCell align="center"><h4>Star</h4></TableCell>
-                                <TableCell align="center"><h4>Game</h4></TableCell>
+                                {/* <TableCell align="center"><h4>Game</h4></TableCell> */}
                                 <TableCell align="center"><h4>User</h4></TableCell>
                                 <TableCell align="center"><h4>Date</h4></TableCell>
                                 <TableCell align="center"></TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {reviewsTable.filter(item => item.Game.Game_Name.toLowerCase().includes(searchQuery.toLowerCase())).map((item) => (
+                            {reviewsTable.filter(item => item.Game_ID == Number(id)).map((item) => (
                                 <TableRow key={item.ID}>
-                                    <TableCell align="center">{item.Comment}</TableCell>
                                     <TableCell align="center">{item.Star.Detail}</TableCell>
-                                    <TableCell align="center">{item.Game.Game_Name}</TableCell>
+                                    <TableCell align="center">{item.Comment}</TableCell>                                    
+                                    {/* <TableCell align="center">{item.Game.Game_Name}</TableCell> */}
                                     <TableCell align="center">{item.User.Profile_Name}</TableCell>
                                     <TableCell align="center">{`${Moment(item.Date).format('DD MMMM YYYY')}`}</TableCell>
                                     <TableCell align="center">
@@ -340,8 +341,8 @@ function Review_UI(){
                 <DialogContent>
                     <Box> {/** Content Section */}
                         <Paper elevation={2} sx={{padding:2,margin:2}}>
-                            <Grid container>
-                                <Grid container marginBottom={2}> {/** Game */}
+                             <Grid container>
+                                {/*<Grid container marginBottom={2}>
                                     <Autocomplete
                                         id="game-autocomplete"
                                         options={games}
@@ -364,53 +365,6 @@ function Review_UI(){
                                         ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
                                         }}
                                     />
-                                </Grid>
-
-                                {/* <Grid container marginBottom={2}>
-                                    <Autocomplete
-                                        id="Ranking-autocomplete"
-                                        options={stars}
-                                        fullWidth
-                                        size="medium"
-                                        //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
-                                        onChange={(event: any, value) => {
-                                            setTopgames({ ...topgames, Ranking_ID: value?.ID }); // บันทึกค่าลง interface
-                                        }}
-                                        getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                                            `${option.ID} - ${option.Detail}`
-                                        } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                                        renderInput={(params) => <TextField {...params} label="Ranking ID" />}
-                                        renderOption={(props: any, option: any) => {
-                                        return (
-                                            <li
-                                            {...props}
-                                            value={`${option.ID}`}
-                                            key={`${option.ID}`}
-                                            >{`${option.ID} - ${option.Detail}`}</li>
-                                        ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ Detail แต่คืนค่าค่าเป็น id 
-                                        }}
-                                    />
-                                </Grid> */}
-
-                                {/* <Grid container marginBottom={2}>
-                                (
-                                <Box
-                                sx={{
-                                    width: 200,
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                }}
-                                >
-                                <Rating
-                                    name="text-feedback"
-                                    value={stars.Star_Level}
-                                    readOnly
-                                    precision={0.5}
-                                    emptyIcon={<StarIcon style={{ opacity: 0.55 }} fontSize="inherit" />}
-                                />
-                                <Box sx={{ ml: 2 }}>{labels[stars.Detail]}</Box>
-                                </Box>
-                                );
                                 </Grid> */}
 
                                 <Grid container marginBottom={2}> {/** Star */}
@@ -487,7 +441,7 @@ function Review_UI(){
                     <Box> {/** Content Section */}
                         <Paper elevation={2} sx={{padding:2,margin:2}}>
                             <Grid container>
-                                <Grid container marginBottom={2}> {/** Game */}
+                                {/* <Grid container marginBottom={2}> 
                                     <Autocomplete
                                         id="game-autocomplete"
                                         options={games}
@@ -511,7 +465,7 @@ function Review_UI(){
                                         ); //การแสดงผล อันนี้เราเลือกแสดงผลเฉพาะ personal id แต่คืนค่าค่าเป็น id 
                                         }}
                                     />
-                                </Grid>
+                                </Grid> */}
 
                                 <Grid container marginBottom={2}> {/** Star */}
                                     <Autocomplete

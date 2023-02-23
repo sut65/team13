@@ -200,7 +200,7 @@ function Basket_List() {
                             <TableCell align="center"><h4>Note</h4></TableCell>
                             <TableCell align="center"><h4>Status</h4></TableCell>
                             <TableCell align="center"><h4>Since</h4></TableCell>
-                            <TableCell align="center"><h4>Order</h4></TableCell>
+                            <TableCell align="center"><h4>Order ID</h4></TableCell>
                             <TableCell align="center"><h4>Action</h4></TableCell>
                         </TableRow>
                     </TableHead>

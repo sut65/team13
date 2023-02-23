@@ -136,7 +136,7 @@ func ListGames(c *gin.Context) {
 func ListALLGames(c *gin.Context) {
 	var game []entity.Game
 
-	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT  id,deleted_at,game_name,game_price,game_description,publish_date,seller_id,game_status_id,type_game_id,rating_id,game_picture FROM games").Find(&game).Error; err != nil {
+	if err := entity.DB().Preload("Game_Status").Preload("Seller").Preload("Rating").Preload("Type_Game").Raw("SELECT id,deleted_at,game_name,game_price,game_description,publish_date,seller_id,game_status_id,type_game_id,rating_id,game_picture FROM games").Find(&game).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

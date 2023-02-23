@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 
@@ -116,7 +117,7 @@ func GetFriend(c *gin.Context) {
 func ListFriend(c *gin.Context) {
 	var friend []entity.Friend
 
-	if err := entity.DB().Preload("User").Preload("Intimate").Preload("Game").Raw("SELECT * FROM friends").Find(&friend).Error; err != nil {
+	if err := entity.DB().Preload("User").Preload("Intimate").Raw("SELECT * FROM friends").Find(&friend).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -127,8 +128,11 @@ func ListFriend(c *gin.Context) {
 // GET /userfriend/:uid
 func GetUserfriend(c *gin.Context) {
 	var friend []entity.Friend
+	var game entity.Game
 	uid := c.Param("uid")
-	if err := entity.DB().Preload("User").Preload("User_Friend").Preload("Game").Preload("Intimate").Raw("SELECT * FROM friends WHERE user_id = ? AND is_hide = 0", uid).Find(&friend).Error; err != nil {
+	if err := entity.DB().Preload("User").Preload("User_Friend").Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Find(&game)
+	}).Preload("Intimate").Raw("SELECT * FROM friends WHERE user_id = ? AND is_hide = 0", uid).Find(&friend).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -139,8 +143,11 @@ func GetUserfriend(c *gin.Context) {
 // GET /hideuserfriend/:uid
 func GetHideUserfriend(c *gin.Context) {
 	var friend []entity.Friend
+	var game entity.Game
 	uid := c.Param("uid")
-	if err := entity.DB().Preload("User").Preload("User_Friend").Preload("Game").Preload("Intimate").Raw("SELECT * FROM friends WHERE user_id = ? AND is_hide = 1", uid).Find(&friend).Error; err != nil {
+	if err := entity.DB().Preload("User").Preload("User_Friend").Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Find(&game)
+	}).Preload("Intimate").Raw("SELECT * FROM friends WHERE user_id = ? AND is_hide = 1", uid).Find(&friend).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
