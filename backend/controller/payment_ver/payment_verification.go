@@ -1,8 +1,6 @@
 package controller
 
 import (
-	"fmt"
-
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 	"github.com/sut65/team13/entity"
@@ -39,35 +37,26 @@ func CreatePaymentVer(c *gin.Context) {
 		return
 	}
 
-	paymentver := entity.Payment_Verification{
-		Order:               order,
-		Verification_Status: ver_status,
-		Note:                payment_ver.Note,
-		Admin:               admin,
-		Date:                payment_ver.Date.Local(),
-	}
 	// Storage Create
 	var basket []entity.Basket
 
-	// var game entity.Game
-	var user entity.User
-	if err := entity.DB().Raw("SELECT * FROM baskets WHERE order_id = ?", order.ID).Scan(&basket).Error; err != nil {
+	if err := entity.DB().Raw("SELECT * FROM baskets WHERE order_id = ?", order.ID).Find(&basket).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	fmt.Printf("%v", len(basket))
-
 	for i := 0; i < len(basket); i++ {
+		var games entity.Game
+		var user entity.User
+
+		if tx := entity.DB().Where("id = ?", basket[i].Game_ID).First(&games); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Game not found"})
+			return
+		}
 
 		if tx := entity.DB().Where("id = ?", basket[i].User_ID).First(&user); tx.RowsAffected == 0 {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
 			return
 		}
-		// if tx := entity.DB().Where("id = ?", basket[i].Game_ID).First(&game); tx.RowsAffected == 0 {
-		// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Game not found"})
-		// 	return
-		// }
 
 		st := entity.Storage{
 			User_ID: basket[i].User_ID,
@@ -81,6 +70,14 @@ func CreatePaymentVer(c *gin.Context) {
 		}
 		// c.JSON(http.StatusCreated, gin.H{"data": st})
 
+	}
+
+	paymentver := entity.Payment_Verification{
+		Order:               order,
+		Verification_Status: ver_status,
+		Note:                payment_ver.Note,
+		Admin:               admin,
+		Date:                payment_ver.Date.Local(),
 	}
 
 	//validate payment ver
