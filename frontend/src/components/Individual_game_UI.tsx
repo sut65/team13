@@ -291,8 +291,6 @@ function Individual_game() {
     React.useEffect(() => {
 
         const fetchData = async () => {
-            await getGame();
-
             await handleGetfile()
             if (downloading) {
                 await handleDownload()

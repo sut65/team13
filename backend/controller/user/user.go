@@ -4,6 +4,7 @@ import (
 	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
 	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 
@@ -71,8 +72,11 @@ func CreateUser(c *gin.Context) {
 func GetUser(c *gin.Context) {
 	var user entity.User
 	email := c.Param("email")
+	var game entity.Game
 
-	if err := entity.DB().Preload("Game").Preload("Storage").Preload("Gender").Raw("SELECT * FROM users WHERE email = ?", email).Find(&user).Error; err != nil {
+	if err := entity.DB().Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Find(&game)
+	}).Preload("Storage").Preload("Gender").Raw("SELECT * FROM users WHERE email = ?", email).Find(&user).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -203,6 +207,7 @@ func UpdateUser(c *gin.Context) {
 func ListUserStorages(c *gin.Context) {
 	var storages []entity.Storage
 	var user entity.User
+	var game entity.Game
 	email := c.Param("email")
 
 	// get user ที่ตรงกับ email ออกมาก่อนเพื่อเอา ID มาใช้ get storage ของ user คนนั้นๆอีกที
@@ -212,7 +217,9 @@ func ListUserStorages(c *gin.Context) {
 	}
 
 	// list เฉพาะ storage ของ user คนนั้นๆ | ต้องใช้ .Find สำหรับ .Preload
-	if err := entity.DB().Preload("Game").Raw("SELECT * FROM storages WHERE user_id = ? AND deleted_at IS NULL", user.ID).First(&storages).Error; err != nil {
+	if err := entity.DB().Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Where("deleted_at IS NULL").Find(&game)
+	}).Raw("SELECT * FROM storages WHERE user_id = ? AND deleted_at IS NULL", user.ID).First(&storages).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -234,7 +241,7 @@ func ListUserGames(c *gin.Context) {
 	}
 
 	// list เฉพาะ game ของ user คนนั้นๆ
-	if err := entity.DB().Raw("SELECT * FROM games WHERE seller_id = ? AND deleted_at IS NULL", user.ID).Scan(&games).Error; err != nil {
+	if err := entity.DB().Raw("SELECT id,deleted_at,game_name,game_price,game_description,publish_date,seller_id,game_status_id,type_game_id,rating_id,game_picture FROM games WHERE seller_id = ? AND deleted_at IS NULL", user.ID).Scan(&games).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}

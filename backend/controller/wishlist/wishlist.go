@@ -2,6 +2,7 @@ package controller
 
 import (
 	"github.com/sut65/team13/entity" // เรียกเพื่อเรียกใช้ฟังก์ชั่นใน setup.go (มันจะถูก declare อัตโนมัติว่าตัวมันเองเป็น entity)
+	"gorm.io/gorm"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
@@ -89,10 +90,13 @@ func GetWishlist(c *gin.Context) {
 
 func ListWishlists(c *gin.Context) {
 
+	var game entity.Game
 	var wishlist []entity.Wishlist
 	id := c.Param("id")
 
-	if err := entity.DB().Preload("Game").Preload("User").Preload("Wish_Level").Raw("SELECT * FROM wishlists WHERE User_ID = ? ", id).Find(&wishlist).Error; err != nil {
+	if err := entity.DB().Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Find(&game)
+	}).Preload("User").Preload("Wish_Level").Raw("SELECT * FROM wishlists WHERE User_ID = ? ", id).Find(&wishlist).Error; err != nil {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 

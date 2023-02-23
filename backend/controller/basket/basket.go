@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/asaskevich/govalidator"
 	"github.com/sut65/team13/entity"
+	"gorm.io/gorm"
 
 	"github.com/gin-gonic/gin"
 
@@ -85,9 +86,12 @@ func ListBasket(c *gin.Context) {
 
 // GET /userbasket/:uid
 func GetUserBasket(c *gin.Context) {
+	var game entity.Game
 	var basket []entity.Basket
 	uid := c.Param("uid")
-	if err := entity.DB().Preload("User").Preload("Game").Preload("Payment_Status").Raw("SELECT * FROM baskets WHERE (user_id = ? AND payment_status_id = 1) OR (user_id = ? AND payment_status_id = 2)", uid, uid).Find(&basket).Error; err != nil {
+	if err := entity.DB().Preload("User").Preload("Game", func(db *gorm.DB) *gorm.DB {
+		return db.Select("id", "deleted_at", "game_name", "game_price", "game_description", "publish_date", "seller_id", "game_status_id", "type_game_id", "rating_id", "game_picture").Where("deleted_at IS NULL").Find(&game)
+	}).Preload("Payment_Status").Raw("SELECT * FROM baskets WHERE (user_id = ? AND payment_status_id = 1) OR (user_id = ? AND payment_status_id = 2)", uid, uid).Find(&basket).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
