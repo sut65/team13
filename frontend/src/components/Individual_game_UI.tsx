@@ -340,6 +340,9 @@ function Individual_game() {
                                 {games[0].Game_description}
                             </Box>
                             <Grid>
+                                Price : {`${games[0].Game_Price}`}
+                            </Grid>
+                            <Grid>
                                 Publish Date : {`${Moment(games[0].Publish_Date).format('DD MMMM YYYY')}`}
                             </Grid>
                             <Grid>
