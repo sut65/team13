@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Container, Snackbar, makeStyles } from "@material-ui/core";
-import { Alert, Autocomplete, Box, Button, FormHelperText, Grid, Paper, TextField } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Grid, Paper, TextField } from '@mui/material';
 import { TableContainer, Table, TableBody, TableCell, TableHead, TableRow, Stack } from '@mui/material';
 import { Dialog,DialogTitle,DialogContent,DialogContentText,DialogActions } from "@material-ui/core";
 
@@ -17,7 +17,6 @@ import { RankingInterface } from '../../models/topgame/IRanking';
 import SaveIcon from "@mui/icons-material/Save";
 import AutoModeIcon from '@mui/icons-material/AutoMode';
 import DeleteForeverOutlinedIcon from '@mui/icons-material/DeleteForeverOutlined';
-import { id } from 'date-fns/locale';
 
 function Topgame_UI(){
     Moment.locale('th');

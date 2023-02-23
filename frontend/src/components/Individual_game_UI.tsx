@@ -18,6 +18,7 @@ import { useParams } from 'react-router-dom';
 import { GamesInterface } from '../models/game/IGame';
 import { Wish_levelInterface } from '../models/wishlist/IWish_Level';
 import { WishlistsInterface } from '../models/wishlist/IWishlist';
+import Review_UI from './review/Review_UI';
 
 function Individual_game() {
     Moment.locale('th');
@@ -533,6 +534,8 @@ function Individual_game() {
                     </DialogActions>
                 </Dialog>
             </Box>
+            <Box> <div>
+                <Review_UI/></div></Box>
         </Container>
     );
     else if (!isGameOnStore) return (

@@ -27,12 +27,11 @@ import PaidIcon from '@mui/icons-material/Paid';
 import BookmarkIcon from '@mui/icons-material/Bookmark';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import SupervisorAccountIcon from '@mui/icons-material/SupervisorAccount';
-import StarIcon from '@mui/icons-material/Star';
-import RateReviewIcon from '@mui/icons-material/RateReview';
+import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 
 // Admin Icon
 import ViewCarouselIcon from '@mui/icons-material/ViewCarousel';
-
+import TrendingUpTwoToneIcon from '@mui/icons-material/TrendingUpTwoTone';
 import { Link as RouterLink } from "react-router-dom";
 import { UsersInterface } from '../models/user/IUser';
 import { AdminsInterface } from '../models/admin/IAdmin';
@@ -103,8 +102,8 @@ function FullAppBar() {
       if (admin.Department?.Department_Title == "Programmer" || admin.Department?.Department_Title == "Master") {
         return (
           <ListItem button component={RouterLink} to="/topgames">
-            <StarIcon />
-            <ListItemText primary="Topgame" sx={{ paddingLeft: 1 }} />
+            <TrendingUpTwoToneIcon />
+            <ListItemText primary="New & Trending" sx={{ paddingLeft: 1 }} />
           </ListItem>
           
           );
@@ -155,6 +154,11 @@ function FullAppBar() {
             <ListItemText primary="My Order" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
+          <ListItem button component={RouterLink} to="/New">
+            <TrendingUpIcon />
+            <ListItemText primary="New & Trending" sx={{ paddingLeft: 1 }} />
+          </ListItem>
+
           <ListItem button component={RouterLink} to="/my_friend">
             <PeopleIcon />
             <ListItemText primary="My Friend" sx={{ paddingLeft: 1 }} />
@@ -173,11 +177,6 @@ function FullAppBar() {
           <ListItem button component={RouterLink} to="/user_store_setting">
             <SettingsIcon />
             <ListItemText primary="User & Store Setting" sx={{ paddingLeft: 1 }} />
-          </ListItem>
-
-          <ListItem button component={RouterLink} to="/review">
-            <RateReviewIcon />
-            <ListItemText primary="Test review" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
         </List>
