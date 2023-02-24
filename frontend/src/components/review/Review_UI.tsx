@@ -311,14 +311,16 @@ function Review_UI(){
                                     <TableCell align="center">{item.User.Profile_Name}</TableCell>
                                     <TableCell align="center">{`${Moment(item.Date).format('DD MMMM YYYY')}`}</TableCell>
                                     <TableCell align="center">
-                                        <Stack direction="column" spacing={2}>
+                                        {item.User_ID === Number(localStorage.getItem('uid')) && (
+                                            <Stack direction="column" spacing={2}>
                                             <Button variant="outlined" color="inherit" endIcon={<AutoModeIcon/>} onClick={() => handleDialogClickOpenForUpdate(item)}>
                                                 Edit
                                             </Button>
                                             <Button variant="contained" color="error" endIcon={<DeleteForeverOutlinedIcon/>} onClick={() => handleDialogClickOpenForDelete(item)}>
                                                 Delete
                                             </Button>                                        
-                                        </Stack>
+                                            </Stack>
+                                        )}
                                     </TableCell>
                                 </TableRow>
                             ))}
