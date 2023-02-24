@@ -136,6 +136,10 @@ func UpdateCollection(c *gin.Context) {
 		Name: collection.Name,
 		Note: collection.Note,
 	}
+	if _, err := govalidator.ValidateStruct(collect); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	if tx := entity.DB().Where("id = ?", collection.ID).Updates(&collect); tx.RowsAffected == 0 {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": "collection not found"})

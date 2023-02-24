@@ -13,37 +13,78 @@ import (
 
 func CreateStroage(c *gin.Context) {
 
-	// var storage entity.Storage
-	var user entity.User
-	var game entity.Game
-	var basket entity.Basket
+	// Storage Create
+	var payment_ver entity.Payment_Verification
+	if err := c.ShouldBindJSON(&payment_ver); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	// if *payment_ver.Verification_Status_ID == 3 {
+	var basket []entity.Basket
 
-	if err := c.ShouldBindJSON(&basket); err != nil {
+	//Send_gift
+	if err := entity.DB().Raw("SELECT * FROM baskets WHERE order_id = ?", payment_ver.Order_ID).Find(&basket).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	if tx := entity.DB().Where("id = ?", basket.User_ID).First(&user); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
-		return
-	}
-	if tx := entity.DB().Where("id = ?", basket.Game_ID).First(&game); tx.RowsAffected == 0 {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Game not found"})
-		return
-	}
+	for i := 0; i < len(basket); i++ {
+		var games entity.Game
+		var user entity.User
+		var order entity.Order
 
-	st := entity.Storage{
-		User_ID: basket.User_ID,
-		Game_ID: basket.Game_ID,
-	}
+		if tx := entity.DB().Where("id = ?", payment_ver.Order_ID).First(&order); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Order not found"})
+			return
+		}
 
-	// 13: บันทึก
-	if err := entity.DB().Create(&st).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	c.JSON(http.StatusCreated, gin.H{"data": st})
+		if tx := entity.DB().Where("id = ?", basket[i].Game_ID).First(&games); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Game not found"})
+			return
+		}
 
+		if tx := entity.DB().Where("id = ?", basket[i].User_ID).First(&user); tx.RowsAffected == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
+			return
+		}
+		if order.Friend_ID != nil {
+			println("send gift")
+			var friend entity.Friend
+			if err := entity.DB().Raw("SELECT * FROM friends WHERE id = ?", order.Friend_ID).Find(&friend).Error; err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+			st := entity.Storage{
+				User_ID: friend.User_Friend_ID,
+				Game_ID: basket[i].Game_ID,
+			}
+
+			// 13: บันทึก
+			if err := entity.DB().Create(&st).Error; err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+			// c.JSON(http.StatusCreated, gin.H{"data": st})
+
+		} else {
+			println("not send")
+
+			st := entity.Storage{
+				User_ID: basket[i].User_ID,
+				Game_ID: basket[i].Game_ID,
+			}
+
+			// 13: บันทึก
+			if err := entity.DB().Create(&st).Error; err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+			c.JSON(http.StatusCreated, gin.H{"data": st})
+
+		}
+
+	}
+	// }
 }
 
 // GET /storage/:id

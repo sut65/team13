@@ -37,41 +37,6 @@ func CreatePaymentVer(c *gin.Context) {
 		return
 	}
 
-	// Storage Create
-	var basket []entity.Basket
-
-	if err := entity.DB().Raw("SELECT * FROM baskets WHERE order_id = ?", order.ID).Find(&basket).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return
-	}
-	for i := 0; i < len(basket); i++ {
-		var games entity.Game
-		var user entity.User
-
-		if tx := entity.DB().Where("id = ?", basket[i].Game_ID).First(&games); tx.RowsAffected == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Game not found"})
-			return
-		}
-
-		if tx := entity.DB().Where("id = ?", basket[i].User_ID).First(&user); tx.RowsAffected == 0 {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "User not found"})
-			return
-		}
-
-		st := entity.Storage{
-			User_ID: basket[i].User_ID,
-			Game_ID: basket[i].Game_ID,
-		}
-
-		// 13: บันทึก
-		if err := entity.DB().Create(&st).Error; err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-			return
-		}
-		// c.JSON(http.StatusCreated, gin.H{"data": st})
-
-	}
-
 	paymentver := entity.Payment_Verification{
 		Order:               order,
 		Verification_Status: ver_status,

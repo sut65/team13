@@ -147,6 +147,11 @@ func UpdateWishlist(c *gin.Context) {
 		Wish_Level: wish_level,
 		Note:       wishlist.Note,
 	}
+
+	if _, err := govalidator.ValidateStruct(wish); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 	if tx := entity.DB().Where("id = ?", wishlist.ID).Updates(&wish); tx.RowsAffected == 0 {
 
 		c.JSON(http.StatusBadRequest, gin.H{"error": "collection not found"})

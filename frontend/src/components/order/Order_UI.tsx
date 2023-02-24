@@ -204,7 +204,7 @@ function Order_UI() {
             Slip: imageString,
             Date: date,
             Send_gift: order.Send_gift,
-            Frind_ID: order.Friend_ID,
+            Friend_ID: order.Friend_ID,
         };
         console.log(data)
 

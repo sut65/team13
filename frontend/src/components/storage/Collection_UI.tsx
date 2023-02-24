@@ -143,6 +143,7 @@ function Collection_UI() {
         if (res.data) {
           setSuccess(true);
           setOpenForAdd(false);
+          setErrorMsg("บันทึกสำเร็จ")
           await timeout(1000); //for 1 sec delay
           window.location.reload();
 
@@ -177,10 +178,13 @@ function Collection_UI() {
         if (res.data) {
           setSuccess(true);
           setOpenForEdit(false);
+          setErrorMsg("บันทึกสำเร็จ");
           await timeout(1000); //for 1 sec delay
           window.location.reload();
         } else {
+          setErrorMsg(res.error);
           setError(true);
+          
         }
       });
   }
@@ -205,6 +209,7 @@ function Collection_UI() {
       .then(async (res) => {
         if (res.data) {
           setSuccess(true);
+          setErrorMsg("ลบ Collection สำเร็จ");
           await timeout(1000); //for 1 sec delay
           window.location.reload();
         } else {
@@ -263,7 +268,7 @@ function Collection_UI() {
         anchorOrigin={{ vertical: "top", horizontal: "center" }}
       >
         <Alert onClose={handleClose} severity="success">
-          บันทึกข้อมูลสำเร็จ
+          {errorMsg}
         </Alert>
       </Snackbar>
       <Snackbar
@@ -298,12 +303,12 @@ function Collection_UI() {
           </Button>
         </Box>
         <Box sx={{ marginLeft: 2 }}>
-          <Button variant="contained" color="primary" disabled = {click} onClick={() => handleClickOpenForEdit()}>
+          <Button variant="contained" color="primary" disabled={click} onClick={() => handleClickOpenForEdit()}>
             Edit
           </Button>
         </Box>
         <Box sx={{ marginLeft: 2 }}>
-          <Button variant="contained" color="error" disabled = {click} onClick={() => handleClickOpenForDelete()}>
+          <Button variant="contained" color="error" disabled={click} onClick={() => handleClickOpenForDelete()}>
             Delete
           </Button>
         </Box>
@@ -461,18 +466,18 @@ function Collection_UI() {
           <DialogContentText>
             Collection จะถูกลบออกรายการของคุณ
           </DialogContentText>
-          </DialogContent>
-          <DialogActions>
+        </DialogContent>
+        <DialogActions>
           <Button color="inherit" onClick={handleCloseForDelete}>Cancel</Button>
           <Button color="error" onClick={() => deleteCollection()}>Delete</Button>
         </DialogActions>
-          </Dialog>
-        </Container>
+      </Dialog>
+    </Container>
 
 
 
 
-        );
+  );
 
 }
-        export default Collection_UI
+export default Collection_UI

@@ -132,64 +132,6 @@ function PaymentVer_UI() {
     };
 
     const createPaymentVer = () => {
-
-        const apiUrlBasketByOrder = "http://localhost:8080/BasketByOrder/" + String(payment_ver.Order_ID);           //ส่งขอบันทึก
-        const requestBasket = {
-            method: "GET",
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-                "Content-Type": "application/json",
-            },
-
-        };
-        fetch(apiUrlBasketByOrder, requestBasket)
-            .then((response) => response.json())
-            .then((res) => {
-                if (res.data) {
-                    setBasket(res.data)
-                    console.log(res.data)
-                }
-            });
-        // {
-        //     basket.map((element) => {
-        //         let storage = {
-        //             User_ID: element.User_ID,
-        //             Game_ID: element.Game_ID,
-        //         };
-        //         const apiUrlAddStorage = "http://localhost:8080/storages";           //ส่งขอบันทึก
-        //         const requestAddStorage = {
-        //             method: "POST",
-        //             headers: {
-        //                 Authorization: `Bearer ${localStorage.getItem("token")}`,
-        //                 "Content-Type": "application/json",
-        //             },
-        //             body: JSON.stringify(storage),
-        //         };
-        //         fetch(apiUrlAddStorage, requestAddStorage)
-        //             .then((response) => response.json())
-        //             .then((res) => {
-        //                 if (res.data) {
-        //                     setSubmitSuccess(true);
-        //                     // window.location.reload();
-        //                 } else {
-        //                     setSubmitError(true);
-        //                     setErrorMsg(" - " + res.error);
-        //                 }
-        //             });
-        //     }
-        //     )
-        // }
-        // if (payment_ver.Verification_Status_ID == 2) {
-        //GetBasket สำหรับแอด Stroage
-        //Create Storage
-        // for (var i = 0; i < basket.length; i++) {
-        // let storage = {
-        //     User_ID: basket[i].User_ID,
-        //     Game_ID: basket[i].Game_ID,
-        // };
-
-        // }
-        // }
         let data = {
             Admin_ID: Number(localStorage.getItem('aid')),
             Order_ID: payment_ver.Order_ID,
@@ -198,6 +140,8 @@ function PaymentVer_UI() {
             Date: date,
         };
         console.log(data)
+
+        
 
         const apiUrl = "http://localhost:8080/payment_ver";           //ส่งขอบันทึก
 
@@ -224,7 +168,7 @@ function PaymentVer_UI() {
                     setErrorMsg(" - " + res.error);
                 }
             });
-
+        
     }
 
     React.useEffect(() => {

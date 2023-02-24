@@ -37,6 +37,7 @@ function Wishlist_UI() {
     const [deleteWishlist, setDeleteWishlist] = useState<WishlistsInterface>();
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState(false);
+    const [msg, setMsg] = React.useState("");
 
     const [openForEdit, setOpenForEdit] = React.useState(false);
     const [openForDelete, setOpenForDelete] = React.useState(false);
@@ -168,9 +169,11 @@ function Wishlist_UI() {
             .then(async (res) => {
                 if (res.data) {
                     setSuccess(true);
+                    setMsg("บันทึกข้อมูลสำเร็จ");
                     await timeout(1000); //for 1 sec delay
                     window.location.reload();
                 } else {
+                    setMsg(res.error)
                     setError(true);
                 }
             });
@@ -195,6 +198,7 @@ function Wishlist_UI() {
             .then(async (res) => {
                 if (res.data) {
                     setSuccess(true);
+                    setMsg("ลบ Wishlist สำเร็จ");
                     await timeout(1000); //for 1 sec delay
                     window.location.reload();
                 } else {
@@ -213,7 +217,7 @@ function Wishlist_UI() {
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
                 <Alert onClose={handleClose} severity="success">
-                    บันทึกข้อมูลสำเร็จ
+                    {msg}
                 </Alert>
             </Snackbar>
             <Snackbar
@@ -223,7 +227,7 @@ function Wishlist_UI() {
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
             >
                 <Alert onClose={handleClose} severity="error">
-                    บันทึกข้อมูลไม่สำเร็จ
+                    {msg}
                 </Alert>
             </Snackbar>
             <Box
