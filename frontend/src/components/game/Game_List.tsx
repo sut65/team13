@@ -449,7 +449,7 @@ function Game() {
                             setGame1({ ...game1, Type_Game_ID: value?.ID }); // บันทึกค่าลง interface
                           }}
                           getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
-                            `${option.Type_Game_Name} ${option.ID}`
+                            `${option.Type_Game_Name}` //${option.ID}
                           } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
                           renderInput={(params) => <TextField {...params} label="Game type" />}
                           renderOption={(props: any, option: any) => {
