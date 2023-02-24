@@ -133,8 +133,10 @@ function TopgameUser_UI(){
                         .map((item) => (
                             <TableRow key={item.ID}>
                                 <TableCell align="center">{item.Ranking.Detail}</TableCell>
-                                <TableCell align="center"><img src={`${item.Game.Game_Picture}`} width="250" height="150"/></TableCell>
-                                <TableCell align="center">{item.Game.Game_Name}</TableCell>
+                                <TableCell align="center"><Link href={"/individual_game/"+String(item.Game.ID)} underline="none" sx={{width : "100%"}}>
+                                <img src={`${item.Game.Game_Picture}`}width="250" height="150"></img></Link></TableCell>
+                                <TableCell align="center"><Link href={"/individual_game/"+String(item.Game.ID)} underline="none" sx={{width : "100%"}}>
+                        {item.Game.Game_Name} {/** จะมีปัญหาเวลาเกมถูกลบแล้ว ใน array มี 1 ตัวแต่ id เราคือ 2 */}</Link></TableCell>
                                 <TableCell align="center">{item.Comment}</TableCell>
                                 <TableCell align="center">{`${Moment(item.Date).format('DD MMMM YYYY')}`}</TableCell>
                                 <TableCell align="center"></TableCell>

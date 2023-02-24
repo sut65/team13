@@ -30,6 +30,19 @@ func TestOrderValidate(t *testing.T) {
 
 	})
 
+	t.Run("Slip format invalid", func(t *testing.T) {
+		odTest := order
+		odTest.Slip = "data:text/plain;base64,/9j/4AAQ/AndSoOn"
+
+		ok, err := govalidator.ValidateStruct(odTest)
+
+		g.Expect(ok).NotTo(gomega.BeTrue()) // ข้อมูลผิด ok จะเป็น false
+
+		g.Expect(err).NotTo(gomega.BeNil()) // ข้อมูลผิด error จะไม่เป็น nil
+
+		g.Expect(err.Error()).To(gomega.Equal("รูปภาพไม่ถูกต้อง กรุณาอัปโหลดรูปภาพ")) // check error message
+	})
+
 	t.Run("Slip is null", func(t *testing.T) {
 		odTest := order
 		odTest.Slip = ""

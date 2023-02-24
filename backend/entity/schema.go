@@ -245,7 +245,7 @@ type Order struct {
 	User                   User                `gorm:"references:id" valid:"-"`
 	Verification_Status_ID *uint               `valid:"-"`
 	Verification_Status    Verification_Status `gorm:"references:id" valid:"-"`
-	Slip                   string              `valid:"image_valid~รูปภาพไม่ถูกต้อง,required~กรุณาอัปโหลดรูปภาพ"`
+	Slip                   string              `valid:"image_valid~รูปภาพไม่ถูกต้อง กรุณาอัปโหลดรูปภาพ,required~กรุณาอัปโหลดรูปภาพ"`
 	Date                   time.Time           `valid:"DelayNow10Min~เวลาเป็นอดีต กรุณาโหลดหน้าเว็บใหม่"`
 	Send_gift              *bool               `valid:"-"`
 	Friend_ID              *uint               `valid:"-"`
@@ -274,7 +274,7 @@ type Payment_Verification struct {
 	Verification_Status_ID *uint               `valid:"-"`
 	Verification_Status    Verification_Status `gorm:"references:id" valid:"-"`
 	Date                   time.Time           `valid:"DelayNow10Min~เวลาเป็นอดีต กรุณาโหลดหน้าเว็บใหม่"`
-	Note                   string              `valid:"required~Note cannot be blank"`
+	Note                   string              `valid:"required~Note cannot be blank,maxstringlength(50)~Note ความยาวไม่เกิน 50 ตัวอักษร"`
 }
 
 // ----ระบบ Wishlist---

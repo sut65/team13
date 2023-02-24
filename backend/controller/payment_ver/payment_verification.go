@@ -73,8 +73,9 @@ func CreatePaymentVer(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, gin.H{"error": "basket not found"})
 			return
 		}
-		c.JSON(http.StatusOK, gin.H{"data": payment_ver})
+
 	}
+	c.JSON(http.StatusOK, gin.H{"data": payment_ver})
 
 }
 

@@ -610,7 +610,7 @@ func SetupDatabase() {
 		User_ID: &User1.ID,
 		Game_ID: &Game3.ID,
 		Star_ID: &Star5.ID,
-		Comment: "เกมดี คอมมูดี",
+		Comment: "เกมดี สังคมในเกมดีมากเลย ไม่มีเกรียนเลย",
 		Date:    time.Now(),
 	}
 	Review2 := Review{
@@ -620,27 +620,43 @@ func SetupDatabase() {
 		Comment: "เกมกระจอกภาพกระตุก",
 		Date:    time.Now(),
 	}
+	Review3 := Review{
+		User_ID: &User3.ID,
+		Game_ID: &Game1.ID,
+		Star_ID: &Star4.ID,
+		Comment: "ภาพสวย ระบบดี ยอดเยี่ยม",
+		Date:    time.Now(),
+	}
 	db.Model(&Review{}).Create(&Review1)
 	db.Model(&Review{}).Create(&Review2)
+	db.Model(&Review{}).Create(&Review3)
 
 	//Topgame
 	Ranking1 := Ranking{
-		Detail: "เกมอันดับ 1",
+		Detail: "เกมแนะนำอันดับ 1",
 	}
 	Ranking2 := Ranking{
-		Detail: "เกมอันดับ 2",
+		Detail: "เกมแนะนำอันดับ 2",
 	}
 	Ranking3 := Ranking{
-		Detail: "เกมอันดับ 3",
+		Detail: "เกมแนะนำอันดับ 3",
+	}
+	Ranking4 := Ranking{
+		Detail: "เกมแนะนำอันดับ 4",
+	}
+	Ranking5 := Ranking{
+		Detail: "เกมแนะนำอันดับ 5",
 	}
 	db.Model(&Ranking{}).Create(&Ranking1)
 	db.Model(&Ranking{}).Create(&Ranking2)
 	db.Model(&Ranking{}).Create(&Ranking3)
+	db.Model(&Ranking{}).Create(&Ranking4)
+	db.Model(&Ranking{}).Create(&Ranking5)
 
 	Topgame1 := Topgame{
 		Admin_ID:   &admin1.ID,
 		Game_ID:    &Game3.ID,
-		Ranking_ID: &Ranking3.ID,
+		Ranking_ID: &Ranking2.ID,
 		Comment:    "เกมน่าเล่น แนะนำสำหรับอาทิตย์นี้",
 		Date:       time.Now(),
 	}
