@@ -497,7 +497,7 @@ func SetupDatabase() {
 	}
 	db.Model(&Wish_Level{}).Create(&WL1)
 	WL2 := Wish_Level{
-		Level: "อยกาได้มาก",
+		Level: "อยากได้มาก",
 	}
 	db.Model(&Wish_Level{}).Create(&WL2)
 	WL3 := Wish_Level{
