@@ -38,7 +38,6 @@ func TestOrderValidate(t *testing.T) {
 
 		g.Expect(ok).NotTo(gomega.BeTrue()) // ข้อมูลผิด ok จะเป็น false
 
-		
 		g.Expect(err).NotTo(gomega.BeNil()) // ข้อมูลผิด error จะไม่เป็น nil
 
 		g.Expect(err.Error()).To(gomega.Equal("รูปภาพไม่ถูกต้อง กรุณาอัปโหลดรูปภาพ")) // check error message
