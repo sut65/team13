@@ -143,7 +143,7 @@ function PaymentVer_UI() {
         };
         console.log(data)
 
-        
+
 
         const apiUrl = "http://localhost:8080/payment_ver";           //ส่งขอบันทึก
 
@@ -170,7 +170,36 @@ function PaymentVer_UI() {
                     setErrorMsg(" - " + res.error);
                 }
             });
-        
+        if (payment_ver.Verification_Status_ID == 2) {
+            const apiUrlSt = "http://localhost:8080/storages";           //ส่งขอบันทึก
+            const requestOptionsSt = {
+
+                method: "POST",
+
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    "Content-Type": "application/json",
+                },
+
+                body: JSON.stringify(data),
+
+            };
+            fetch(apiUrlSt, requestOptionsSt)
+                .then((response) => response.json())
+                .then((res) => {
+                    if (res.data) {
+                        // setSubmitSuccess(true);
+                        // window.location.reload();
+                    } else {
+                        // setSubmitError(true);
+                        // setErrorMsg(" - " + res.error);
+                    }
+                });
+        }
+
+
+
+
     }
 
     React.useEffect(() => {
@@ -183,7 +212,7 @@ function PaymentVer_UI() {
         fetchData();
     }, []);
 
-    if(isDataloaded) return (
+    if (isDataloaded) return (
         <Container maxWidth="xl">
             <Snackbar // บันทึกสำเร็จ
                 open={submitSuccess}
@@ -230,7 +259,7 @@ function PaymentVer_UI() {
                                 {order.map((item) => (
                                     <TableRow key={item.ID}>
                                         <TableCell align="center">{item.ID}</TableCell>
-                                        <TableCell align="center">{item.Verification_Status.Status_type}</TableCell>      
+                                        <TableCell align="center">{item.Verification_Status.Status_type}</TableCell>
                                         <TableCell align="center"><img src={`${item.Slip}`} width="250" height="250" /></TableCell>
                                         <Stack direction="column" spacing={3}>
                                             <Button variant="contained" color="primary" onClick={() => handleClickOpenForNew(item.ID)}>
