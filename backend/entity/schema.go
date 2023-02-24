@@ -274,7 +274,7 @@ type Payment_Verification struct {
 	Verification_Status_ID *uint               `valid:"-"`
 	Verification_Status    Verification_Status `gorm:"references:id" valid:"-"`
 	Date                   time.Time           `valid:"DelayNow10Min~เวลาเป็นอดีต กรุณาโหลดหน้าเว็บใหม่"`
-	Note                   string              `valid:"required~Note cannot be blank"`
+	Note                   string              `valid:"required~Note cannot be blank,maxstringlength(50)~Note ความยาวไม่เกิน 50 ตัวอักษร"`
 }
 
 // ----ระบบ Wishlist---
