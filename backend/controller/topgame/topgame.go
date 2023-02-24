@@ -19,7 +19,7 @@ func CreateTopgame(c *gin.Context) {
 	var admin entity.Admin
 	var game entity.Game
 
-	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 8 จะถูก bind เข้าตัวแปร repair
+	// ผลลัพธ์ที่ได้จากขั้นตอนที่ 8 จะถูก bind เข้าตัวแปร Topgame
 	if err := c.ShouldBindJSON(&topgame); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

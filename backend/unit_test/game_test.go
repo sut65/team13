@@ -16,7 +16,7 @@ func TestGameValidate(t *testing.T) {
 		Game_Name:        "Suki Suki da!",
 		Game_Price:       2000,
 		Game_description: "Sasuke Sasuke Sasuke Sasuke Sasuke Sasuke Sasuke",
-		Game_file:        "https://www.youtube.com/watch?v=XOSAGJW3C9Q&list=RDXOSAGJW3C9Q&start_radio=1",
+		Game_file:        "data:image/jpeg;base64,/9jdasddsawegdasd/asdgerasdasdascascascac",
 		Publish_Date:     time.Now().Add(time.Second * -599),
 		Game_Picture:     "data:image/jpeg;base64,/9jdasddsawegdasd/asdger",
 	}

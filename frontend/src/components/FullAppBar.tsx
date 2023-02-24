@@ -154,7 +154,7 @@ function FullAppBar() {
             <ListItemText primary="My Order" sx={{ paddingLeft: 1 }} />
           </ListItem>
 
-          <ListItem button component={RouterLink} to="/New">
+          <ListItem button component={RouterLink} to="/TopgameUser">
             <TrendingUpIcon />
             <ListItemText primary="New & Trending" sx={{ paddingLeft: 1 }} />
           </ListItem>

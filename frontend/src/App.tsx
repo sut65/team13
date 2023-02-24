@@ -23,6 +23,7 @@ import Storage_UI from "./components/storage/Storage_UI";
 import Order_UI from "./components/order/Order_UI";
 import Wishlist_UI from "./components/wishlist/Wishlist_UI";
 import Review_UI from "./components/review/Review_UI";
+import TopgameUser_UI from "./components/topgame/TopgameUser_UI";
 
 
 // Admin import
@@ -78,6 +79,7 @@ export default function App() {
           <Route path="/storage" element={<Storage_UI/>} /> {/** storage*/}
           <Route path="/wishlist" element={<Wishlist_UI/>} /> {/** Wishlist*/}
           <Route path="/review" element={<Review_UI/>} /> {/** review*/}
+          <Route path="/TopgameUser" element={<TopgameUser_UI/>} /> {/** Topgame*/}
 
         </Routes>
       );

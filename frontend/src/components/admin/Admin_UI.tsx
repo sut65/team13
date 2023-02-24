@@ -125,7 +125,7 @@ function Admin() {
           anchorOrigin={{ vertical: "top", horizontal: "center" }}
         >
           <Alert onClose={handleClose} severity="success">
-            Crate complete
+            Create complete
           </Alert>
         </Snackbar>
         <Snackbar
