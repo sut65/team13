@@ -143,6 +143,12 @@ func UpdateAdmin(c *gin.Context) {
 		return
 	}
 
+	hashPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), 12)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
+		return
+	}
+
 	updateAdmin := entity.Admin{
 		Name:            admin.Name,
 		Email:           admin.Email,
@@ -166,17 +172,7 @@ func UpdateAdmin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	if !(admin.Password[0:7] == "$2a$12$") { // เช็คว่ารหัสที่ผ่านเข้ามามีการ encrypt แล้วหรือยัง หากมีการ encrypt แล้วจะไม่ทำการ encrypt ซ้ำ
-		hashPassword, err := bcrypt.GenerateFromPassword([]byte(admin.Password), 12)
-		if err != nil {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "error hashing password"})
-			return
-		}
-		print("HASH!!!!")
-		admin.Password = string(hashPassword)
-	} else {
-		print("NOT HASH!!!")
-	}
+	updateAdmin.Password = string(hashPassword)
 	if err := entity.DB().Where("ID = ?", admin.ID).Updates(&updateAdmin).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
