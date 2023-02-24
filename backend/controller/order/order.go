@@ -147,7 +147,6 @@ func UpdateOrder(c *gin.Context) {
 
 	updateOrder := entity.Order{
 		Slip: order.Slip,
-		Date: order.Date.Local(),
 	}
 
 	if _, err := govalidator.ValidateStruct(updateOrder); err != nil {
