@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 
 function PaymentVer_UI() {
     const classes = useStyles();
+    const [isDataloaded, setIsDataloaded] = React.useState<Boolean>(false);
 
     const [submitSuccess, setSubmitSuccess] = React.useState(false);
     const [submitError, setSubmitError] = React.useState(false);
@@ -86,6 +87,7 @@ function PaymentVer_UI() {
             .then((res) => {
                 if (res.data) {
                     setOrder(res.data);
+                    console.log(res.data);
                 }
             });
     };
@@ -176,11 +178,12 @@ function PaymentVer_UI() {
             await getOrder();
             await getVerStatus()
             await getPaymentVer();
+            setIsDataloaded(true);
         }
         fetchData();
     }, []);
 
-    return (
+    if(isDataloaded) return (
         <Container maxWidth="xl">
             <Snackbar // บันทึกสำเร็จ
                 open={submitSuccess}
@@ -219,7 +222,7 @@ function PaymentVer_UI() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell align="center"><h4>Order ID</h4></TableCell>
-                                    {/* <TableCell align="center"><h4>Status</h4></TableCell> */}
+                                    <TableCell align="center"><h4>Status</h4></TableCell>
                                     <TableCell align="center"><h4>Slip</h4></TableCell>
                                 </TableRow>
                             </TableHead>
@@ -227,7 +230,7 @@ function PaymentVer_UI() {
                                 {order.map((item) => (
                                     <TableRow key={item.ID}>
                                         <TableCell align="center">{item.ID}</TableCell>
-                                        {/* <TableCell align="center">{item.Verification_Status.Status_type}</TableCell>       */}
+                                        <TableCell align="center">{item.Verification_Status.Status_type}</TableCell>      
                                         <TableCell align="center"><img src={`${item.Slip}`} width="250" height="250" /></TableCell>
                                         <Stack direction="column" spacing={3}>
                                             <Button variant="contained" color="primary" onClick={() => handleClickOpenForNew(item.ID)}>
@@ -323,5 +326,6 @@ function PaymentVer_UI() {
 
         </Container>
     )
+    return null;
 }
 export default PaymentVer_UI

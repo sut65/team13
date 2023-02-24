@@ -104,7 +104,7 @@ func GetOrder(c *gin.Context) {
 func ListOrder(c *gin.Context) {
 	var order []entity.Order
 
-	if err := entity.DB().Raw("SELECT * FROM orders").Scan(&order).Error; err != nil {
+	if err := entity.DB().Preload("Verification_Status").Raw("SELECT * FROM orders").Find(&order).Error; err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
