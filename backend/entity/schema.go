@@ -223,9 +223,9 @@ type Topgame struct {
 	gorm.Model
 	Admin_ID   *uint     `valid:"-"`
 	Admin      Admin     `gorm:"references:id" valid:"-"`
-	Game_ID    *uint     `valid:"-"`
+	Game_ID    *uint     `gorm:"uniqueIndex" valid:"-"`
 	Game       Game      `gorm:"references:id" valid:"-"`
-	Ranking_ID *uint     `valid:"-"`
+	Ranking_ID *uint     `gorm:"uniqueIndex" valid:"-"`
 	Ranking    Ranking   `gorm:"references:id" valid:"-"`
 	Comment    string    `valid:"required~Commentห้ามว่าง,maxstringlength(300)~แสดงความคิดเห็นความยาวไม่เกิน 300 ตัวอักษร"`
 	Date       time.Time `valid:"DelayNow10Min~เวลาเป็นอดีต ลองโหลดหน้าเว็บอีกรอบ"`

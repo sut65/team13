@@ -35,11 +35,7 @@ function Topgame_UI(){
     const [commentEdit,setCommentEdit] = React.useState(String)
     const [games, setGames] = React.useState<GamesInterface[]>([]);
     const [rankings, setRankings] = React.useState<RankingInterface[]>([]);
-    const [topgames, setTopgames] = React.useState<Partial<TopgameInterface>>({});
-    const [topgamesForUpdate, setTopgamesForUpdate] = React.useState<TopgameInterface>();
-    const [gameForEdit, setgameForEdit] = React.useState(Number);
-    const [rankingForEdit, setrankingForEdit] = React.useState(Number);
-    const [topgamesForDel, setTopgamesForDel] = React.useState<TopgameInterface>();
+    const [topgames, setTopgames] = React.useState<Partial<TopgameInterface> | null>({});
     const [topgamesTable, setTopgamesTable] = React.useState<TopgameInterface[]>([]);
     const [topgamesForUpdateDefault, setTopgamesForUpdateDefault] = React.useState<TopgameInterface[]>([]);
 
@@ -59,13 +55,13 @@ function Topgame_UI(){
         setOpenDialogForCreate(true);
     };
 
-    const handleDialogClickOpenForUpdate = (item : TopgameInterface) => {
+    const handleDialogClickOpenForUpdate = (item : any) => {
         setOpenDialogForUpdate(true);
-        setTopgamesForUpdate(item);
+        setTopgames(item);
     };
 
-    const handleDialogClickOpenForDelete = (item : TopgameInterface) => {
-        setTopgamesForDel(item);
+    const handleDialogClickOpenForDelete = (item : any) => {
+        setTopgames(item);
         setOpenDialogForDelete(true);
     };
 
@@ -74,6 +70,7 @@ function Topgame_UI(){
         setOpenDialogForUpdate(false);
         setOpenDialogForDelete(false);
         setImg("data:image/png;base64,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");
+        setTopgames(null);
     };
 
     const getRanking = async () => {
@@ -138,10 +135,10 @@ function Topgame_UI(){
 
     const createTopgame = () => {
         let createData = {
-            Comment: topgames.Comment,
+            Comment: topgames?.Comment,
             Date: date,
-            Ranking_ID: topgames.Ranking_ID,
-            Game_ID: topgames.Game_ID,
+            Ranking_ID: topgames?.Ranking_ID,
+            Game_ID: topgames?.Game_ID,
             Admin_ID: Number(localStorage.getItem('aid')),
         };
 
@@ -161,7 +158,7 @@ function Topgame_UI(){
         .then((response) => response.json())
         .then((res) => {
             if (res.data) {
-                setOpenDialogForCreate(false);
+                handleDialogClose();
                 setSubmitSuccess(true);
             } else {
                 setSubmitError(true);
@@ -171,13 +168,13 @@ function Topgame_UI(){
 
     }
 
-    const updateTopgame = (id: number) => {
+    const updateTopgame = () => {
         let updateData = {
-            ID: id,
-            Comment:  commentEdit,
+            ID: topgames?.ID,
+            Comment: topgames?.Comment,
             Date: date,
-            Ranking_ID: rankingForEdit,
-            Game_ID: gameForEdit,
+            Ranking_ID: topgames?.Ranking_ID,
+            Game_ID: topgames?.Game_ID,
             Admin_ID: Number(localStorage.getItem('aid')),
         };
 
@@ -197,7 +194,7 @@ function Topgame_UI(){
         .then((response) => response.json())
         .then((res) => {
             if (res.data) {
-                setOpenDialogForUpdate(false);
+                handleDialogClose();
                 setSubmitSuccess(true);
                 console.log(res.data);
             } else {
@@ -208,8 +205,8 @@ function Topgame_UI(){
 
     }
 
-    const deleteTopgame = (id:number) => {
-        const apiUrl = "http://localhost:8080/topgame/"+id;
+    const deleteTopgame = () => {
+        const apiUrl = "http://localhost:8080/topgame/"+topgames?.ID;
         const requestOptions = {
             method: "DELETE",
             headers: {
@@ -222,7 +219,7 @@ function Topgame_UI(){
         .then((response) => response.json())
         .then((res) => {
             if (res.data) {
-                setOpenDialogForDelete(false);
+                handleDialogClose();
                 setSubmitSuccess(true);
             } else {
                 setSubmitError(true);
@@ -348,14 +345,14 @@ function Topgame_UI(){
                                         options={games}
                                         fullWidth
                                         size="medium"
-                                        //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
+                                        defaultValue={topgames?.Game}
                                         onChange={(event: any, value) => {
                                             setTopgames({ ...topgames, Game_ID: value?.ID }); // บันทึกค่าลง interface
                                         }}
                                         getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
                                             `${option.ID} - ${option.Game_Name}`
                                         } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                                        renderInput={(params) => <TextField {...params} label="Game ID" />}
+                                        renderInput={(params) => <TextField {...params} label="Game" />}
                                         renderOption={(props: any, option: any) => {
                                         return (
                                             <li
@@ -374,14 +371,14 @@ function Topgame_UI(){
                                         options={rankings}
                                         fullWidth
                                         size="medium"
-                                        //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
+                                        defaultValue={topgames?.Ranking}
                                         onChange={(event: any, value) => {
                                             setTopgames({ ...topgames, Ranking_ID: value?.ID }); // บันทึกค่าลง interface
                                         }}
                                         getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
                                             `${option.ID} - ${option.Detail}`
                                         } //filter value // เว้นวรรคระว่าง } กับ $ มีผลกับการแสดงผล
-                                        renderInput={(params) => <TextField {...params} label="Ranking ID" />}
+                                        renderInput={(params) => <TextField {...params} label="Ranking" />}
                                         renderOption={(props: any, option: any) => {
                                         return (
                                             <li
@@ -411,6 +408,7 @@ function Topgame_UI(){
                                         id="topgame-Comment"
                                         label="Topgame Comment"
                                         variant="outlined"
+                                        defaultValue={topgames?.Comment}
                                         onChange={(event) => setTopgames({ ...topgames, Comment: event.target.value })}
                                         />
                                 </Grid>
@@ -460,9 +458,9 @@ function Topgame_UI(){
                                         options={games}
                                         fullWidth
                                         size="medium"
-                                        defaultValue={topgamesForUpdate?.Game}
+                                        defaultValue={topgames?.Game}
                                         onChange={(event: any, value) => {
-                                            setgameForEdit(event.target.value); // บันทึกค่าลง interface
+                                            setTopgames({ ...topgames, Game_ID: value?.ID }); // บันทึกค่าลง interface
                                         }}
                                         getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
                                             `${option.ID} - ${option.Game_Name}`
@@ -486,10 +484,10 @@ function Topgame_UI(){
                                         options={rankings}
                                         fullWidth
                                         size="medium"
-                                        defaultValue={topgamesForUpdate?.Ranking}
+                                        defaultValue={topgames?.Ranking}
                                         //defaultValue={banners[Number(user.Favorite_Game_ID)-1]} // ใช้ไม่ได้จะมีปัญหาเวลา ID = 3 แต่มีเกมในคลังแค่เกมเดียวงี้
                                         onChange={(event: any, value) => {
-                                            setrankingForEdit(event.target.value); // บันทึกค่าลง interface
+                                            setTopgames({ ...topgames, Ranking_ID: value?.ID }); // บันทึกค่าลง interface
                                         }}
                                         getOptionLabel={(option: any) => // option ในการ search สามารถ search ด้วยตามรายการที่เราใส่
                                             `${option.ID} - ${option.Detail}`
@@ -524,8 +522,8 @@ function Topgame_UI(){
                                         id="topgame-Comment"
                                         label="Topgame Comment"
                                         variant="outlined"
-                                        defaultValue={topgamesForUpdate?.Comment}
-                                        onChange={(event) => setCommentEdit(event.target.value )}
+                                        defaultValue={topgames?.Comment}
+                                        onChange={(event) => setTopgames({ ...topgames, Comment: event.target.value })}
                                         />
                                 </Grid>
 
@@ -549,7 +547,7 @@ function Topgame_UI(){
 
                 <DialogActions>
                     <Button onClick={handleDialogClose}>Exit</Button>
-                    <Button onClick={() => updateTopgame(topgamesForUpdate?.ID||0)} color="error" autoFocus>Update</Button>
+                    <Button onClick={updateTopgame} color="error" autoFocus>Update</Button>
                 </DialogActions>
             </Dialog>
 
@@ -572,7 +570,7 @@ function Topgame_UI(){
 
                 <DialogActions>
                     <Button onClick={handleDialogClose}>NO</Button>
-                    <Button onClick={() => deleteTopgame(topgamesForDel?.ID||0)} color="error" autoFocus>YES</Button>
+                    <Button onClick={deleteTopgame} color="error" autoFocus>YES</Button>
                 </DialogActions>
             </Dialog>
         </Container>
